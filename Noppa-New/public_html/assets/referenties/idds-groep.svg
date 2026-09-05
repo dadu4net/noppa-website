@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" role="img" aria-label="IDDS Groep">
+  <rect width="200" height="60" fill="none"/>
+  <rect x="12" y="12" width="36" height="36" rx="6" fill="#2C3E8C"/>
+  <text x="30" y="36" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="14" fill="white">IDDS</text>
+  <text x="56" y="38" font-family="Arial,sans-serif" font-weight="700" font-size="18" fill="#2C3E8C">Groep</text>
+</svg>

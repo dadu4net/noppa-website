@@ -1,0 +1,5 @@
+{
+  "_comment": "Deze nav.json wordt alléén gebruikt voor sitenaam en siteUrl (voor RSS-feed, page-titles en deel-URL's). De navigatie en footer worden geladen via /assets/partials/nav.html en footer.html via assets/js/site.js (canonical Buro GEKKO partial-systeem).",
+  "sitenaam": "Buro GEKKO",
+  "siteUrl": "https://burogekko.nl"
+}

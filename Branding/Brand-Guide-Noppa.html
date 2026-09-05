@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noppa · Brand Guide (Skill-referentie)</title>
+<style>
+  :root {
+    --cyan:#00D0F0; --sky:#20B0F0; --royal:#2060E0; --indigo:#3A4FD0;
+    --navy:#0F2A66; --ink:#1A2440; --slate:#6B7280;
+    --mist:#E4E9F2; --light:#F1F5FB; --white:#FFFFFF;
+    --success:#16A34A; --warning:#E53E3E;
+    --grad: linear-gradient(90deg, var(--cyan) 0%, var(--sky) 35%, var(--royal) 70%, var(--indigo) 100%);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Kentledge', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color:var(--ink); background:var(--white); line-height:1.55;
+  }
+  header{
+    background: var(--grad);
+    color:var(--white); padding:64px 48px 56px;
+  }
+  header .eyebrow{
+    font-size:.72rem; letter-spacing:.18em; text-transform:uppercase;
+    opacity:.85; margin-bottom:12px;
+  }
+  header h1{
+    font-size:2.8rem; font-weight:900; letter-spacing:-.02em;
+    margin:0 0 .25em;
+  }
+  header p{margin:0; font-size:1.05rem; opacity:.92; max-width:640px}
+  header .meta-strip{
+    display:flex; gap:24px; margin-top:28px; flex-wrap:wrap;
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; opacity:.88;
+  }
+  main{max-width:980px; margin:0 auto; padding:56px 32px 80px}
+  section{margin-bottom:56px}
+  h2{
+    color:var(--navy); font-weight:700; font-size:1.5rem;
+    letter-spacing:-.015em; margin:0 0 18px;
+    padding-bottom:8px; border-bottom:2px solid var(--mist);
+  }
+  h3{
+    color:var(--navy); font-weight:700; font-size:1.05rem;
+    margin:24px 0 10px;
+  }
+  p, li{color:var(--ink); font-size:.95rem}
+  code{
+    background:var(--light); padding:2px 6px; border-radius:4px;
+    font-family: 'SF Mono', Consolas, monospace; font-size:.85em;
+    color:var(--navy);
+  }
+  pre{
+    background:var(--navy); color:var(--white); padding:16px 18px;
+    border-radius:8px; font-size:.85rem; overflow-x:auto;
+  }
+  pre code{background:transparent; color:inherit; padding:0}
+  table{
+    width:100%; border-collapse:collapse; margin:14px 0 18px;
+    font-size:.9rem;
+  }
+  th, td{
+    text-align:left; padding:10px 12px; border-bottom:1px solid var(--mist);
+    vertical-align:top;
+  }
+  th{
+    background:var(--light); color:var(--navy);
+    font-weight:700; font-size:.72rem;
+    letter-spacing:.12em; text-transform:uppercase;
+  }
+  tr:last-child td{border-bottom:none}
+  .swatch{
+    display:inline-block; width:18px; height:18px; border-radius:4px;
+    vertical-align:-4px; margin-right:8px;
+    border:1px solid rgba(15,42,102,.12);
+  }
+  .palette{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+    gap:14px; margin:18px 0 8px;
+  }
+  .chip{
+    border:1px solid var(--mist); border-radius:10px; overflow:hidden;
+    background:var(--white);
+  }
+  .chip .fill{height:64px}
+  .chip .meta{padding:10px 12px}
+  .chip b{display:block; color:var(--navy); font-size:.85rem}
+  .chip code{font-size:.7rem; background:transparent; padding:0}
+  .gradient-bar{
+    height:48px; background:var(--grad); border-radius:8px;
+    margin:14px 0 8px;
+  }
+  .pillars{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+    gap:12px; margin:14px 0;
+  }
+  .pillar{
+    background:var(--light); border-left:4px solid var(--royal);
+    padding:14px 16px; border-radius:6px;
+  }
+  .pillar b{color:var(--navy); display:block; margin-bottom:4px}
+  .pillar span{color:var(--slate); font-size:.85rem}
+  .do-dont{
+    display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:14px 0;
+  }
+  .do, .dont{padding:16px 18px; border-radius:8px; font-size:.9rem}
+  .do{background:#EAF7EF; border-left:4px solid var(--success)}
+  .dont{background:#FCEBEB; border-left:4px solid var(--warning)}
+  .do b, .dont b{display:block; margin-bottom:6px}
+  .do b{color:var(--success)}
+  .dont b{color:var(--warning)}
+  .do ul, .dont ul{margin:0; padding-left:18px}
+  .callout{
+    background:var(--light); border-left:4px solid var(--cyan);
+    padding:14px 18px; border-radius:6px; margin:14px 0;
+    font-style:italic; color:var(--navy);
+  }
+  .quote-positive{
+    background:var(--light); padding:12px 16px; border-radius:6px;
+    border-left:3px solid var(--success); margin:6px 0; font-size:.9rem;
+  }
+  .quote-negative{
+    background:var(--light); padding:12px 16px; border-radius:6px;
+    border-left:3px solid var(--warning); margin:6px 0; font-size:.9rem;
+    color:var(--slate); text-decoration:line-through;
+  }
+  .meta-block{
+    background:var(--navy); color:var(--white); padding:24px 28px;
+    border-radius:12px; margin:18px 0;
+  }
+  .meta-block code{background:rgba(255,255,255,.12); color:var(--white)}
+  .meta-block a{color:var(--cyan); text-decoration:none}
+  .icon-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr));
+    gap:8px; font-size:.78rem; color:var(--slate);
+  }
+  .icon-grid code{font-size:.75rem}
+  footer{
+    text-align:center; padding:28px; color:var(--slate); font-size:.8rem;
+    border-top:1px solid var(--mist);
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Skill · noppa-brand</div>
+  <h1>Noppa Brand Guide</h1>
+  <p>Pas deze richtlijnen toe op elk merkmateriaal voor Noppa Solutions &amp; Consultants. Payoff: <em>Boosting Business Productivity</em> — altijd onder of bij het logo.</p>
+  <div class="meta-strip">
+    <span>v1.0</span><span>·</span><span>Skill-referentie</span><span>·</span><span>Helder · Vooruit · Verbonden · Vakkundig</span>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <h2>Merkpijlers</h2>
+  <div class="pillars">
+    <div class="pillar"><b>Helder</b><span>Zonder ruis. Concrete oplossingen, geen jargon.</span></div>
+    <div class="pillar"><b>Vooruit</b><span>Altijd in beweging. We versnellen waar het kan.</span></div>
+    <div class="pillar"><b>Verbonden</b><span>Met de klant, het team en de techniek.</span></div>
+    <div class="pillar"><b>Vakkundig</b><span>Onderbouwde keuzes, kwaliteit als standaard.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Kleurpalet</h2>
+
+  <h3>Signature gradient</h3>
+  <div class="gradient-bar"></div>
+  <pre><code>linear-gradient(90deg, #00D0F0 0%, #20B0F0 35%, #2060E0 70%, #3A4FD0 100%)</code></pre>
+  <p>Altijd horizontaal of 45°. Nooit losse vlekken of cirkels — altijd vloeiend verloop.</p>
+
+  <h3>Primair palet</h3>
+  <div class="palette">
+    <div class="chip"><div class="fill" style="background:#00D0F0"></div><div class="meta"><b>Noppa Cyan</b><code>#00D0F0</code></div></div>
+    <div class="chip"><div class="fill" style="background:#20B0F0"></div><div class="meta"><b>Noppa Sky</b><code>#20B0F0</code></div></div>
+    <div class="chip"><div class="fill" style="background:#2060E0"></div><div class="meta"><b>Noppa Royal</b><code>#2060E0</code></div></div>
+    <div class="chip"><div class="fill" style="background:#3A4FD0"></div><div class="meta"><b>Noppa Indigo</b><code>#3A4FD0</code></div></div>
+    <div class="chip"><div class="fill" style="background:#0F2A66"></div><div class="meta"><b>Noppa Navy</b><code>#0F2A66</code></div></div>
+  </div>
+
+  <h3>Neutralen &amp; functioneel</h3>
+  <table>
+    <thead><tr><th>Token</th><th>HEX</th><th>Gebruik</th></tr></thead>
+    <tbody>
+      <tr><td><span class="swatch" style="background:#1A2440"></span>Ink</td><td><code>#1A2440</code></td><td>Bodytekst</td></tr>
+      <tr><td><span class="swatch" style="background:#6B7280"></span>Slate</td><td><code>#6B7280</code></td><td>Captions, secundaire tekst</td></tr>
+      <tr><td><span class="swatch" style="background:#E4E9F2"></span>Mist</td><td><code>#E4E9F2</code></td><td>Dividers, randen</td></tr>
+      <tr><td><span class="swatch" style="background:#F1F5FB"></span>Light</td><td><code>#F1F5FB</code></td><td>Lichte vlakken</td></tr>
+      <tr><td><span class="swatch" style="background:#FFFFFF"></span>White</td><td><code>#FFFFFF</code></td><td>Pagina-achtergrond</td></tr>
+      <tr><td><span class="swatch" style="background:#16A34A"></span>Success</td><td><code>#16A34A</code></td><td>Bevestigingen, "do"</td></tr>
+      <tr><td><span class="swatch" style="background:#E53E3E"></span>Warning</td><td><code>#E53E3E</code></td><td>Waarschuwingen, "don't"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><b>Verhouding 60 · 30 · 10</b> — 60% wit/licht · 30% Royal · 10% Cyan/Sky-accent.</div>
+</section>
+
+<section>
+  <h2>Typografie</h2>
+  <p>Familie: <b>Kentledge</b> (9 gewichten, 100–950, met italics).</p>
+  <pre><code>font-family: 'Kentledge', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;</code></pre>
+
+  <h3>Hiërarchie</h3>
+  <table>
+    <thead><tr><th>Niveau</th><th>Gewicht</th><th>Grootte / Leading</th><th>Kleur</th><th>Notitie</th></tr></thead>
+    <tbody>
+      <tr><td>H1</td><td>Black 900</td><td>36 / 42 pt</td><td>Navy</td><td>letter-spacing −0.02em</td></tr>
+      <tr><td>H2</td><td>Bold 700</td><td>22 / 28 pt</td><td>Navy</td><td>letter-spacing −0.015em</td></tr>
+      <tr><td>H3</td><td>Bold 700</td><td>14 / 20 pt</td><td>Navy</td><td>—</td></tr>
+      <tr><td>Body</td><td>Regular 400</td><td>10.5 / 15 pt</td><td>Ink</td><td>—</td></tr>
+      <tr><td>Caption</td><td>Medium 500</td><td>8.5 / 12 pt</td><td>Slate</td><td>UPPERCASE, +0.16em</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Logo</h2>
+  <table>
+    <thead><tr><th>Variant</th><th>Wanneer</th><th>Bestand</th></tr></thead>
+    <tbody>
+      <tr><td>Primair (kleur)</td><td>Witte of lichte achtergrond</td><td><code>DEF_Logo_Noppa.png</code></td></tr>
+      <tr><td>Wit logo</td><td>Donkere of fotografische achtergrond</td><td><code>DEF_Logo_Noppa_wit.png</code></td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li><b>Witruimte</b> — minimaal de hoogte van de 'o' rondom vrij.</li>
+    <li><b>Minimum</b> — 80 px digitaal, 25 mm print.</li>
+    <li><b>Verhouding</b> — altijd 1:1, nooit vervormen.</li>
+  </ul>
+
+  <div class="do-dont">
+    <div class="do"><b>Do</b><ul>
+      <li>Officiële varianten gebruiken</li>
+      <li>Wit logo op donkere of foto-achtergrond</li>
+      <li>Originele gradient en proporties behouden</li>
+    </ul></div>
+    <div class="dont"><b>Don't</b><ul>
+      <li>Vervormen, roteren of kantelen</li>
+      <li>Herkleuren of eigen kleuren toevoegen</li>
+      <li>Slagschaduw, gloed of andere effecten</li>
+      <li>Drukke of patroon-achtergronden</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Tone of voice</h2>
+  <p><b>Vier richtlijnen:</b> Direct · Menselijk · Concreet · Vooruitkijkend.</p>
+
+  <h3>Wel doen</h3>
+  <div class="quote-positive">"We zetten je team in 4 weken aan de slag met Copilot."</div>
+  <div class="quote-positive">"Eén dashboard. Eén bron van waarheid. Klaar."</div>
+  <div class="quote-positive">"Vraag, antwoord, doen."</div>
+
+  <h3>Niet doen</h3>
+  <div class="quote-negative">"Wij faciliteren een transformatietraject richting AI-paraatheid."</div>
+  <div class="quote-negative">"Een holistische data-integratiebenadering voor stakeholders."</div>
+  <div class="quote-negative">"Het proces betreft een iteratieve cyclus van validatie."</div>
+
+  <p style="margin-top:18px"><em>Schrijf in het Nederlands tenzij de gebruiker expliciet Engels vraagt.</em></p>
+</section>
+
+<section>
+  <h2>Componentpatronen</h2>
+
+  <h3>Briefpapier (A4)</h3>
+  <p>18 mm gradient-balk boven · logo linksboven (70×25 mm) · contactgegevens rechtsboven in Slate 6.5 pt · onderrand 4 pt Royal-balk.</p>
+
+  <h3>Visitekaartje (85 × 55 mm)</h3>
+  <p>Voorzijde: wit met logo, naam in Royal Bold, contactgegevens in Ink. Achterzijde: gradient met wit logo gecentreerd + payoff.</p>
+
+  <h3>Social tile (1080 × 1080)</h3>
+  <p>Vier basistypes: <em>gradient hero</em> · <em>navy met cyan accent</em> · <em>light quote</em> · <em>white CTA</em>.</p>
+
+  <h3>Knoppen &amp; links</h3>
+  <ul>
+    <li><b>Primair</b> — vlak Royal, witte tekst, gewicht 700.</li>
+    <li><b>Accent</b> — vlak Cyan, Navy-tekst.</li>
+    <li><b>Hyperlinks</b> — Royal, hover Navy.</li>
+  </ul>
+
+  <h3>Iconen (24-pack)</h3>
+  <p>48×48 viewBox · gradient stroke (<code>#g</code>) · lichte gradient fill (<code>#gh</code>) · stroke-width 2.4 · ronde line caps.</p>
+  <div class="icon-grid">
+    <div><code>lightning</code></div><div><code>rocket</code></div><div><code>target</code></div>
+    <div><code>checklist</code></div><div><code>calendar</code></div><div><code>clock</code></div>
+    <div><code>gear</code></div><div><code>sparkles</code></div><div><code>brain</code></div>
+    <div><code>cloud</code></div><div><code>dashboard</code></div><div><code>growth</code></div>
+    <div><code>team</code></div><div><code>chat</code></div><div><code>handshake</code></div>
+    <div><code>idea</code></div><div><code>document</code></div><div><code>email</code></div>
+    <div><code>sync</code></div><div><code>link</code></div><div><code>shield</code></div>
+    <div><code>workflow</code></div><div><code>search</code></div><div><code>star</code></div>
+  </div>
+</section>
+
+<section>
+  <h2>Workflow bij merkmateriaal</h2>
+  <ol>
+    <li><b>Identificeer het type</b> (deck, brief, social, icon, e-mail, web).</li>
+    <li><b>Pas de kleuren toe</b> volgens 60·30·10. Gradient alleen voor hero-momenten.</li>
+    <li><b>Kies typografie</b> uit de hiërarchie. Headings altijd Navy.</li>
+    <li><b>Plaats het logo</b> volgens de variant-regel (kleur op licht, wit op donker).</li>
+    <li><b>Schrijf in Noppa-stem</b> — kort, concreet, geen jargon.</li>
+    <li><b>Verifieer</b> payoff en contactgegevens bij extern materiaal.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Bestaande assets</h2>
+  <p>Hergebruik waar mogelijk in plaats van opnieuw bouwen:</p>
+  <ul>
+    <li><code>Noppa_Brand_Guide.pdf</code> + <code>noppa-brand-guide.html</code> (volledige gids)</li>
+    <li><code>brand-guidelines-noppa.md</code> (markdown-referentie)</li>
+    <li><code>Noppa-deck-template.pptx</code> (PowerPoint-template, 10 slides)</li>
+    <li><code>Noppa-briefpapier.docx</code> (Word-briefpapier)</li>
+    <li><code>noppa-icons.zip</code> + <code>noppa-icons/</code> (24 SVG-iconen)</li>
+    <li><code>noppa-social.zip</code> + <code>noppa-social/</code> (social PNG-pack)</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Contact</h2>
+  <div class="meta-block">
+    <b>Noppa Solutions &amp; Consultants</b><br>
+    Pijlkruid 44, 5258 BW Berlicum<br><br>
+    T 06-13 35 77 23<br>
+    E <a href="mailto:rik@noppa.nl">rik@noppa.nl</a><br>
+    W <a href="https://www.noppa.nl">www.noppa.nl</a>
+  </div>
+</section>
+
+<section>
+  <h2>Wanneer NIET te gebruiken</h2>
+  <ul>
+    <li>Materialen voor andere merken (Buro GEKKO, klanten van Noppa, derden).</li>
+    <li>Algemene documenten/decks zonder Noppa-context.</li>
+    <li>Persoonlijke e-mails of berichten van de gebruiker zelf.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>© 2026 Noppa Solutions &amp; Consultants · Brand Guide (Skill-referentie) v1.0</footer>
+</body>
+</html>

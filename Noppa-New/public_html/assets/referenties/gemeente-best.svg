@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" role="img" aria-label="Gemeente Best">
+  <rect width="200" height="60" fill="none"/>
+  <polygon points="28,10 40,18 40,32 28,40 16,32 16,18" fill="#F2B82C"/>
+  <text x="28" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="9" fill="white">BEST</text>
+  <text x="50" y="27" font-family="Arial,sans-serif" font-weight="700" font-size="13" fill="#333">Gemeente</text>
+  <text x="50" y="43" font-family="Arial,sans-serif" font-weight="900" font-size="16" fill="#1A1A1A">Best</text>
+</svg>

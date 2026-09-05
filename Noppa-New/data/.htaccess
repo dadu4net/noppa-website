@@ -1,0 +1,32 @@
+# =========================================================================
+# Buro GEKKO — /data/ is private
+#
+# Deze map bevat telleropslag (dblocker-visits.json) en is uitsluitend
+# bedoeld voor server-side gebruik door /dblocker/index.php en
+# /api/dblocker-count.php. De inhoud mag nooit rechtstreeks via HTTP
+# benaderbaar zijn.
+# =========================================================================
+
+# --- Apache 2.4+ -----------------------------------------------------------
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+# --- Apache 2.2 (legacy fallback) -----------------------------------------
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
+
+# --- Extra vangnet: directory-listing uit en .json expliciet blokkeren -----
+Options -Indexes
+
+<FilesMatch "\.(json|log|txt|bak|old)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
