@@ -6,7 +6,7 @@ define('CONTENT_DIR', __DIR__ . '/content/artikelen/');
 // ── Haal siteURL op uit nav.json ──────────────────────────────
 $navJson  = file_get_contents(__DIR__ . '/nav.json');
 $nav      = json_decode($navJson, true);
-$sitenaam = $nav['sitenaam'] ?? 'Buro GEKKO';
+$sitenaam = $nav['sitenaam'] ?? 'Noppa Solutions & Consultants';
 $siteUrl  = $nav['siteUrl'] ?? (
     (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
     . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')

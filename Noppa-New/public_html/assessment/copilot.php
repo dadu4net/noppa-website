@@ -199,10 +199,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
           <label class="checkbox-row">
             <input type="checkbox" id="lead-consent" required />
-            <span>Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
+            <span>Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
           </label>
 
-          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@burogekko.nl" style="color:var(--geel-donker);font-weight:700;">info@burogekko.nl</a>.</p>
+          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@noppa.nl" style="color:var(--geel-donker);font-weight:700;">info@noppa.nl</a>.</p>
 
           <button type="submit" class="btn btn-geel" id="lead-submit">Ontgrendel mijn rapport →</button>
         </form>
@@ -225,10 +225,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
         <div class="cta-block">
           <h3>Klaar om de volgende stap te zetten?</h3>
-          <p class="hero-sub">Buro GEKKO helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
+          <p class="hero-sub">Noppa Solutions & Consultants helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
           <div class="cta-actions">
             <button class="btn btn-dark" onclick="generatePDF()">📄 Download als PDF</button>
-            <a href="mailto:info@burogekko.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
+            <a href="mailto:info@noppa.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
           </div>
         </div>
       </div>
@@ -272,7 +272,7 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 <section class="hero">
   <a href="index.html" class="nav-back">← Andere assessments</a>
   <div class="container">
-    <div class="hero-eyebrow"><svg width="13" height="13" aria-hidden="true"><use href="#ic-0c40c7"/></svg>Buro GEKKO · Microsoft 365 Consultancy</div><h1>Hoe <em>Copilot-klaar</em> is jullie omgeving?</h1>
+    <div class="hero-eyebrow"><svg width="13" height="13" aria-hidden="true"><use href="#ic-0c40c7"/></svg>Noppa Solutions & Consultants · Microsoft 365 Consultancy</div><h1>Hoe <em>Copilot-klaar</em> is jullie omgeving?</h1>
     <p class="hero-sub">Een diepgaande zelfdiagnose op zes assen: technische fundatie, identity &amp; security, data governance, compliance, adoptie en strategie. Binnen vijftien minuten weet je waar de risico's en versnellers zitten — en wat je eerste vervolgstap zou moeten zijn.</p>
     <div class="hero-meta">
       <span>~15 minuten</span>
@@ -458,10 +458,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
           <label class="checkbox-row">
             <input type="checkbox" id="lead-consent" required />
-            <span>Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
+            <span>Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
           </label>
 
-          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@burogekko.nl" style="color:var(--geel-donker);font-weight:700;">info@burogekko.nl</a>.</p>
+          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@noppa.nl" style="color:var(--geel-donker);font-weight:700;">info@noppa.nl</a>.</p>
 
           <button type="submit" class="btn btn-geel" id="lead-submit">Ontgrendel mijn rapport →</button>
         </form>
@@ -484,10 +484,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
         <div class="cta-block">
           <h3>Klaar om de volgende stap te zetten?</h3>
-          <p class="hero-sub">Buro GEKKO helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
+          <p class="hero-sub">Noppa Solutions & Consultants helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
           <div class="cta-actions">
             <button class="btn btn-dark" onclick="generatePDF()">📄 Download als PDF</button>
-            <a href="mailto:info@burogekko.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
+            <a href="mailto:info@noppa.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
           </div>
         </div>
       </div>
@@ -524,8 +524,8 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
 <footer>
   <div class="container footer-inner">
-    <div><strong>Buro GEKKO</strong> · Microsoft 365 Copilot Readiness Assessment</div>
-    <div><a href="https://www.burogekko.nl">burogekko.nl</a> · 's-Hertogenbosch</div>
+    <div><strong>Noppa Solutions & Consultants</strong> · Microsoft 365 Copilot Readiness Assessment</div>
+    <div><a href="https://www.noppa.nl">noppa.nl</a> · 's-Hertogenbosch</div>
   </div>
 </footer>
 
@@ -740,10 +740,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
           <label class="checkbox-row">
             <input type="checkbox" id="lead-consent" required />
-            <span>Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
+            <span>Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
           </label>
 
-          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@burogekko.nl" style="color:var(--geel-donker);font-weight:700;">info@burogekko.nl</a>.</p>
+          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@noppa.nl" style="color:var(--geel-donker);font-weight:700;">info@noppa.nl</a>.</p>
 
           <button type="submit" class="btn btn-geel" id="lead-submit">Ontgrendel mijn rapport →</button>
         </form>
@@ -766,10 +766,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
         <div class="cta-block">
           <h3>Klaar om de volgende stap te zetten?</h3>
-          <p class="hero-sub">Buro GEKKO helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
+          <p class="hero-sub">Noppa Solutions & Consultants helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
           <div class="cta-actions">
             <button class="btn btn-dark" onclick="generatePDF()">📄 Download als PDF</button>
-            <a href="mailto:info@burogekko.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
+            <a href="mailto:info@noppa.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
           </div>
         </div>
       </div>
@@ -813,7 +813,7 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 <section class="hero">
   <a href="index.html" class="nav-back">← Andere assessments</a>
   <div class="container">
-    <div class="hero-eyebrow"><svg width="13" height="13" aria-hidden="true"><use href="#ic-0c40c7"/></svg>Buro GEKKO · Microsoft 365 Consultancy</div><h1>Hoe <em>Copilot-klaar</em> is jullie omgeving?</h1>
+    <div class="hero-eyebrow"><svg width="13" height="13" aria-hidden="true"><use href="#ic-0c40c7"/></svg>Noppa Solutions & Consultants · Microsoft 365 Consultancy</div><h1>Hoe <em>Copilot-klaar</em> is jullie omgeving?</h1>
     <p class="hero-sub">Een diepgaande zelfdiagnose op zes assen: technische fundatie, identity &amp; security, data governance, compliance, adoptie en strategie. Binnen vijftien minuten weet je waar de risico's en versnellers zitten — en wat je eerste vervolgstap zou moeten zijn.</p>
     <div class="hero-meta">
       <span>~15 minuten</span>
@@ -999,10 +999,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
           <label class="checkbox-row">
             <input type="checkbox" id="lead-consent" required />
-            <span>Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
+            <span>Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
           </label>
 
-          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@burogekko.nl" style="color:var(--geel-donker);font-weight:700;">info@burogekko.nl</a>.</p>
+          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@noppa.nl" style="color:var(--geel-donker);font-weight:700;">info@noppa.nl</a>.</p>
 
           <button type="submit" class="btn btn-geel" id="lead-submit">Ontgrendel mijn rapport →</button>
         </form>
@@ -1025,10 +1025,10 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
         <div class="cta-block">
           <h3>Klaar om de volgende stap te zetten?</h3>
-          <p class="hero-sub">Buro GEKKO helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
+          <p class="hero-sub">Noppa Solutions & Consultants helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.</p>
           <div class="cta-actions">
             <button class="btn btn-dark" onclick="generatePDF()">📄 Download als PDF</button>
-            <a href="mailto:info@burogekko.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
+            <a href="mailto:info@noppa.nl?subject=Copilot%20Readiness%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
           </div>
         </div>
       </div>
@@ -1065,8 +1065,8 @@ session_start(); echo $base; ?>assets/css/assessment.css">
 
 <footer>
   <div class="container footer-inner">
-    <div><strong>Buro GEKKO</strong> · Microsoft 365 Copilot Readiness Assessment</div>
-    <div><a href="https://www.burogekko.nl">burogekko.nl</a> · 's-Hertogenbosch</div>
+    <div><strong>Noppa Solutions & Consultants</strong> · Microsoft 365 Copilot Readiness Assessment</div>
+    <div><a href="https://www.noppa.nl">noppa.nl</a> · 's-Hertogenbosch</div>
   </div>
 </footer>
 

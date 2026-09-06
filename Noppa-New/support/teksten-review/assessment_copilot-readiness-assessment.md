@@ -1,4 +1,4 @@
-﻿- 
+- 
 
 
 
@@ -1225,7 +1225,7 @@ addPageFooter(doc);
 
 // SAVE
 const safeOrg = org.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-const fileName = `BuroGEKKO-CopilotReadiness-${safeOrg}-${new Date().toISOString().split("T")[0]}.pdf`;
+const fileName = `Noppa Solutions & Consultants-CopilotReadiness-${safeOrg}-${new Date().toISOString().split("T")[0]}.pdf`;
 doc.save(fileName);
 }
 

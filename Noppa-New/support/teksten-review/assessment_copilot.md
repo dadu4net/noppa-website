@@ -1,4 +1,4 @@
-﻿- 
+- 
 
 
 
@@ -218,11 +218,11 @@ Telefoonnummer (optioneel)
 
 
 
-Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
+Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
 
 
 
-**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@burogekko.nl.
+**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@noppa.nl.
 
 
 Ontgrendel mijn rapport →
@@ -257,7 +257,7 @@ Geprioriteerde acties op basis van jullie antwoorden — beginnend bij de blokka
 ### Klaar om de volgende stap te zetten?
 
 
-Buro GEKKO helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.
+Noppa Solutions & Consultants helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.
 
 
 📄 Download als PDF
@@ -309,7 +309,7 @@ om de volledige analyse te ontgrendelen
 
 ← Andere assessments
 
-Buro GEKKO · Microsoft 365 Consultancy
+Noppa Solutions & Consultants · Microsoft 365 Consultancy
 
 # Hoe *Copilot-klaar* is jullie omgeving?
 
@@ -542,11 +542,11 @@ Telefoonnummer (optioneel)
 
 
 
-Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
+Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
 
 
 
-**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@burogekko.nl.
+**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@noppa.nl.
 
 
 Ontgrendel mijn rapport →
@@ -581,7 +581,7 @@ Geprioriteerde acties op basis van jullie antwoorden — beginnend bij de blokka
 ### Klaar om de volgende stap te zetten?
 
 
-Buro GEKKO helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.
+Noppa Solutions & Consultants helpt organisaties met de fundatie, het beleid en de adoptie die Copilot écht waardevol maken. Boek een vrijblijvend gesprek of bewaar het rapport voor intern overleg.
 
 
 📄 Download als PDF
@@ -626,8 +626,8 @@ om de volledige analyse te ontgrendelen
 
 
 
-**Buro GEKKO** · Microsoft 365 Copilot Readiness Assessment
-burogekko.nl · 's-Hertogenbosch
+**Noppa Solutions & Consultants** · Microsoft 365 Copilot Readiness Assessment
+noppa.nl · 's-Hertogenbosch
 
 
 

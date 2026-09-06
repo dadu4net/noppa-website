@@ -1,6 +1,6 @@
 # Checklist – Admin Center Configuratie
 
-> **Buro GEKKO** · Deadline: 1 juli  
+> **Noppa Solutions & Consultants** · Deadline: 1 juli  
 > Gebruik deze checklist stap voor stap om Microsoft 365 Copilot correct in te richten.
 
 ---
@@ -74,4 +74,4 @@
 
 ---
 
-*Buro GEKKO · 's-Hertogenbosch · burogekko.nl*
+*Noppa Solutions & Consultants · 's-Hertogenbosch · noppa.nl*

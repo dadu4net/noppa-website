@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "EU AI Act Compliance Assessment — Noppa";
 $pageDesc = "Voer het AI Act assessment uit en ontdek of jouw organisatie voldoet aan de richtlijnen.";
 $base = "../";
@@ -1717,7 +1717,7 @@ function generatePDF() {
   addPageFooter(doc);
 
   const safeOrg = org.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-  const fileName = `BuroGEKKO-AIAct-${safeOrg}-${new Date().toISOString().split("T")[0]}.pdf`;
+  const fileName = `Noppa Solutions & Consultants-AIAct-${safeOrg}-${new Date().toISOString().split("T")[0]}.pdf`;
   doc.save(fileName);
 }
 

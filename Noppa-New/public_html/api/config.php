@@ -2,7 +2,7 @@
 // api/config.php
 
 // ---------------------------------------------------------
-// Buro GEKKO - Assessment API Configuration
+// Noppa Solutions & Consultants - Assessment API Configuration
 // ---------------------------------------------------------
 // WARNING: Do not commit this file with real secrets!
 // Add api/config.php to your .gitignore.
@@ -14,7 +14,7 @@ return [
     'CLIENT_SECRET'=> 'VUL_HIER_JE_CLIENT_SECRET_IN',
     
     // SharePoint Site & List Information
-    // You can get the site ID using Graph Explorer: https://graph.microsoft.com/v1.0/sites/burogekko.sharepoint.com:/sites/Management-Directie
+    // You can get the site ID using Graph Explorer: https://graph.microsoft.com/v1.0/sites/Noppa Solutions & Consultants.sharepoint.com:/sites/Management-Directie
     'SITE_ID'      => 'VUL_HIER_JE_SITE_ID_IN',
     
     // You can get the List ID using Graph Explorer: https://graph.microsoft.com/v1.0/sites/{site-id}/lists
@@ -25,5 +25,5 @@ return [
     'DB_HOST' => 'localhost',
     'DB_USER' => 'root',
     'DB_PASS' => '',
-    'DB_NAME' => 'burogekko_assessments'
+    'DB_NAME' => 'Noppa Solutions & Consultants_assessments'
 ];

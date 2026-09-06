@@ -1,5 +1,5 @@
 ---
-title: Welkom bij de Buro GEKKO Kennisbank
+title: Welkom bij de Noppa Solutions & Consultants Kennisbank
 beschrijving: Een eerste blik op de kennisbank — wat je hier vindt, hoe je een nieuw artikel toevoegt en waarom we deze plek bouwen.
 datum: 2026-05-25
 categorie: Aankondiging
@@ -7,7 +7,7 @@ auteur: Kees Koertshuis
 leestijd: 3 min
 ---
 
-# Welkom bij de Buro GEKKO Kennisbank
+# Welkom bij de Noppa Solutions & Consultants Kennisbank
 
 De kennisbank is onze plek voor **praktische gidsen, how-to's en diepgaande analyses** — geschreven vanuit echte projecten die we bij klanten uitvoeren.
 
@@ -71,4 +71,4 @@ Onderaan elk artikel staat een deel-balk: LinkedIn, X, Instagram, Discord en een
 
 ---
 
-Veel leesplezier. En heb je een onderwerp waar je graag een artikel over zou zien? Stuur het ons via [hallo@burogekko.nl](mailto:hallo@burogekko.nl).
+Veel leesplezier. En heb je een onderwerp waar je graag een artikel over zou zien? Stuur het ons via [hallo@noppa.nl](mailto:hallo@noppa.nl).

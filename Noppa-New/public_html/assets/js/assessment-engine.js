@@ -17,8 +17,8 @@
 */
 const CONFIG = {
   PHP_BACKEND_ENDPOINT: "api/submit.php",
-  MAILTO_FALLBACK: "info@burogekko.nl",
-  COMPANY_NAME: "Buro GEKKO",
+  MAILTO_FALLBACK: "info@noppa.nl",
+  COMPANY_NAME: "Noppa Solutions & Consultants",
   ENABLE_LOCAL_RESUME: true,         // sla voortgang lokaal op zodat invullers kunnen hervatten
   QUEUE_KEY: typeof APP_CONFIG !== "undefined" ? APP_CONFIG.queueKey : "bg_copilot_pending_v1",
   QUEUE_MAX_AGE_DAYS: 30
@@ -390,11 +390,11 @@ async function submitLead(e) {
 
   status.className = "lead-status success";
   if (delivered) {
-    status.innerHTML = `✓ Verzonden! Je rapport is ontgrendeld hieronder. We hebben je gegevens automatisch doorgestuurd naar Buro GEKKO en je ontvangt een kopie op <strong>${lead.email}</strong>.`;
+    status.innerHTML = `✓ Verzonden! Je rapport is ontgrendeld hieronder. We hebben je gegevens automatisch doorgestuurd naar Noppa Solutions & Consultants en je ontvangt een kopie op <strong>${lead.email}</strong>.`;
   } else {
     status.innerHTML =
       `✓ Je rapport is ontgrendeld hieronder. We hebben je inzending <strong>veilig opgeslagen</strong> en versturen deze automatisch zodra de verbinding hersteld is. ` +
-      `Wil je nu zelf een kopie naar Buro GEKKO sturen? ` +
+      `Wil je nu zelf een kopie naar Noppa Solutions & Consultants sturen? ` +
       `<button type="button" class="lead-manual-send" onclick="manualSendLast()" style="margin-left:8px;padding:6px 12px;background:#F2B82C;border:0;border-radius:6px;font-weight:700;cursor:pointer;">Verstuur via mijn mailclient</button>`;
   }
 
@@ -538,7 +538,7 @@ function buildLeadPayload(lead) {
 
     // Meta
     tijdstip: new Date().toISOString(),
-    bron: "${APP_CONFIG.emailSubject} (Buro GEKKO)",
+    bron: "${APP_CONFIG.emailSubject} (Noppa Solutions & Consultants)",
     _subject: `${APP_CONFIG.emailSubject} — ${lead.company} (${overallPct}%, ${tier.label})`
   };
 }
@@ -546,7 +546,7 @@ function buildLeadPayload(lead) {
 function openMailtoFallback(lead, payload) {
   const subject = encodeURIComponent(`${APP_CONFIG.emailSubject} — ${lead.company}`);
   const body = encodeURIComponent(
-`Beste Buro GEKKO,
+`Beste Noppa Solutions & Consultants,
 
 Hierbij mijn ingevulde ${APP_CONFIG.emailSubject}.
 
@@ -600,7 +600,7 @@ function restart() {
 }
 
 /* =========================================================
-   PDF GENERATIE — Buro GEKKO brand guidelines
+   PDF GENERATIE — Noppa Solutions & Consultants brand guidelines
    ========================================================= */
 const PDF_BRAND = {
   geel:        [242, 184, 44],
@@ -615,8 +615,8 @@ const PDF_BRAND = {
 const PDF_META = {
   title: APP_CONFIG.pdfTitle,
   subtitle: APP_CONFIG.pdfSubtitle,
-  product:  "Buro GEKKO · M365 Consultancy",
-  url:      "burogekko.nl"
+  product:  "Noppa Solutions & Consultants · M365 Consultancy",
+  url:      "noppa.nl"
 };
 
 function generatePDF() {
@@ -649,7 +649,7 @@ function generatePDF() {
 
   // Brand mark
   doc.setFont("helvetica", "bold"); doc.setFontSize(12);
-  doc.setTextColor(...B.geel); doc.text("BURO GEKKO", M, 24);
+  doc.setTextColor(...B.geel); doc.text("Noppa Solutions & Consultants", M, 24);
   doc.setFont("helvetica", "normal"); doc.setFontSize(8);
   doc.setTextColor(255, 255, 255); doc.text(PDF_META.product, M, 29);
 
@@ -895,7 +895,7 @@ function generatePDF() {
 
   // SAVE
   const safeOrg = org.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "");
-  const fileName = `BuroGEKKO-${APP_CONFIG.pdfPrefix}-${safeOrg}-${new Date().toISOString().split("T")[0]}.pdf`;
+  const fileName = `Noppa Solutions & Consultants-${APP_CONFIG.pdfPrefix}-${safeOrg}-${new Date().toISOString().split("T")[0]}.pdf`;
   doc.save(fileName);
 }
 
@@ -904,7 +904,7 @@ function drawPageHeader(doc, title) {
   doc.setFillColor(...B.geel); doc.rect(0, 0, W, 3, "F");
   doc.setFont("helvetica", "bold"); doc.setFontSize(8);
   doc.setTextColor(...B.donker);
-  doc.text("BURO GEKKO", M, 13, { charSpace: 1 });
+  doc.text("Noppa Solutions & Consultants", M, 13, { charSpace: 1 });
   doc.setFont("helvetica", "normal"); doc.setFontSize(8);
   doc.setTextColor(...B.grijs);
   doc.text(title, W - M, 13, { align: "right" });

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 error_reporting(0);
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -146,7 +146,7 @@ if ($action === 'paginas') {
 // ── GET ?actie=auteur&slug=rik-dobbelsteen ────────────────────
 // Leest team-profiel uit /output/team/<slug>.html en haalt
 // auteur-metadata op via 'auteur:*' meta-tags. Valt terug op
-// bestaande Buro GEKKO team-page selectors (.profile-name,
+// bestaande Noppa Solutions & Consultants team-page selectors (.profile-name,
 // .profile-role, .body-text) zodat het werkt zonder dat we
 // elke team-pagina hoeven aan te passen.
 } elseif ($action === 'auteur') {
@@ -198,7 +198,7 @@ if ($action === 'paginas') {
         return '';
     };
 
-    // Bouw auteur-object: meta-tag → element fallback (Buro GEKKO team-page selectors)
+    // Bouw auteur-object: meta-tag → element fallback (Noppa Solutions & Consultants team-page selectors)
     $naam    = $meta('auteur:naam')    ?: $meta('author')      ?: $element('.profile-name') ?: $element('#naam')    ?: slugToTitle($slug);
     $functie = $meta('auteur:functie') ?: $meta('job-title')   ?: $element('.profile-role') ?: $element('#functie') ?: '';
     $bio     = $meta('auteur:bio')     ?: $meta('description') ?: $element('.body-text')    ?: $element('#bio')     ?: '';

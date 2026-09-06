@@ -1,6 +1,6 @@
 ---
 title: Gestyled overzicht van al je Copilot Cowork sessies
-beschrijving: Een praktische handleiding van Buro GEKKO
+beschrijving: Een praktische handleiding van Noppa Solutions & Consultants
 datum: 2026-06-02
 categorie: Adoptie
 auteur: Rik Dobbelsteen
@@ -9,7 +9,7 @@ leestijd: 10 min
 
 # Zo bouw je in één prompt een gestyled overzicht van al je Copilot Cowork sessies
 
-*Een praktische handleiding van Buro GEKKO — Microsoft 365 & Copilot adoptie*
+*Een praktische handleiding van Noppa Solutions & Consultants — Microsoft 365 & Copilot adoptie*
 
 ## Waarom je dit wilt
 
@@ -61,9 +61,9 @@ Copilot haalt dan alle submappen (de GUID's) op en telt per sessie de bestanden 
 
 ### Stap 3 — Pas je huisstijl toe
 
-Geef je merkkleuren, font en — als je het hebt — je design guide mee. Voorbeeld voor Buro GEKKO:
+Geef je merkkleuren, font en — als je het hebt — je design guide mee. Voorbeeld voor Noppa Solutions & Consultants:
 
-> *Huisstijl: geel `#F2B82C` / antraciet `#18222B`, Montserrat. Gebruik onze `burogekko-design-guide.md` als referentie.*
+> *Huisstijl: geel `#F2B82C` / antraciet `#18222B`, Montserrat. Gebruik onze `Noppa Solutions & Consultants-design-guide.md` als referentie.*
 
 Hoe concreter je de tokens benoemt, hoe scherper het resultaat. Heb je een design guide in OneDrive? Verwijs er expliciet naar — Copilot leest 'm uit voor exacte kleuren en typografie.
 
@@ -90,7 +90,7 @@ Copilot vergelijkt de huidige OneDrive-staat met het bestaande bestand, voegt ni
 
 ```text
 Maak een overzicht van alle cowork sessies met naam/titel, opdracht en GUID,
-plaats deze in een HTML-bestand met de Buro GEKKO huisstijl.
+plaats deze in een HTML-bestand met de Noppa Solutions & Consultants huisstijl.
 Bron: OneDrive → /Documents/Cowork/sessions/.
 Huisstijl: geel #F2B82C, antraciet #18222B, Montserrat — gebruik onze design guide als referentie.
 Maak de GUID's klikbare hyperlinks naar de OneDrive-folder.
@@ -99,7 +99,7 @@ Maak de GUID's klikbare hyperlinks naar de OneDrive-folder.
 Voor een ander type overzicht (zelfde recept, andere inhoud):
 
 ```text
-Bouw een overzicht van [onderwerp] in HTML met de Buro GEKKO huisstijl
+Bouw een overzicht van [onderwerp] in HTML met de Noppa Solutions & Consultants huisstijl
 (geel #F2B82C, antraciet #18222B, Montserrat).
 Gebruik onze design guide als referentie.
 ```
@@ -156,5 +156,5 @@ Eén zelfstandig HTML-document — geen externe afhankelijkheden behalve een Goo
 
 ---
 
-**Buro GEKKO B.V.** — Microsoft 365 & Copilot adoptie
-[burogekko.nl](https://www.burogekko.nl/)
+**Noppa Solutions & Consultants B.V.** — Microsoft 365 & Copilot adoptie
+[noppa.nl](https://www.noppa.nl/)

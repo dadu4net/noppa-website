@@ -1,5 +1,5 @@
 /* =========================================================================
- * Buro GEKKO — site.js
+ * Noppa Solutions & Consultants — site.js
  * Centralised partial loader + nav behaviour.
  *
  *  - Injects assets/partials/nav.html into <div data-include="nav"></div>

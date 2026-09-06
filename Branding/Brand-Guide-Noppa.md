@@ -122,6 +122,6 @@ Hergebruik deze waar mogelijk in plaats van opnieuw bouwen.
 
 ## Wanneer NIET te gebruiken
 
-- Materialen voor andere merken (Buro GEKKO, klanten van Noppa, derden).
+- Materialen voor andere merken (Noppa Solutions & Consultants, klanten van Noppa, derden).
 - Algemene documenten/decks zonder Noppa-context.
 - Persoonlijke e-mails of berichten van de gebruiker zelf.

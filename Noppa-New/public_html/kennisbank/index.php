@@ -16,13 +16,16 @@ include $base . "partials/nav.php";
 <div class="modal-backdrop" id="discordModal">
   <div class="modal">
     <h3>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865f2" style="display:inline;vertical-align:middle;margin-right:8px" aria-hidden="true">
-        <path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865f2"
+        style="display:inline;vertical-align:middle;margin-right:8px" aria-hidden="true">
+        <path
+          d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z" />
       </svg>
       Delen via Discord
     </h3>
-    <p>Vul een Discord Webhook-URL in en pas het bericht aan. Je vindt de webhook via <strong>Serverinstellingen â†’ Integraties â†’ Webhooks</strong>.</p>
-    <input type="url" class="modal-input" id="discordWebhook" placeholder="https://discord.com/api/webhooks/..."/>
+    <p>Vul een Discord Webhook-URL in en pas het bericht aan. Je vindt de webhook via <strong>Serverinstellingen â†’
+        Integraties â†’ Webhooks</strong>.</p>
+    <input type="url" class="modal-input" id="discordWebhook" placeholder="https://discord.com/api/webhooks/..." />
     <textarea class="modal-textarea" id="discordBericht"></textarea>
     <div class="modal-actions">
       <button class="modal-close" onclick="sluitModal('discordModal')">Annuleren</button>
@@ -35,26 +38,34 @@ include $base . "partials/nav.php";
 <div class="modal-backdrop" id="instaModal">
   <div class="modal">
     <h3>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="url(#ig)" style="display:inline;vertical-align:middle;margin-right:8px" aria-hidden="true">
-        <defs><linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f58529"/><stop offset="50%" stop-color="#dd2a7b"/><stop offset="100%" stop-color="#8134af"/></linearGradient></defs>
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="url(#ig)"
+        style="display:inline;vertical-align:middle;margin-right:8px" aria-hidden="true">
+        <defs>
+          <linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#f58529" />
+            <stop offset="50%" stop-color="#dd2a7b" />
+            <stop offset="100%" stop-color="#8134af" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
       </svg>
       Delen via Instagram
     </h3>
-    <p>Instagram heeft geen directe deellink. Kopieer de tekst hieronder en open Instagram handmatig om een post of story te maken.</p>
+    <p>Instagram heeft geen directe deellink. Kopieer de tekst hieronder en open Instagram handmatig om een post of
+      story te maken.</p>
     <div class="insta-copy-box" id="instaTekst"></div>
     <div class="modal-actions">
       <button class="modal-close" onclick="sluitModal('instaModal')">Sluiten</button>
-      <button class="modal-send" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af)" onclick="kopieerInsta()">Kopieer tekst</button>
+      <button class="modal-send" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af)"
+        onclick="kopieerInsta()">Kopieer tekst</button>
     </div>
   </div>
 </div>
 
 
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     PAGINA BODY
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- PAGINA BODY -->
 <div class="page-wrap">
   <div class="page-body" id="pageBody">
     <div class="hero">
@@ -81,25 +92,25 @@ include $base . "partials/nav.php";
   let huidigType = null;
   let huidigArtikel = null;
 
-  // â”€â”€ API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //API
   const API = {
-    config:    ()     => fetch('nav.json').then(r => r.json()),
-    pagina:    (slug) => fetch(`api.php?actie=pagina&slug=${enc(slug)}`).then(ok),
-    artikelen: (cat)  => fetch(`api.php?actie=artikelen${cat?'&categorie='+enc(cat):''}`).then(ok),
-    artikel:   (slug) => fetch(`api.php?actie=artikel&slug=${enc(slug)}`).then(ok),
-    auteur:    (slug) => fetch(`api.php?actie=auteur&slug=${enc(slug)}`).then(ok),
+    config: () => fetch('nav.json').then(r => r.json()),
+    pagina: (slug) => fetch(`api.php?actie=pagina&slug=${enc(slug)}`).then(ok),
+    artikelen: (cat) => fetch(`api.php?actie=artikelen${cat ? '&categorie=' + enc(cat) : ''}`).then(ok),
+    artikel: (slug) => fetch(`api.php?actie=artikel&slug=${enc(slug)}`).then(ok),
+    auteur: (slug) => fetch(`api.php?actie=auteur&slug=${enc(slug)}`).then(ok),
   };
   const enc = encodeURIComponent;
-  const ok  = r => { if (!r.ok) throw new Error('Niet gevonden'); return r.json(); };
+  const ok = r => { if (!r.ok) throw new Error('Niet gevonden'); return r.json(); };
 
-  // â”€â”€ Hash routing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Hash routing 
   function parseHash() {
     const h = window.location.hash.replace(/^#\//, '');
     if (!h) return { type: 'overzicht', slug: null };
     const [type, slug] = h.split('/');
-    if (type === 'artikelen' && !slug)  return { type: 'overzicht', slug: null };
-    if (type === 'artikel'   &&  slug)  return { type: 'artikel',   slug };
-    if (type === 'pagina'    &&  slug)  return { type: 'pagina',    slug };
+    if (type === 'artikelen' && !slug) return { type: 'overzicht', slug: null };
+    if (type === 'artikel' && slug) return { type: 'artikel', slug };
+    if (type === 'pagina' && slug) return { type: 'pagina', slug };
     return { type: 'overzicht', slug: null };
   }
 
@@ -108,17 +119,17 @@ include $base . "partials/nav.php";
   async function routeer() {
     const { type, slug } = parseHash();
     huidigType = type; huidigSlug = slug;
-    if      (type === 'overzicht') await laadArtikelenOverzicht();
-    else if (type === 'artikel')   await laadArtikel(slug);
-    else                           await laadPagina(slug);
+    if (type === 'overzicht') await laadArtikelenOverzicht();
+    else if (type === 'artikel') await laadArtikel(slug);
+    else await laadPagina(slug);
   }
 
-  // â”€â”€ Bootstrap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  Bootstrap â”€
   async function init() {
     try {
       cfg = await API.config();
       await routeer();
-    } catch(e) { toonFout('Initialisatie mislukt: ' + e.message); }
+    } catch (e) { toonFout('Initialisatie mislukt: ' + e.message); }
   }
 
   // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -128,24 +139,24 @@ include $base . "partials/nav.php";
   async function laadPagina(slug) {
     toonSkeleton();
     try { renderPagina(await API.pagina(slug)); }
-    catch(e) { toonFout(e.message); }
+    catch (e) { toonFout(e.message); }
   }
 
   function renderPagina({ slug, title, meta, markdown }) {
-    const body  = markdown.replace(/^#\s+.+\n?/m, '').trim();
+    const body = markdown.replace(/^#\s+.+\n?/m, '').trim();
     const datum = meta.datum || meta.date || null;
-    const sub   = meta.beschrijving || meta.description || '';
+    const sub = meta.beschrijving || meta.description || '';
     document.title = `${title} — ${cfg?.sitenaam || 'Noppa'}`;
     document.getElementById('pageBody').innerHTML = `
       <section class="hero fade-in">
         <div class="container" style="position:relative;z-index:2">
-          ${datum?`<div class="breadcrumb"><span>Bijgewerkt:</span><span>${datum}</span></div>`:''}
+          ${datum ? `<div class="breadcrumb"><span>Bijgewerkt:</span><span>${datum}</span></div>` : ''}
           <div class="hero-eyebrow">
             <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><circle cx="5" cy="5" r="5"/></svg>
             ${slug}
           </div>
           <h1>${title}</h1>
-          ${sub?`<p class="hero-sub">${sub}</p>`:''}
+          ${sub ? `<p class="hero-sub">${sub}</p>` : ''}
         </div>
         ${heroRings()}
       </section>
@@ -154,7 +165,7 @@ include $base . "partials/nav.php";
           ${marked.parse(body)}
         </div>
       </section>`;
-    scrollTo({top:0,behavior:'smooth'});
+    scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -166,7 +177,7 @@ include $base . "partials/nav.php";
     if (cat !== undefined) actieveCat = cat;
     toonArtikelenSkeleton();
     try { renderArtikelenOverzicht(await API.artikelen(actieveCat)); }
-    catch(e) { toonFout(e.message); }
+    catch (e) { toonFout(e.message); }
   }
 
   function renderArtikelenOverzicht(artikelen) {
@@ -192,17 +203,17 @@ include $base . "partials/nav.php";
       <section style="padding:0 0 80px">
         <div class="container">
           <div class="filter-bar">
-            <button class="filter-tab ${!actieveCat?'actief':''}" onclick="filterArtikel('')">Alle artikelen</button>
-            ${cats.map(c=>`<button class="filter-tab ${actieveCat===c?'actief':''}" onclick="filterArtikel('${c}')">${c}</button>`).join('')}
+            <button class="filter-tab ${!actieveCat ? 'actief' : ''}" onclick="filterArtikel('')">Alle artikelen</button>
+            ${cats.map(c => `<button class="filter-tab ${actieveCat === c ? 'actief' : ''}" onclick="filterArtikel('${c}')">${c}</button>`).join('')}
           </div>
           <div class="artikelen-grid">
             ${artikelen.length === 0
-              ? `<div class="leeg-state">Geen artikelen gevonden.</div>`
-              : artikelen.map(a => kaartHTML(a)).join('')}
+        ? `<div class="leeg-state">Geen artikelen gevonden.</div>`
+        : artikelen.map(a => kaartHTML(a)).join('')}
           </div>
         </div>
       </section>`;
-    scrollTo({top:0,behavior:'smooth'});
+    scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function kaartHTML(a) {
@@ -234,24 +245,24 @@ include $base . "partials/nav.php";
   async function laadArtikel(slug) {
     toonSkeleton();
     try { renderArtikel(await API.artikel(slug)); }
-    catch(e) { toonFout(e.message); }
+    catch (e) { toonFout(e.message); }
   }
 
   function renderArtikel(d) {
     huidigArtikel = d;
     const body = d.markdown.replace(/^#\s+.+\n?/m, '').trim();
-    document.title = `${d.title} — ${cfg?.sitenaam||'Noppa'}`;
-    const baseUrl    = cfg?.siteUrl || window.location.origin;
+    document.title = `${d.title} — ${cfg?.sitenaam || 'Noppa'}`;
+    const baseUrl = cfg?.siteUrl || window.location.origin;
     const artikelUrl = `${baseUrl}/kennisbank/#/artikel/${d.slug}`;
 
-    // â”€â”€ Parse koppen voor TOC â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    //  Parse koppen voor TOC 
     const kopRegex = /^(#{2,3})\s+(.+)$/gm;
     const koppen = [];
     let match;
     while ((match = kopRegex.exec(body)) !== null) {
       const niveau = match[1].length;
-      const tekst  = match[2].trim();
-      const id     = 'kop-' + tekst
+      const tekst = match[2].trim();
+      const id = 'kop-' + tekst
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
         .trim()
@@ -261,8 +272,8 @@ include $base . "partials/nav.php";
 
     let html = marked.parse(body);
     koppen.forEach(k => {
-      const tag   = `h${k.niveau}`;
-      const esc   = k.tekst.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const tag = `h${k.niveau}`;
+      const esc = k.tekst.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const regex = new RegExp(`<${tag}>([^<]*${esc}[^<]*)<\/${tag}>`, 'i');
       html = html.replace(regex, `<${tag} id="${k.id}">$1</${tag}>`);
     });
@@ -290,8 +301,8 @@ include $base . "partials/nav.php";
           <h1>${d.title}</h1>
           ${d.beschrijving ? `<p class="hero-sub">${d.beschrijving}</p>` : ''}
           <div class="hero-meta">
-            ${d.datum    ? `<span>${formatDatum(d.datum)}</span>` : ''}
-            ${d.auteur   ? `<span style="margin:0 10px">Â·</span><span>Door ${d.auteur}</span>` : ''}
+            ${d.datum ? `<span>${formatDatum(d.datum)}</span>` : ''}
+            ${d.auteur ? `<span style="margin:0 10px">Â·</span><span>Door ${d.auteur}</span>` : ''}
             ${d.leestijd ? `<span style="margin:0 10px">Â·</span><span>${d.leestijd}</span>` : ''}
           </div>
         </div>
@@ -307,7 +318,7 @@ include $base . "partials/nav.php";
             ${html}
 
             <div class="artikel-meta-box">
-              <strong>Gepubliceerd:</strong> ${formatDatum(d.datum)||'onbekend'}
+              <strong>Gepubliceerd:</strong> ${formatDatum(d.datum) || 'onbekend'}
               ${d.auteur ? ` &nbsp;Â·&nbsp; <strong>Auteur:</strong> ${d.auteur}` : ''}
             </div>
 
@@ -356,7 +367,7 @@ include $base . "partials/nav.php";
               Discord
             </button>
 
-            <button class="deel-btn kopieer" onclick="kopieerLink('${artikelUrl.replace(/'/g,"\\'")}')">
+            <button class="deel-btn kopieer" onclick="kopieerLink('${artikelUrl.replace(/'/g, "\\'")}')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
@@ -379,7 +390,7 @@ include $base . "partials/nav.php";
         </div><!-- /artikel-layout -->
       </div><!-- /artikel-prose -->`;
 
-    scrollTo({top:0,behavior:'smooth'});
+    scrollTo({ top: 0, behavior: 'smooth' });
 
     if (d.auteur) {
       const auteurSlug = naamNaarSlug(d.auteur);
@@ -454,13 +465,13 @@ include $base . "partials/nav.php";
           <span class="auteur-label">Over de auteur</span>
           <div class="auteur-naam">${a.naam}</div>
           ${a.functie ? `<div class="auteur-functie">${a.functie}</div>` : ''}
-          ${a.bio     ? `<p class="auteur-bio">${a.bio}</p>` : ''}
+          ${a.bio ? `<p class="auteur-bio">${a.bio}</p>` : ''}
           ${socialsHTML ? `<div class="auteur-socials">${socialsHTML}</div>` : ''}
         </div>
       </div>`;
   }
 
-  // â”€â”€ TOC scroll naar kop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  TOC scroll naar kop 
   function scrollNaarKop(e, id) {
     e.preventDefault();
     const el = document.getElementById(id);
@@ -474,8 +485,8 @@ include $base . "partials/nav.php";
     const progressEl = document.getElementById('tocProgress');
 
     function updateProgress() {
-      const doc  = document.documentElement;
-      const pct  = (window.scrollY / (doc.scrollHeight - doc.clientHeight)) * 100;
+      const doc = document.documentElement;
+      const pct = (window.scrollY / (doc.scrollHeight - doc.clientHeight)) * 100;
       if (progressEl) progressEl.style.width = Math.min(pct, 100) + '%';
     }
     window.addEventListener('scroll', updateProgress, { passive: true });
@@ -493,8 +504,8 @@ include $base . "partials/nav.php";
           tocItem.classList.add('actief');
           const sidebar = document.getElementById('tocSidebar');
           if (sidebar) {
-            const itemTop  = tocItem.offsetTop - sidebar.offsetTop;
-            const visible  = sidebar.scrollTop + sidebar.clientHeight;
+            const itemTop = tocItem.offsetTop - sidebar.offsetTop;
+            const visible = sidebar.scrollTop + sidebar.clientHeight;
             if (itemTop < sidebar.scrollTop || itemTop > visible - 40) {
               sidebar.scrollTo({ top: itemTop - 60, behavior: 'smooth' });
             }
@@ -526,10 +537,10 @@ include $base . "partials/nav.php";
 
   function openInstaModal() {
     if (!huidigArtikel) return;
-    const d   = huidigArtikel;
+    const d = huidigArtikel;
     const baseUrl = cfg?.siteUrl || window.location.origin;
     const url = `${baseUrl}/kennisbank/#/artikel/${d.slug}`;
-    const tekst = `ðŸ“– ${d.title}\n\n${d.beschrijving || ''}\n\nðŸ”— ${url}\n\n${d.categorie ? '#' + d.categorie.replace(/\s+/g,'') + ' ' : ''}#noppa`;
+    const tekst = `ðŸ“– ${d.title}\n\n${d.beschrijving || ''}\n\nðŸ”— ${url}\n\n${d.categorie ? '#' + d.categorie.replace(/\s+/g, '') + ' ' : ''}#noppa`;
     document.getElementById('instaTekst').textContent = tekst;
     document.getElementById('instaModal').classList.add('open');
   }
@@ -543,7 +554,7 @@ include $base . "partials/nav.php";
 
   function openDiscordModal() {
     if (!huidigArtikel) return;
-    const d   = huidigArtikel;
+    const d = huidigArtikel;
     const baseUrl = cfg?.siteUrl || window.location.origin;
     const url = `${baseUrl}/kennisbank/#/artikel/${d.slug}`;
     const bericht = `**${d.title}**\n${d.beschrijving || ''}\n\nðŸ”— ${url}`;
@@ -554,9 +565,9 @@ include $base . "partials/nav.php";
   }
 
   async function verzendDiscord() {
-    const webhook  = document.getElementById('discordWebhook').value.trim();
-    const bericht  = document.getElementById('discordBericht').value.trim();
-    const knop     = document.getElementById('discordVerzend');
+    const webhook = document.getElementById('discordWebhook').value.trim();
+    const bericht = document.getElementById('discordBericht').value.trim();
+    const knop = document.getElementById('discordVerzend');
 
     if (!webhook) { toonToast('âš  Vul een webhook-URL in'); return; }
     if (!webhook.startsWith('https://discord.com/api/webhooks/')) {
@@ -580,7 +591,7 @@ include $base . "partials/nav.php";
       } else {
         toonToast('âœ— Fout: ' + res.status + ' — controleer de webhook-URL');
       }
-    } catch(e) {
+    } catch (e) {
       toonToast('âœ— Versturen mislukt: ' + e.message);
     } finally {
       knop.disabled = false;
@@ -603,14 +614,14 @@ include $base . "partials/nav.php";
     t._timer = setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  Helpers
   function heroRings() {
     return ``;
   }
 
   function formatDatum(d) {
     if (!d) return '';
-    try { return new Date(d).toLocaleDateString('nl-NL', {day:'numeric',month:'long',year:'numeric'}); }
+    try { return new Date(d).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }); }
     catch { return d; }
   }
 
@@ -624,7 +635,7 @@ include $base . "partials/nav.php";
         </div>
       </div>
       <div class="container-narrow" style="padding-top:52px">
-        ${[100,88,94,82,90,76,85].map(w=>`<div class="skel" style="width:${w}%;height:13px;margin-bottom:14px"></div>`).join('')}
+        ${[100, 88, 94, 82, 90, 76, 85].map(w => `<div class="skel" style="width:${w}%;height:13px;margin-bottom:14px"></div>`).join('')}
       </div>`;
   }
 
@@ -639,10 +650,10 @@ include $base . "partials/nav.php";
       </div>
       <div class="container" style="padding-top:48px">
         <div style="display:flex;gap:8px;margin-bottom:40px">
-          ${[80,90,70,95].map(w=>`<div class="skel" style="width:${w}px;height:34px;border-radius:100px"></div>`).join('')}
+          ${[80, 90, 70, 95].map(w => `<div class="skel" style="width:${w}px;height:34px;border-radius:100px"></div>`).join('')}
         </div>
         <div class="artikelen-grid">
-          ${[1,2,3].map(()=>`<div class="skel-kaart">
+          ${[1, 2, 3].map(() => `<div class="skel-kaart">
             <div class="skel" style="width:60%;height:12px"></div>
             <div class="skel" style="width:90%;height:20px;margin-top:4px"></div>
             <div class="skel" style="width:100%;height:12px;margin-top:8px"></div>
@@ -665,6 +676,3 @@ include $base . "partials/nav.php";
 
 
 <?php include $base . "partials/footer.php"; ?>
-
-
-

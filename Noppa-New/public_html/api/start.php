@@ -1,11 +1,11 @@
 <?php
 // api/start.php
 header('Content-Type: application/json');
-$allowed_origins = ['https://burogekko.nl', 'https://www.burogekko.nl', 'https://web0165.zxcs-klant.nl'];
+$allowed_origins = ['https://noppa.nl', 'https://www.noppa.nl', 'https://web0165.zxcs-klant.nl'];
 if (isset(header('Access-Control-Allow-Origin: *'); // TODO: set to specific domainSERVER['HTTP_ORIGIN']) && in_array(header('Access-Control-Allow-Origin: *'); // TODO: set to specific domainSERVER['HTTP_ORIGIN'], $allowed_origins)) {
     header('Access-Control-Allow-Origin: ' . header('Access-Control-Allow-Origin: *'); // TODO: set to specific domainSERVER['HTTP_ORIGIN']);
 } else {
-    header('Access-Control-Allow-Origin: https://burogekko.nl');
+    header('Access-Control-Allow-Origin: https://noppa.nl');
 }
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -31,7 +31,7 @@ if (!$data) {
 }
 
 require_once __DIR__ . '/send_email.php';
-$to = "info@burogekko.nl";
+$to = "info@noppa.nl";
 $subject = "Nieuwe start assessment: " . ($data['bedrijf'] ?? 'Onbekend');
 $message = "Er is zojuist iemand gestart met een assessment.\n\n";
 $message .= "Assessment: " . ($data['assessment_type'] ?? 'Onbekend') . "\n";

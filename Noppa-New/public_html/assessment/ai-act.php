@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $pageTitle = "EU AI Act Assessment";
 $pageDesc = "Checklist voor conformiteit & risicobeheer rondom de AI Act.";
 $base = "../";
@@ -188,10 +188,10 @@ include $base . "partials/nav.php";
 
           <label class="checkbox-row">
             <input type="checkbox" id="lead-consent" required />
-            <span>Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
+            <span>Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
           </label>
 
-          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@burogekko.nl" style="color:var(--geel-donker);font-weight:700;">info@burogekko.nl</a>.</p>
+          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@noppa.nl" style="color:var(--geel-donker);font-weight:700;">info@noppa.nl</a>.</p>
 
           <button type="submit" class="btn btn-geel" id="lead-submit">Ontgrendel mijn rapport →</button>
         </form>
@@ -218,10 +218,10 @@ include $base . "partials/nav.php";
 
         <div class="cta-block">
           <h3>Klaar voor een grondige compliance-review?</h3>
-          <p class="hero-sub">Buro GEKKO helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.</p>
+          <p class="hero-sub">Noppa Solutions & Consultants helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.</p>
           <div class="cta-actions">
             <button class="btn btn-dark" onclick="generatePDF()">📄 Download als PDF</button>
-            <a href="mailto:info@burogekko.nl?subject=AI%20Act%20Compliance%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
+            <a href="mailto:info@noppa.nl?subject=AI%20Act%20Compliance%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
           </div>
         </div>
       </div>
@@ -263,7 +263,7 @@ include $base . "partials/nav.php";
 <section class="hero">
   <a href="index.html" class="nav-back">← Andere assessments</a>
   <div class="container">
-    <div class="hero-eyebrow"><svg width="13" height="13" aria-hidden="true"><use href="#ic-0c40c7"/></svg>Buro GEKKO · EU AI Act Compliance</div><h1>Voldoet jullie organisatie aan de <em>EU AI Act</em>?</h1>
+    <div class="hero-eyebrow"><svg width="13" height="13" aria-hidden="true"><use href="#ic-0c40c7"/></svg>Noppa Solutions & Consultants · EU AI Act Compliance</div><h1>Voldoet jullie organisatie aan de <em>EU AI Act</em>?</h1>
     <p class="hero-sub">De AI Act is sinds 1 augustus 2024 in werking. AI-geletterdheid (artikel 4) geldt al sinds 2 februari 2025 — verplicht voor iedereen die met AI werkt. Met dit assessment krijg je binnen 15 minuten een eerlijk beeld van jullie compliance-status en de prioriteiten richting de volgende handhavingsmijlpalen.</p>
     <div class="hero-meta">
       <span>~15 minuten</span>
@@ -452,10 +452,10 @@ include $base . "partials/nav.php";
 
           <label class="checkbox-row">
             <input type="checkbox" id="lead-consent" required />
-            <span>Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
+            <span>Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.</span>
           </label>
 
-          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@burogekko.nl" style="color:var(--geel-donker);font-weight:700;">info@burogekko.nl</a>.</p>
+          <p class="lead-privacy"><strong>Privacy:</strong> jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail <a href="mailto:info@noppa.nl" style="color:var(--geel-donker);font-weight:700;">info@noppa.nl</a>.</p>
 
           <button type="submit" class="btn btn-geel" id="lead-submit">Ontgrendel mijn rapport →</button>
         </form>
@@ -482,10 +482,10 @@ include $base . "partials/nav.php";
 
         <div class="cta-block">
           <h3>Klaar voor een grondige compliance-review?</h3>
-          <p class="hero-sub">Buro GEKKO helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.</p>
+          <p class="hero-sub">Noppa Solutions & Consultants helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.</p>
           <div class="cta-actions">
             <button class="btn btn-dark" onclick="generatePDF()">📄 Download als PDF</button>
-            <a href="mailto:info@burogekko.nl?subject=AI%20Act%20Compliance%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
+            <a href="mailto:info@noppa.nl?subject=AI%20Act%20Compliance%20—%20vervolggesprek" class="btn btn-geel">Plan een gesprek →</a>
           </div>
         </div>
       </div>
@@ -520,8 +520,8 @@ include $base . "partials/nav.php";
 
 <footer>
   <div class="container footer-inner">
-    <div><strong>Buro GEKKO</strong> · EU AI Act Compliance Assessment</div>
-    <div><a href="https://www.burogekko.nl">burogekko.nl</a> · 's-Hertogenbosch</div>
+    <div><strong>Noppa Solutions & Consultants</strong> · EU AI Act Compliance Assessment</div>
+    <div><a href="https://www.noppa.nl">noppa.nl</a> · 's-Hertogenbosch</div>
   </div>
 </footer>
 

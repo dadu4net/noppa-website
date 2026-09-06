@@ -1,4 +1,4 @@
-﻿- 
+- 
 
 
 
@@ -228,11 +228,11 @@ Telefoonnummer (optioneel)
 
 
 
-Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
+Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
 
 
 
-**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@burogekko.nl.
+**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@noppa.nl.
 
 
 Ontgrendel mijn rapport →
@@ -271,7 +271,7 @@ Geprioriteerde acties op basis van handhavingsmijlpalen en risico. Hoge priorite
 ### Klaar voor een grondige compliance-review?
 
 
-Buro GEKKO helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.
+Noppa Solutions & Consultants helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.
 
 
 📄 Download als PDF
@@ -319,7 +319,7 @@ om de volledige analyse te ontgrendelen
 
 ← Andere assessments
 
-Buro GEKKO · EU AI Act Compliance
+Noppa Solutions & Consultants · EU AI Act Compliance
 
 # Voldoet jullie organisatie aan de *EU AI Act*?
 
@@ -562,11 +562,11 @@ Telefoonnummer (optioneel)
 
 
 
-Ja, ik ga akkoord dat Buro GEKKO mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
+Ja, ik ga akkoord dat Noppa Solutions & Consultants mijn gegevens gebruikt om mij dit rapport toe te sturen en eventueel contact op te nemen voor een vervolggesprek.
 
 
 
-**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@burogekko.nl.
+**Privacy:** jouw gegevens worden uitsluitend gebruikt voor de opvolging van dit assessment. Geen nieuwsbrieven, geen verkoop aan derden. Inzage of verwijdering? Mail info@noppa.nl.
 
 
 Ontgrendel mijn rapport →
@@ -605,7 +605,7 @@ Geprioriteerde acties op basis van handhavingsmijlpalen en risico. Hoge priorite
 ### Klaar voor een grondige compliance-review?
 
 
-Buro GEKKO helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.
+Noppa Solutions & Consultants helpt organisaties met AI-governance, AI-literacy programma's, DPIA/FRIA en het inrichten van duurzame compliance — toegespitst op Microsoft 365 Copilot en bredere AI-portfolio's.
 
 
 📄 Download als PDF
@@ -646,8 +646,8 @@ om de volledige analyse te ontgrendelen
 
 
 
-**Buro GEKKO** · EU AI Act Compliance Assessment
-burogekko.nl · 's-Hertogenbosch
+**Noppa Solutions & Consultants** · EU AI Act Compliance Assessment
+noppa.nl · 's-Hertogenbosch
 
 
 

@@ -49,8 +49,8 @@ Power Automate-flows die handwerk vervangen door werkende processen. Vanaf week 
 ### 2014 — heden | M365 Specialist & Ai-consultant | Noppa Solutions & Consultants
 Acht jaar gewerkt aan diverse Microsoft 365-implementaties, SharePoint-architectuur en adoptietrajecten. De basis gelegd voor de hands-on aanpak die Noppa vandaag uniek maakt.
 
-### 2022 — 2026 | Senior consultant & oprichter/bedenker | Buro Gekko
-Bedenker en mede-oprichter van Buro Gekko. Focus op M365-adoptie, Copilot-implementaties en data-gedreven werken voor MKB en zakelijke dienstverlening. Praktische trajecten van 4–8 weken met meetbaar resultaat.
+### 2022 — 2026 | Senior consultant & oprichter/bedenker | Noppa Solutions & Consultants
+Bedenker en mede-oprichter van Noppa Solutions & Consultants. Focus op M365-adoptie, Copilot-implementaties en data-gedreven werken voor MKB en zakelijke dienstverlening. Praktische trajecten van 4–8 weken met meetbaar resultaat.
 
 ### 2015 — 2018 | Consultant | Salves Business Productivity
 Als adoptie, functioneel en technisch consultant ingezet voor langdurige trajecten bij groter en middel grote organisaties.

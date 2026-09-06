@@ -1,11 +1,11 @@
 <?php
 // api/submit.php
 header('Content-Type: application/json');
-$allowed_origins = ['https://burogekko.nl', 'https://www.burogekko.nl', 'https://web0165.zxcs-klant.nl'];
+$allowed_origins = ['https://noppa.nl', 'https://www.noppa.nl', 'https://web0165.zxcs-klant.nl'];
 if (isset(header('Access-Control-Allow-Origin: *'); // Pas dit later aan naar het specifieke domeinSERVER['HTTP_ORIGIN']) && in_array(header('Access-Control-Allow-Origin: *'); // Pas dit later aan naar het specifieke domeinSERVER['HTTP_ORIGIN'], $allowed_origins)) {
     header('Access-Control-Allow-Origin: ' . header('Access-Control-Allow-Origin: *'); // Pas dit later aan naar het specifieke domeinSERVER['HTTP_ORIGIN']);
 } else {
-    header('Access-Control-Allow-Origin: https://burogekko.nl');
+    header('Access-Control-Allow-Origin: https://noppa.nl');
 }
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
@@ -128,9 +128,9 @@ if ($graphStatusCode === 201) {
     echo json_encode(['success' => false, 'error' => 'Failed to write to SharePoint', 'details' => json_decode($graphResponse, true)]);
 }
 
-// --- 3. Send email to info@burogekko.nl ---
+// --- 3. Send email to info@noppa.nl ---
 require_once __DIR__ . '/send_email.php';
-$to = 'info@burogekko.nl';
+$to = 'info@noppa.nl';
 $subject = 'Voltooid assessment: ' . $fields['Title'];
 $message = "Een assessment is voltooid!\n\n";
 foreach ($fields as $key => $value) {

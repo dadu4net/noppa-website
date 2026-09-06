@@ -1,4 +1,4 @@
-# robots.txt — burogekko.nl
+# robots.txt — noppa.nl
 # Gegenereerd: mei 2026
 
 User-agent: *
@@ -9,7 +9,7 @@ Disallow: /assets/referenties/
 Disallow: /assets/images/grasso-header.png
 
 # Sitemap
-Sitemap: https://www.burogekko.nl/sitemap.xml
+Sitemap: https://www.noppa.nl/sitemap.xml
 
 # Crawl-vertraging voor minder bekende bots
 User-agent: Baiduspider
