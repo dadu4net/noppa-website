@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Dynamische SEO variabelen
 $siteName = "Noppa Solutions & Consultants";
 $title = !empty($pageTitle) ? $pageTitle . " | " . $siteName : $siteName;

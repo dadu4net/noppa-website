@@ -1,1 +1,226 @@
+﻿ .deel-balk {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 20px 26px;
+      background: var(--licht);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin: 48px 0 0;
+    }
+    .deel-label {
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--grijs); margin-right: 4px;
+    }
+    .deel-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 14px;
+      border-radius: 6px; border: 1.5px solid var(--border);
+      background: var(--wit); font-family: var(--font);
+      font-size: .76rem; font-weight: 700;
+      cursor: pointer; transition: var(--trans);
+      text-decoration: none; color: var(--donker);
+      white-space: nowrap;
+    }
+    .deel-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+    .deel-btn.linkedin { border-color: #0077b5; }
+    .deel-btn.linkedin:hover { background: #0077b5; color: #fff; border-color: #0077b5; }
+    .deel-btn.instagram { border-color: #e1306c; }
+    .deel-btn.instagram:hover { background: linear-gradient(135deg,#f58529,#dd2a7b,#8134af); color: #fff; border-color: transparent; }
+    .deel-btn.xtwitter { border-color: #000; }
+    .deel-btn.xtwitter:hover { background: #000; color: #fff; border-color: #000; }
+    .deel-btn.discord { border-color: #5865f2; }
+    .deel-btn.discord:hover { background: #5865f2; color: #fff; border-color: #5865f2; }
+    .deel-btn.rss { border-color: #f26522; }
+    .deel-btn.rss:hover { background: #f26522; color: #fff; border-color: #f26522; }
+    .deel-btn.kopieer { border-color: var(--geel-donker); }
+    .deel-btn.kopieer:hover { background: var(--geel); color: var(--donker); border-color: var(--geel); }
 
+    /* Toast notificatie */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--donker); color: var(--wit);
+      padding: 11px 22px; border-radius: 8px;
+      font-family: var(--font); font-size: .82rem; font-weight: 600;
+      opacity: 0; transition: all .25s ease; pointer-events: none;
+      z-index: 999; white-space: nowrap;
+      box-shadow: 0 8px 32px rgba(0,0,0,.25);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Discord modal */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+      z-index: 500; align-items: center; justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--wit); border-radius: var(--radius-lg);
+      padding: 36px 32px; max-width: 480px; width: 90%;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp .3s ease both;
+    }
+    .modal h3 {
+      font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; color: var(--donker);
+    }
+    .modal p { font-size: .88rem; color: var(--grijs); margin-bottom: 20px; line-height: 1.7; }
+    .modal-input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border); border-radius: 6px;
+      font-family: var(--font); font-size: .86rem;
+      margin-bottom: 16px; transition: var(--trans);
+    }
+    .modal-input:focus { outline: none; border-color: var(--geel); }
+    .modal-textarea {
+      width: 100%; padding: 11px 14px; min-height: 100px; resize: vertical;
+      border: 1.5px solid var(--border); border-radius: 6px;
+      font-family: var(--font); font-size: .86rem; line-height: 1.6;
+      margin-bottom: 16px; transition: var(--trans);
+    }
+    .modal-textarea:focus { outline: none; border-color: var(--geel); }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-close {
+      background: none; border: 1.5px solid var(--border);
+      border-radius: 6px; padding: 9px 18px;
+      font-family: var(--font); font-size: .82rem; font-weight: 700;
+      cursor: pointer; color: var(--grijs); transition: var(--trans);
+    }
+    .modal-close:hover { border-color: var(--donker); color: var(--donker); }
+    .modal-send {
+      background: #5865f2; color: #fff; border: none;
+      border-radius: 6px; padding: 9px 20px;
+      font-family: var(--font); font-size: .82rem; font-weight: 700;
+      cursor: pointer; transition: var(--trans);
+    }
+    .modal-send:hover { background: #4752c4; }
+    .modal-send:disabled { opacity: .6; cursor: not-allowed; }
+
+    .insta-copy-box {
+      background: var(--licht); border: 1px solid var(--border);
+      border-radius: 6px; padding: 16px; margin-bottom: 16px;
+      font-size: .86rem; line-height: 1.7; color: var(--donker);
+      white-space: pre-wrap; max-height: 160px; overflow-y: auto;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ARTIKELEN OVERZICHT
+       ═══════════════════════════════════════════════════ */
+    .artikelen-hero {
+      background:
+        linear-gradient(120deg, rgba(24,34,43,.97) 0%, rgba(24,34,43,.82) 100%),
+        radial-gradient(circle at 75% 50%, rgba(242,184,44,.16) 0%, transparent 55%),
+        var(--donker);
+      padding: 120px 0 72px; color: var(--wit);
+      position: relative; overflow: hidden;
+    }
+    .artikelen-hero .hero-rings {
+      position: absolute; right: -6%; top: 50%; transform: translateY(-50%);
+      width: min(420px,55vw); height: min(420px,55vw); opacity: .5; pointer-events: none;
+    }
+    .artikelen-hero-inner { position: relative; z-index: 2; }
+
+    .rss-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 6px;
+      border: 1px solid rgba(242,118,34,.4);
+      background: rgba(242,118,34,.1);
+      font-size: .74rem; font-weight: 700; color: #f26522;
+      text-decoration: none; transition: var(--trans); margin-top: 18px;
+    }
+    .rss-badge:hover { background: rgba(242,118,34,.2); border-color: #f26522; }
+
+    .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-top: 40px; padding: 40px 0 0;
+      border-top: 1px solid var(--border);
+    }
+    .filter-tab {
+      padding: 7px 16px; border-radius: 100px;
+      border: 1.5px solid var(--border); background: transparent;
+      font-family: var(--font); font-size: .76rem; font-weight: 700;
+      color: var(--grijs); cursor: pointer; transition: var(--trans); letter-spacing: .04em;
+    }
+    .filter-tab:hover { border-color: var(--geel-donker); color: var(--geel-donker); }
+    .filter-tab.actief { background: var(--geel); border-color: var(--geel); color: var(--donker); }
+
+    .artikelen-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px; padding: 48px 0 80px;
+    }
+    .artikel-kaart {
+      display: flex; flex-direction: column;
+      background: var(--wit); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: var(--trans); cursor: pointer;
+      text-decoration: none; color: inherit;
+    }
+    .artikel-kaart:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: rgba(242,184,44,.35); }
+    .artikel-kaart:hover .kaart-pijl { transform: translateX(4px); color: var(--geel-donker); }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+.kaart-top { padding: 28px 28px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .kaart-meta { display: flex; align-items: center; gap: 10px; }
+    .kaart-datum { font-size: .72rem; font-weight: 600; color: var(--grijs); letter-spacing: .04em; }
+    .kaart-cat {
+      display: inline-block; padding: 3px 10px; border-radius: 100px;
+      background: rgba(201,148,13,.1); border: 1px solid rgba(201,148,13,.25);
+      font-size: .68rem; font-weight: 700; color: var(--geel-donker);
+      letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+    }
+    .kaart-leestijd { font-size: .7rem; color: var(--grijs); white-space: nowrap; }
+    .kaart-body { padding: 18px 28px 24px; flex: 1; }
+    .kaart-titel { font-size: 1.08rem; font-weight: 800; line-height: 1.3; color: var(--donker); margin-bottom: 10px; transition: var(--trans); }
+    .artikel-kaart:hover .kaart-titel { color: var(--geel-donker); }
+    .kaart-beschrijving { font-size: .88rem; color: var(--grijs); line-height: 1.7; }
+    .kaart-footer { padding: 14px 28px 22px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); }
+    .kaart-auteur { font-size: .72rem; font-weight: 600; color: var(--grijs); }
+    .kaart-pijl { font-size: .9rem; color: var(--grijs); transition: var(--trans); font-weight: 700; }
+    .leeg-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--grijs); font-size: .95rem; }
+    .skel-kaart { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column; gap: 12px; }
+
+    /* ═══════════════════════════════════════════════════
+       ARTIKEL DETAIL
+       ═══════════════════════════════════════════════════ */
+    .artikel-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .8rem; font-weight: 700; color: rgba(255,255,255,.5);
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font); padding: 0; margin-bottom: 24px; transition: var(--trans);
+    }
+    .artikel-back:hover { color: var(--geel); }
+/* Zwevende cirkel animaties (Noppa Branding) */
+@keyframes floatCircle1 {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(-30px) rotate(10deg) scale(1.05); }
+  100% { transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+@keyframes floatCircle2 {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(40px) rotate(-15deg) scale(0.95); }
+  100% { transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+.artikelen-hero::before, .artikelen-hero::after {
+  content: ''; position: absolute; pointer-events: none; opacity: 0.4;
+  border-radius: 50%; z-index: 1; filter: blur(30px);
+}
+
+.artikelen-hero::before {
+  width: 40vw; height: 40vw; max-width: 500px; max-height: 500px;
+  background: radial-gradient(circle, rgba(242,184,44,0.15) 0%, transparent 70%);
+  top: -10%; right: -5%;
+  animation: floatCircle1 20s ease-in-out infinite;
+}
+
+.artikelen-hero::after {
+  width: 35vw; height: 35vw; max-width: 400px; max-height: 400px;
+  background: radial-gradient(circle, rgba(201,148,13,0.15) 0%, transparent 70%);
+  bottom: -15%; left: 5%;
+  animation: floatCircle2 25s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .artikelen-hero::before, .artikelen-hero::after {
+    animation: none;
+  }
+}
