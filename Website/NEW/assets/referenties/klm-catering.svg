@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" role="img" aria-label="KLM Catering Services">
+  <rect width="220" height="60" fill="none"/>
+  <text x="12" y="22" font-family="Arial,sans-serif" font-weight="900" font-size="22" fill="#00A1DE" letter-spacing="-0.5">KLM</text>
+  <text x="12" y="40" font-family="Arial,sans-serif" font-weight="400" font-size="11" fill="#555" letter-spacing="1.5">CATERING SERVICES</text>
+  <rect x="12" y="44" width="80" height="1.5" fill="#00A1DE" opacity="0.4"/>
+</svg>

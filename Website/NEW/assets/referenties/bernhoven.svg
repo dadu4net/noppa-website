@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" role="img" aria-label="Bernhoven">
+  <rect width="200" height="60" fill="none"/>
+  <path d="M12 30 L12 12 L24 12 C32 12 36 16 36 22 C36 28 32 30 24 30 Z M12 30 L12 48 L26 48 C35 48 40 44 40 38 C40 33 35 30 26 30 Z" fill="#00829A"/>
+  <text x="48" y="38" font-family="Arial,sans-serif" font-weight="700" font-size="20" fill="#1A1A1A">ernhoven</text>
+</svg>

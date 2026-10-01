@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharePoint &amp; Copilot Playbook - AI-Gestuurde Applicatie- &amp; Rapportagelagen</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header Banner -->
+    <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white py-12 px-6 shadow-lg border-b border-indigo-500/20">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-400/30 text-indigo-300 text-xs uppercase font-semibold px-3 py-1 rounded-full mb-4">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Consultants &amp; Client Playbook
+                </div>
+                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">SharePoint &amp; Copilot Playbook</h1>
+                <p class="text-indigo-200 mt-2 text-lg font-medium">De AI-gestuurde applicatie- en rapportagelaag binnen SharePoint</p>
+            </div>
+            <div class="text-slate-400 text-sm md:text-right border-t border-slate-700/50 md:border-t-0 pt-4 md:pt-0">
+                <p class="font-semibold text-slate-200">Engineering Framework</p>
+                <p class="mt-1">Gebaseerd op best practices van Zach Rosenfield</p>
+                <p class="text-xs text-indigo-400/80">Microsoft SharePoint Engineering</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl w-full mx-auto px-4 md:px-6 py-8 flex-grow grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="lg:col-span-1">
+            <div class="sticky top-6 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-6">
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Navigatie</h3>
+                    <nav class="space-y-1" id="sidebar-nav">
+                        <button onclick="switchTab('intro')" id="nav-intro" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-indigo-50 text-indigo-600">
+                            De Rode Draad
+                        </button>
+                        <button onclick="switchTab('play1')" id="nav-play1" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            Play 1: Live-Linked Dashboards
+                        </button>
+                        <button onclick="switchTab('play2')" id="nav-play2" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            Play 2: SharePoint Lists Layer
+                        </button>
+                        <button onclick="switchTab('play3')" id="nav-play3" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            Play 3: Architectuur Modellen
+                        </button>
+                        <button onclick="switchTab('play4')" id="nav-play4" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            Play 4: Inline &amp; Expert Panel
+                        </button>
+                        <button onclick="switchTab('play5')" id="nav-play5" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            Play 5: Grote Bestanden (2000+)
+                        </button>
+                        <button onclick="switchTab('tricks')" id="nav-tricks" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                            Verborgen AI-Trucs
+                        </button>
+                    </nav>
+                </div>
+                
+                <div class="pt-4 border-t border-slate-100">
+                    <div class="bg-indigo-50/50 rounded-xl p-4 border border-indigo-100">
+                        <h4 class="text-xs font-bold text-indigo-900 uppercase">Consultant Tip</h4>
+                        <p class="text-xs text-indigo-700/90 mt-1.5 leading-relaxed">
+                            Gebruik dit playbook als interactieve gids tijdens workshops met klanten om de architectuur van Copilot-toepassingen te schetsen.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <section class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm" id="content-area">
+            
+            <!-- INTRO SECTION (Active by default) -->
+            <div id="section-intro" class="tab-content space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900">De Rode Draad: SharePoint als Veilige AI-Sandbox</h2>
+                    <p class="text-slate-500 text-sm mt-1">Waarom de combinatie van SharePoint en AI goud waard is voor zakelijke toepassingen.</p>
+                </div>
+                
+                <p class="leading-relaxed text-slate-600">
+                    Binnen de video's en best practices van Zach Rosenfield komt één heldere visie naar voren: 
+                    <strong>SharePoint is niet langer een statische opslagplaats voor documenten, maar fungeert als een veilige, AI-gestuurde applicatie- en rapportagelaag die direct gekoppeld is aan live brondata.</strong>
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                    <div class="p-5 bg-emerald-50/50 border border-emerald-100 rounded-xl space-y-2">
+                        <div class="text-emerald-800 font-bold text-sm flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Veilig Beveiligingsprobleem Opgelost
+                        </div>
+                        <p class="text-xs text-emerald-700 leading-relaxed">
+                            AI-gegenereerde HTML en JavaScript-code draaien volledig binnen de veilige client-side SharePoint sandbox. Dit voorkomt scripting-kwetsbaarheden en bewaart de data veilig binnen de tenant-grenzen.
+                        </p>
+                    </div>
+                    <div class="p-5 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-2">
+                        <div class="text-indigo-800 font-bold text-sm flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Geen Handmatige Code of BI-licenties
+                        </div>
+                        <p class="text-xs text-indigo-700 leading-relaxed">
+                            Organisaties kunnen interactieve single-page applicaties (SPA's) en real-time rapportages opzetten zonder dat er zware ontwikkeltrajecten of dure aanvullende licenties nodig zijn.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200/60">
+                    <h3 class="text-sm font-bold text-slate-800 mb-2">De Verschuiving: Human-in-the-Loop</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        De rol van de IT-medewerker of business consultant verschuift fundamenteel. In plaats van zelf code te schrijven, treedt de mens op als editor en reviewer. Door feedback rechtstreeks op documenten te geven en AI-skills op te slaan in OneDrive (Personal Skills), ontstaat een zeer flexibele, herbruikbare manier van werken.
+                    </p>
+                </div>
+            </div>
+
+            <!-- PLAY 1 SECTION -->
+            <div id="section-play1" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900">Play 1: 'Live-Linked' HTML-Dashboards Bouwen</h2>
+                    <p class="text-slate-500 text-sm mt-1">Interactieve rapportages direct gekoppeld aan brondata in Excel, CSV of SharePoint-lijsten.</p>
+                </div>
+
+                <p class="leading-relaxed text-slate-600">
+                    Consultants kunnen klanten helpen om dynamische HTML-rapporten te genereren die direct verbonden zijn met live brondata. Dit voorkomt dat dashboards handmatig opnieuw opgebouwd moeten worden zodra gegevens wijzigen.
+                </p>
+
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold text-slate-900">Stappenplan voor Implementatie:</h3>
+                    
+                    <div class="relative pl-8 border-l-2 border-indigo-500 space-y-6">
+                        <!-- Step 1 -->
+                        <div class="relative">
+                            <span class="absolute -left-[41px] top-0 bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Data Inrichten</h4>
+                            <p class="text-xs text-slate-600 mt-1">Zet een gestructureerde Excel-sheet of CSV-bestand neer in een SharePoint-documentenbibliotheek.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="relative">
+                            <span class="absolute -left-[41px] top-0 bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Copilot Prompten</h4>
+                            <p class="text-xs text-slate-600 mt-1">Open Copilot op de betreffende pagina en prompt: <br><code class="bg-slate-100 text-indigo-600 px-1.5 py-0.5 rounded text-xs font-mono font-semibold">"Maak een live gekoppeld, standalone HTML executive dashboard voor [bestandsnaam]. Zorg dat wijzigingen direct synchroniseren."</code></p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="relative">
+                            <span class="absolute -left-[41px] top-0 bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Features Toevoegen</h4>
+                            <p class="text-xs text-slate-600 mt-1">Laat de AI filters, zoekopties en grafieken inbouwen. Copilot kan tot wel 10 verschillende databronnen tegelijkertijd combineren in één rapport.</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="relative">
+                            <span class="absolute -left-[41px] top-0 bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                            <h4 class="font-bold text-slate-900 text-sm">Live Updates Testen</h4>
+                            <p class="text-xs text-slate-600 mt-1">Wijzig een waarde in de bron-Excel, open het HTML-rapport en klik op de 'Refresh'-knop. Het dashboard visualiseert direct de nieuwe gegevens.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PLAY 2 SECTION -->
+            <div id="section-play2" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900">Play 2: SharePoint Lists as a Reporting Layer</h2>
+                    <p class="text-slate-500 text-sm mt-1">Transformeer traditionele lijsten in een ultrasnelle rapportage-omgeving direct in de browser.</p>
+                </div>
+
+                <p class="leading-relaxed text-slate-600">
+                    Vaak lopen klanten aan tegen de beperkingen van SharePoint-lijsten (zoals de 5000-item List View Threshold). Met Copilot kunnen we SharePoint-lijsten direct inrichten als een schaalbare, razendsnelle rapportagelaag.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                        <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider text-indigo-600">Relationele Joins</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Copilot stelt u in staat om gegevens uit meerdere losse SharePoint-lijsten live met elkaar te 'joinen' en als één geïntegreerd overzicht te presenteren.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                        <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider text-indigo-600">Schaalbaarheid (100k)</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Door client-side caching en browser-gebaseerde queries kan de applicatielaag tot 100.000 items soepel verwerken, zonder traditionele database-knelpunten te raken.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                        <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider text-indigo-600">Zero Code</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            De volledige UI inclusief dynamische grafieken, filters en zoekfunctionaliteiten wordt gegenereerd zonder dat u handmatig code hoeft te schrijven.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PLAY 3 SECTION -->
+            <div id="section-play3" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900">Play 3: Herbruikbare HTML-Rapportagemodellen</h2>
+                    <p class="text-slate-500 text-sm mt-1">Kies de juiste software-architectuur voor uw AI-gestuurde SharePoint rapporten.</p>
+                </div>
+
+                <p class="leading-relaxed text-slate-600">
+                    Zach Rosenfield adviseert drie specifieke modellen voor het ontwerpen en herbruiken van HTML-rapporten met AI. Als consultant helpt u uw klanten de meest kostenefficiënte en stabiele keuze te maken.
+                </p>
+
+                <div class="overflow-x-auto my-6 border border-slate-200 rounded-xl shadow-sm">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Model</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Hoe het werkt</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Beste Toepassing</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200 text-xs text-slate-600">
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">1. Embedded Output</td>
+                                <td class="px-4 py-3">HTML-structuur en brondata zijn hard-coded verweven in één enkel bestand.</td>
+                                <td class="px-4 py-3">Ad-hoc rapportages die nooit geüpdatet hoeven te worden.</td>
+                            </tr>
+                            <tr class="bg-slate-50/50">
+                                <td class="px-4 py-3 font-semibold text-slate-900 text-indigo-600">2. JSON-Template Split (Best Practice)</td>
+                                <td class="px-4 py-3 font-medium">De HTML-lay-out (het sjabloon) is gescheiden van de brondata (JSON). Bij updates overschrijft de AI alleen de JSON-data.</td>
+                                <td class="px-4 py-3 font-medium"><strong>Periodieke rapporten.</strong> Bespaart enorm veel tokens, laadt sneller en garandeert een consistente lay-out.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">3. Component-Based Design</td>
+                                <td class="px-4 py-3">De AI put uit een bibliotheek van herbruikbare visuele componenten (KPI-kaarten, charts, tabellen) en stelt dynamisch rapporten samen.</td>
+                                <td class="px-4 py-3">Portals of sites waar verschillende typen rapporten in exact dezelfde huisstijl gegenereerd moeten worden.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-amber-50/70 rounded-xl p-5 border border-amber-100">
+                    <h4 class="text-sm font-bold text-amber-900">OneDrive Personal Skills Integration</h4>
+                    <p class="text-xs text-amber-800 leading-relaxed mt-1">
+                        Sla deze prompts en AI-instructies op als <strong>Personal Skills</strong> in OneDrive (locatie: <code class="bg-amber-100 px-1 py-0.5 rounded text-xs">OneDrive/Copilot agent assets/</code>). Deze portable assets reizen met de gebruiker mee en zijn direct opvraagbaar op elke SharePoint-site in de tenant.
+                    </p>
+                </div>
+            </div>
+
+            <!-- PLAY 4 SECTION -->
+            <div id="section-play4" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900">Play 4: Inline Comments &amp; Review Council</h2>
+                    <p class="text-slate-500 text-sm mt-1">Stop met typen in de chat en stuur de AI direct aan op de pagina zelf.</p>
+                </div>
+
+                <p class="leading-relaxed text-slate-600">
+                    Het handmatig beschrijven van HTML-wijzigingen of het opstellen van kwaliteitsreviews kost te veel tijd. SharePoint introduceert twee krachtige interactievormen.
+                </p>
+
+                <div class="space-y-4">
+                    <div class="p-5 border border-slate-200 rounded-xl space-y-2">
+                        <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2 text-indigo-600">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> 1. Inline Annotaties (Comments)
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Gebruikers kunnen tekst of tabelelementen rechtstreeks op de SharePoint-pagina selecteren en een opmerking (Comment) toevoegen (bijv. <em>"Kort deze tekst in"</em> of <em>"Maak deze kolommen gestreept"</em>). Type daarna in de Copilot-chatbalk: <code class="bg-slate-100 px-1 py-0.5 rounded text-xs text-indigo-600 font-mono font-semibold">"Pas de opmerkingen op de pagina toe."</code> Copilot verwerkt de feedback exact op de aangegeven plek.
+                        </p>
+                    </div>
+
+                    <div class="p-5 border border-slate-200 rounded-xl space-y-2">
+                        <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2 text-indigo-600">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> 2. De Review Council (Expertpanel)
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Door de <strong>'Review Council'-skill</strong> te activeren uit de SharePoint-skills bibliotheek, laat u een PDF of document evalueren door een panel van AI-expertpersonas:
+                        </p>
+                        <ul class="text-xs text-slate-600 pl-4 list-disc space-y-1">
+                            <li><strong>Adversary:</strong> Zoekt naar kritieke zwakke punten en tegenargumenten.</li>
+                            <li><strong>Storyteller:</strong> Beoordeelt de opbouw, toon en narratieve flow.</li>
+                            <li><strong>Operator:</strong> Toetst de praktische haalbaarheid van de plannen.</li>
+                            <li><strong>Analyst:</strong> Controleert de logica van de data en feiten.</li>
+                        </ul>
+                        <p class="text-xs text-slate-600 mt-2">
+                            Het panel levert een geïntegreerd eindoordeel (verdict) op met concrete verbeterpunten en een betrouwbaarheidsscore.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PLAY 5 SECTION -->
+            <div id="section-play5" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900">Play 5: Prompting voor Grote Bestanden (2000+ Pagina's)</h2>
+                    <p class="text-slate-500 text-sm mt-1">Schaalbare AI-interactie op basis van een tool-gebaseerde architectuur in plaats van context overload.</p>
+                </div>
+
+                <p class="leading-relaxed text-slate-600">
+                    Wanneer klanten werken met enorme bestanden (zoals wetgeving of dikke handboeken), leidt het simpelweg uploaden in de hoop op een samenvatting vaak tot hallucinaties en hoge kosten. Zach Rosenfield adviseert een tool-gebaseerde aanpak.
+                </p>
+
+                <div class="bg-indigo-50/50 rounded-xl p-5 border border-indigo-100 space-y-3">
+                    <h4 class="font-bold text-indigo-950 text-sm">Gouden Regels voor Grote Bestanden:</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-1">
+                            <h5 class="text-xs font-bold text-indigo-900">1. Wees specifiek</h5>
+                            <p class="text-[11px] text-indigo-800 leading-relaxed">
+                                Stel gerichte en afgebakende vragen in plaats van algemene verzoeken om 'alles door te spitten'.
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h5 class="text-xs font-bold text-indigo-900">2. Activeer Tools</h5>
+                            <p class="text-[11px] text-indigo-800 leading-relaxed">
+                                Stuur Copilot aan om specifieke onderliggende functies te gebruiken zoals <em>Keyword Search</em>, <em>Semantic Matching</em> of <em>Code Execution</em>.
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <h5 class="text-xs font-bold text-indigo-900">3. Respecteer Layout-limieten</h5>
+                            <p class="text-[11px] text-indigo-800 leading-relaxed">
+                                AI ziet een platte tekstuele weergave, geen fysieke paginalay-out. Referer daarom altijd naar titels en hoofdstukken, niet naar exacte paginanummers.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRICKS SECTION -->
+            <div id="section-tricks" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-extrabold text-slate-900">Verborgen AI-Trucs &amp; Diagnostiek</h2>
+                    <p class="text-slate-500 text-sm mt-1">Verborgen commando's die consultants helpen om SharePoint Copilot snel in te richten en te diagnosticeren.</p>
+                </div>
+
+                <p class="leading-relaxed text-slate-600">
+                    Met deze verborgen shortcuts functioneert u als een echte 'power user' tijdens klant-integraties.
+                </p>
+
+                <div class="space-y-4">
+                    <!-- Trick 1 -->
+                    <div class="flex items-start gap-4 p-4 border border-slate-150 rounded-xl hover:bg-slate-50/50 transition duration-200">
+                        <div class="bg-indigo-100 text-indigo-700 p-2 rounded-lg font-mono text-sm font-bold">
+                            --agent tools
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Inventarisatie van Agent Mogelijkheden</h4>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Typ dit in de Copilot chatbox om een actuele lijst op te vragen van alle geactiveerde API's en tools die onder de motorkap beschikbaar zijn op de huidige site.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Trick 2 -->
+                    <div class="flex items-start gap-4 p-4 border border-slate-150 rounded-xl hover:bg-slate-50/50 transition duration-200">
+                        <div class="bg-indigo-100 text-indigo-700 p-2 rounded-lg font-mono text-sm font-bold">
+                            /skills
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Systeembetrouwbaarheid &amp; Diagnostiek</h4>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Gebruik dit commando om de actieve bibliotheken van een specifieke site door te meten, te diagnosticeren of te herstellen wanneer skills onverwacht vastlopen.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Trick 3 -->
+                    <div class="flex items-start gap-4 p-4 border border-slate-150 rounded-xl hover:bg-slate-50/50 transition duration-200">
+                        <div class="bg-indigo-100 text-indigo-700 p-2 rounded-lg font-mono text-sm font-bold">
+                            Side Viewer
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Real-time Code &amp; Design Bewerking</h4>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Open de code-editor zij-aan-zij met de visuele HTML-previewer. Wijzigingen die u in de code doorvoert (of door Copilot laat doorvoeren) zijn direct zichtbaar zonder de pagina te verversen.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs mt-12 border-t border-slate-800">
+        <p>© 2026 SharePoint &amp; Copilot Consultants Playbook. Vertrouwelijk.</p>
+    </footer>
+
+    <!-- Interactive JS to handle Tab Switching -->
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+
+            // Show active tab content
+            const activeSection = document.getElementById('section-' + tabId);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+            }
+
+            // Reset navigation active state
+            const buttons = document.querySelectorAll('#sidebar-nav button');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-indigo-50', 'text-indigo-600', 'font-semibold');
+                btn.classList.add('text-slate-600', 'font-medium');
+            });
+
+            // Set active button state
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'font-medium');
+                activeBtn.classList.add('bg-indigo-50', 'text-indigo-600', 'font-semibold');
+            }
+        }
+    </script>
+</body>
+</html>

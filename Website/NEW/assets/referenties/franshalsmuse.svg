@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" role="img" aria-label="Frans Hals Museum">
+  <rect width="240" height="60" fill="none"/>
+  <text x="12" y="26" font-family="Georgia,serif" font-weight="700" font-size="14" fill="#111" letter-spacing="0.5">FRANS HALS</text>
+  <text x="12" y="44" font-family="Georgia,serif" font-weight="400" font-size="14" fill="#111" letter-spacing="0.5">MUSEUM</text>
+  <line x1="12" y1="50" x2="100" y2="50" stroke="#111" stroke-width="1.5"/>
+</svg>

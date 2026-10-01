@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" role="img" aria-label="Hollandia">
+  <rect width="200" height="60" fill="none"/>
+  <rect x="12" y="16" width="36" height="28" rx="3" fill="#E8821A"/>
+  <text x="16" y="36" font-family="Arial,sans-serif" font-weight="900" font-size="14" fill="white">HOL</text>
+  <text x="56" y="38" font-family="Arial,sans-serif" font-weight="800" font-size="20" fill="#1A1A1A" letter-spacing="-0.5">hollandia</text>
+</svg>
