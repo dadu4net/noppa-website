@@ -20,10 +20,13 @@ class MarkdownEngine {
     private Parsedown $parsedown;
     private string $contentDir;
     private string $iconsDir;
+    private string $teamDir;
+    private array $teamMembersCache = [];
 
-    public function __construct(string $contentDir = '', string $iconsDir = '') {
+    public function __construct(string $contentDir = '', string $iconsDir = '', string $teamDir = '') {
         $this->contentDir = rtrim($contentDir ?: dirname(__DIR__) . '/content', '/\\') . '/';
         $this->iconsDir   = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
+        $this->teamDir    = rtrim($teamDir ?: dirname(__DIR__) . '/data/team', '/\\') . '/';
         $this->parsedown  = new Parsedown();
         $this->parsedown->setSafeMode(false); // Trusted internal markdown
     }
@@ -138,6 +141,13 @@ class MarkdownEngine {
             case 'diensten':
                 return $this->renderCardsSection($raw, $attrs);
 
+            case 'team':
+            case 'team-grid':
+            case 'profile-card':
+            case 'profile-cards':
+            case 'teamleden':
+                return $this->renderTeamSection($raw, $attrs);
+
             case 'pijlers':
             case 'values':
                 return $this->renderValuesSection($raw, $attrs);
@@ -214,6 +224,263 @@ class MarkdownEngine {
 
         $gridCols = $attrs['cols'] ?? '3';
         return '<div class="diensten-grid diensten-grid-' . htmlspecialchars($gridCols, ENT_QUOTES, 'UTF-8') . '">' . implode("\n", $cardsHtml) . '</div>';
+    }
+
+    /**
+     * Render Team Profile Cards sectie op basis van enkel namen in Markdown.
+     * Ondersteunt:
+     * - Rik Dobbelsteen
+     * - Deborah Stahlecker
+     * of
+     * ## Rik Dobbelsteen
+     * of platte tekstregels met namen.
+     */
+    public function renderTeamSection(string $markdown, array $attrs = []): string {
+        $lines = preg_split('/\r?\n/', trim($markdown));
+        $names = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') continue;
+
+            // Negeer HTML commentaren, knop-links of icoon metadata
+            if (str_starts_with($line, '<!--') || str_starts_with($line, '-->') || str_starts_with($line, '*Icoon:') || str_starts_with($line, '[icon:')) {
+                continue;
+            }
+
+            // Verwijder bullet prefixes (- , * , + , 1. ) of header prefixes (## , ### )
+            $cleanName = preg_replace('/^(?:[-*+]\s+|\d+\.\s+|#{1,4}\s+)/', '', $line);
+            // Verwijder markdown bold / italic
+            $cleanName = trim(preg_replace('/[*_~`]/', '', $cleanName));
+
+            // Als er toevallig nog een link in stond [Naam](url), pak de link tekst
+            if (preg_match('/\[([^\]]+)\]/', $cleanName, $lm)) {
+                $cleanName = trim($lm[1]);
+            }
+
+            if ($cleanName !== '' && !in_array($cleanName, $names, true)) {
+                $names[] = $cleanName;
+            }
+        }
+
+        if (empty($names)) {
+            // Als er geen namen zijn opgegeven, laad automatisch alle teamleden uit de team map
+            $names = $this->getAllTeamSlugs();
+        }
+
+        $cardsHtml = [];
+        $assetPrefix = $GLOBALS['assetPrefix'] ?? './';
+
+        foreach ($names as $name) {
+            $member = $this->resolveTeamMember($name);
+            if (!$member) continue;
+
+            $fullName   = htmlspecialchars($member['fullName'], ENT_QUOTES, 'UTF-8');
+            $roleTitle  = htmlspecialchars($member['roleTitle'], ENT_QUOTES, 'UTF-8');
+            $shortBio   = htmlspecialchars($member['shortBio'], ENT_QUOTES, 'UTF-8');
+            $profileUrl = htmlspecialchars($this->formatUrl('/team/' . $member['id']), ENT_QUOTES, 'UTF-8');
+            $initials   = htmlspecialchars($member['initials'], ENT_QUOTES, 'UTF-8');
+
+            // Bepaal avatar: foto of gestileerde initials placeholder
+            $avatarHtml = '';
+            if (!empty($member['image'])) {
+                $imgSrc = (strpos($member['image'], 'http') === 0) ? $member['image'] : ($assetPrefix . ltrim($member['image'], './'));
+                $avatarHtml = '<img src="' . htmlspecialchars($imgSrc, ENT_QUOTES, 'UTF-8') . '" alt="' . $fullName . '" class="team-profile-avatar" width="120" height="120" loading="lazy">';
+            } else {
+                $avatarHtml = '<div class="team-profile-avatar-placeholder" aria-hidden="true"><span>' . $initials . '</span></div>';
+            }
+
+            $cardsHtml[] = '
+            <article class="team-profile-card" tabindex="0">
+                <div class="team-profile-header">
+                    <div class="team-profile-avatar-wrap">
+                        ' . $avatarHtml . '
+                    </div>
+                    <div class="team-profile-identity">
+                        <h3 class="team-profile-name">' . $fullName . '</h3>
+                        <span class="team-profile-role">' . $roleTitle . '</span>
+                    </div>
+                </div>
+                <p class="team-profile-bio">' . $shortBio . '</p>
+                <div class="team-profile-footer">
+                    <a href="' . $profileUrl . '" class="btn btn-outline btn-sm team-profile-btn">
+                        <span>Bekijk profiel</span>
+                        <span class="arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </article>';
+        }
+
+        $gridCols = $attrs['cols'] ?? '3';
+        return '<div class="team-cards-grid team-cards-grid-' . htmlspecialchars((string)$gridCols, ENT_QUOTES, 'UTF-8') . '">' . implode("\n", $cardsHtml) . '</div>';
+    }
+
+    /**
+     * Resolvet een teamlid op basis van naam of slug naar een gestructureerd profiel.
+     * Ondersteunt accent-normalisatie (bijv. "Daniël" -> "daniel-giessenburg").
+     */
+    public function resolveTeamMember(string $nameOrSlug): array {
+        $nameOrSlug = trim($nameOrSlug);
+        $cacheKey = strtolower($nameOrSlug);
+        if (isset($this->teamMembersCache[$cacheKey])) {
+            return $this->teamMembersCache[$cacheKey];
+        }
+
+        // Normaliseer accenten (bijv. ë -> e, é -> e, etc.)
+        $normalized = $this->normalizeAccents($nameOrSlug);
+        $candidateSlug = $this->slugify($normalized);
+
+        // 1. Directe bestandsmatch op slug
+        $directFile = $this->teamDir . $candidateSlug . '.md';
+        if (file_exists($directFile)) {
+            $parsed = $this->parseTeamProfileFile(file_get_contents($directFile), $candidateSlug);
+            $this->teamMembersCache[$cacheKey] = $parsed;
+            return $parsed;
+        }
+
+        // 2. Scan alle profielen in de data/team map
+        if (is_dir($this->teamDir)) {
+            $files = glob($this->teamDir . '*.md') ?: [];
+            foreach ($files as $file) {
+                $raw = file_get_contents($file);
+                $fileSlug = pathinfo($file, PATHINFO_FILENAME);
+                $parsed = $this->parseTeamProfileFile($raw, $fileSlug);
+
+                // Match op volledige naam, voornaam + achternaam of slug
+                $matchFullName = $this->normalizeAccents($parsed['fullName']);
+                $matchFirst = $this->normalizeAccents($parsed['firstName']);
+                $matchLast = $this->normalizeAccents($parsed['lastName']);
+
+                if (
+                    strcasecmp($normalized, $matchFullName) === 0 ||
+                    strcasecmp($candidateSlug, $fileSlug) === 0 ||
+                    (stripos($normalized, $matchFirst) !== false && !empty($matchLast) && stripos($normalized, $matchLast) !== false)
+                ) {
+                    $this->teamMembersCache[$cacheKey] = $parsed;
+                    return $parsed;
+                }
+            }
+
+            // Tweede doorgang: match op alleen voornaam indien uniek
+            foreach ($files as $file) {
+                $raw = file_get_contents($file);
+                $fileSlug = pathinfo($file, PATHINFO_FILENAME);
+                $parsed = $this->parseTeamProfileFile($raw, $fileSlug);
+                $matchFirst = $this->normalizeAccents($parsed['firstName']);
+                if (strcasecmp($normalized, $matchFirst) === 0) {
+                    $this->teamMembersCache[$cacheKey] = $parsed;
+                    return $parsed;
+                }
+            }
+        }
+
+        // 3. Fallback indien teamlid (nog) geen eigen bestand heeft
+        $parts = preg_split('/\s+/', $nameOrSlug);
+        $firstName = $parts[0] ?? $nameOrSlug;
+        $lastName = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : '';
+        $initials = mb_substr($firstName, 0, 1) . ($lastName !== '' ? mb_substr($lastName, 0, 1) : '');
+
+        $fallback = [
+            'id'        => $candidateSlug,
+            'firstName' => $firstName,
+            'lastName'  => $lastName,
+            'fullName'  => $nameOrSlug,
+            'roleTitle' => 'Consultant Microsoft 365',
+            'jobTitle'  => 'Consultant',
+            'shortBio'  => 'Consultant bij Noppa Solutions & Consultants, gedreven door mens en productiviteit.',
+            'image'     => '',
+            'initials'  => strtoupper($initials),
+            'email'     => 'info@noppa.nl',
+            'phone'     => '+31 6 13 35 77 23',
+            'location'  => 'Berlicum, Noord-Brabant'
+        ];
+
+        $this->teamMembersCache[$cacheKey] = $fallback;
+        return $fallback;
+    }
+
+    /**
+     * Normaliseert diakrieten en accenten (bijv. ë -> e, é -> e).
+     */
+    public function normalizeAccents(string $str): string {
+        $accents = [
+            'ë' => 'e', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'Ë' => 'E', 'É' => 'E', 'È' => 'E', 'Ê' => 'E',
+            'ï' => 'i', 'í' => 'i', 'ì' => 'i', 'î' => 'i', 'Ï' => 'I', 'Í' => 'I', 'Ì' => 'I', 'Î' => 'I',
+            'ö' => 'o', 'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'Ö' => 'O', 'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O',
+            'ü' => 'u', 'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'Ü' => 'U', 'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U',
+            'ä' => 'a', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'Ä' => 'A', 'Á' => 'A', 'À' => 'A', 'Â' => 'A',
+            'ñ' => 'n', 'Ñ' => 'N', 'ç' => 'c', 'Ç' => 'C'
+        ];
+        return strtr($str, $accents);
+    }
+
+    /**
+     * Parseer een teamprofiel markdown bestand.
+     */
+    public function parseTeamProfileFile(string $raw, string $slug): array {
+        $meta = [];
+        $body = $raw;
+
+        if (preg_match('/^---\r?\n(.*?)\r?\n---\r?\n(.*)/s', $raw, $matches)) {
+            $meta = $this->parseYaml($matches[1]);
+            $body = $matches[2];
+        }
+
+        $firstName = $meta['firstName'] ?? 'Consultant';
+        $lastName  = $meta['lastName'] ?? '';
+        $fullName  = trim($firstName . ' ' . $lastName);
+        $roleTitle = $meta['roleTitle'] ?? ($meta['jobTitle'] ?? 'Consultant Microsoft 365');
+        $jobTitle  = $meta['jobTitle'] ?? 'Consultant';
+        $shortBio  = $meta['shortBio'] ?? $this->extractExcerpt($body, 140);
+        $image     = $meta['image'] ?? '';
+        $initials  = mb_substr($firstName, 0, 1) . ($lastName !== '' ? mb_substr($lastName, 0, 1) : '');
+
+        // Auto-detectie van afbeelding indien leeg in frontmatter
+        if (empty($image)) {
+            $possibleNames = [
+                $fullName . '.jpeg',
+                $fullName . '.jpg',
+                $fullName . '.png',
+                $firstName . '.jpg',
+                $firstName . '.png',
+            ];
+            $assetsImagesDir = dirname($this->iconsDir) . '/images/';
+            foreach ($possibleNames as $pName) {
+                if (file_exists($assetsImagesDir . $pName)) {
+                    $image = './assets/images/' . $pName;
+                    break;
+                }
+            }
+        }
+
+        return [
+            'id'        => $slug,
+            'firstName' => $firstName,
+            'lastName'  => $lastName,
+            'fullName'  => $fullName,
+            'roleTitle' => $roleTitle,
+            'jobTitle'  => $jobTitle,
+            'shortBio'  => $shortBio,
+            'image'     => $image,
+            'initials'  => strtoupper($initials),
+            'email'     => $meta['email'] ?? 'info@noppa.nl',
+            'phone'     => $meta['phone'] ?? '+31 6 13 35 77 23',
+            'location'  => $meta['location'] ?? 'Berlicum, Noord-Brabant',
+            'raw_body'  => $body
+        ];
+    }
+
+    /**
+     * Haalt alle teamlid slugs op uit de team directory.
+     */
+    public function getAllTeamSlugs(): array {
+        if (!is_dir($this->teamDir)) return [];
+        $files = glob($this->teamDir . '*.md') ?: [];
+        $slugs = [];
+        foreach ($files as $file) {
+            $slugs[] = pathinfo($file, PATHINFO_FILENAME);
+        }
+        return $slugs;
     }
 
     /**

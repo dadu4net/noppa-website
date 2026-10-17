@@ -18,26 +18,25 @@ hero:
 We zijn eenvoudig bereikbaar via telefoon, e-mail of voor een persoonlijke ontmoeting op onze vestiging in Berlicum.
 
 ### Bedrijfsgegevens
-
-**Telefoon**: [+31 (0)6 13 35 77 23](tel:+31613357723)  
-**E-mail**: [info@noppa.nl](mailto:info@noppa.nl)  
-**KvK-nummer**: 61868388  
-**BTW-nummer**: NL859223348B01  
+- **Telefoon**: [+31 (0)6 13 35 77 23](tel:+31613357723)
+- **E-mail**: [info@noppa.nl](mailto:info@noppa.nl)
+- **KvK-nummer**: 61868388
+- **BTW-nummer**: NL859223348B01
 
 ### Bezoekadres
+- **Noppa Solutions & Consultants**
+- Pijlkruid 44
+- 5258 BW Berlicum
 
-**Noppa Solutions & Consultants**  
-Pijlkruid 44  
-5258 BW Berlicum  
-
-| Dag | Openingstijden |
-| :--- | :--- |
-| Maandag t/m Donderdag | 08:30 – 17:30 |
-| Vrijdag | 08:30 – 17:00 |
-| Zaterdag & Zondag | Gesloten |
+| Dag                   | Openingstijden |
+| :-------------------- | :------------- |
+| Maandag t/m Donderdag | 08:30 – 17:30  |
+| Vrijdag               | 08:30 – 17:00  |
+| Zaterdag & Zondag     | Gesloten       |
 
 <!-- section: booking title="Boek een kennismaking" -->
-<iframe height="100%" loading="lazy" scrolling="yes" src="https://bookings.cloud.microsoft/book/booking@noppa.nl/s/iiLUpoIiD0yZCAC2mKWFVA2?ismsaljsauthenabled" style="border:0" title="Noppa Solutions &amp; Consultants — boek een afspraak" width="100%" data-dashlane-frameid="819"></iframe>
+
+<iframe height="100%" loading="lazy" scrolling="yes" src="https://bookings.cloud.microsoft/book/booking@noppa.nl/s/iiLUpoIiD0yZCAC2mKWFVA2?ismsaljsauthenabled" style="border:0" title="Noppa Solutions &amp; Consultants — boek een afspraak" width="100%" height="750px"></iframe>
 
 <!-- section: cta type="cta" -->
 

@@ -31,31 +31,15 @@ Je vindt ons kantoor aan het Pijlkruid 44 in Berlicum. Vanuit hier ondersteunen 
 
 Bij Noppa werk je niet met anonieme helpdesks of theoretische accountmanagers. Onze consultants hebben jarenlange praktijkervaring in Microsoft 365 architecturen, databeveiliging en change management. We staan mét de laarzen in de modder en zorgen dat jouw mensen zich gehoord en ondersteund voelen.
 
-<!-- section: team type="cards" title="Team Noppa" subtitle="Onze Cultuur" -->
+<!-- section: team type="team" title="Team Noppa" subtitle="Onze Mensen" desc="Maak kennis met onze gecertificeerde Microsoft 365 consultants en adoptiespecialisten." -->
 
-## Rik Dobbelsteen
-*Icoon: team*
-Nieuwe software introduceren is makkelijk; ervoor zorgen dat iedereen er enthousiast en vaardig mee werkt is het echte werk. Wij ontwerpen verandertrajecten met persona's, ambassadeurs en continue coaching volgens ADKAR.
-- Veranderstrategie en persona-analyses
-- Ambassadeursnetwerk opzetten en faciliteren
-- Periodieke Lunch & Learn sessies en coaching
-[Rik Dobbelsteen](/team/rik-dobbelsteen)
-
-## Lester Temmink
-*Icoon: team*
-Nieuwe software introduceren is makkelijk; ervoor zorgen dat iedereen er enthousiast en vaardig mee werkt is het echte werk. Wij ontwerpen verandertrajecten met persona's, ambassadeurs en continue coaching volgens ADKAR.
-- Veranderstrategie en persona-analyses
-- Ambassadeursnetwerk opzetten en faciliteren
-- Periodieke Lunch & Learn sessies en coaching
-[Lester Temmink](/team/rik-dobbelsteen)
-
-## Jan-Willem Bekkers
-*Icoon: team*
-Nieuwe software introduceren is makkelijk; ervoor zorgen dat iedereen er enthousiast en vaardig mee werkt is het echte werk. Wij ontwerpen verandertrajecten met persona's, ambassadeurs en continue coaching volgens ADKAR.
-- Veranderstrategie en persona-analyses
-- Ambassadeursnetwerk opzetten en faciliteren
-- Periodieke Lunch & Learn sessies en coaching
-[Jan-Willem Bekkers](/team/rik-dobbelsteen)
+- Rik Dobbelsteen
+- Deborah Stahlecker
+- Kees Koertshuis
+- Daniël Giessenburg
+- Willem Blanken
+- Lester Temmink
+- Jan-Willem Bekkers
 
 <!-- section: cta type="cta" -->
 

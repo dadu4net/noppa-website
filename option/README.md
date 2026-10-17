@@ -426,7 +426,33 @@ Jan doorziet binnen een uur waar de knelpunten in de bestandsstructuur zitten en
 ### Stap 3: Afbeelding toevoegen
 Plaats een vierkante profielfoto (bijv. 600×600 px) in `assets/images/Jan Jansen.jpg`.
 
-### Stap 4: Direct bekijken
+### Stap 4: Teamlid toevoegen aan pagina's (zoals Over Ons)
+
+Om een teamlid te tonen op de pagina **Over Ons** (of een andere pagina met een teamsectie), hoef je in de Markdown **alleen de naam van het teamlid** toe te voegen.
+
+Open bijvoorbeeld `content/pages/over-ons.md`:
+
+```markdown
+<!-- section: team type="team" title="Team Noppa" subtitle="Onze Mensen" desc="Maak kennis met onze gecertificeerde Microsoft 365 consultants en adoptiespecialisten." -->
+
+- Rik Dobbelsteen
+- Deborah Stahlecker
+- Kees Koertshuis
+- Daniël Giessenburg
+- Willem Blanken
+- Lester Temmink
+- Jan-Willem Bekkers
+- Jan Jansen
+```
+
+> **Hoe de automatische herkenning werkt:**
+> - **Alleen de naam invoeren**: De `MarkdownEngine` resolvet de naam automatisch naar het profielbestand in `data/team/` en rendert de avatar, rol, korte intro (`shortBio`) en een knop naar het volledige profiel.
+> - **Flexibel invoerformaat**: Werkt met opsommingstekens (`- Naam` of `* Naam`), koppen (`## Naam`), of gewone tekstregels.
+> - **Accent-normalisatie**: Namen met diakrieten (zoals `Daniël Giessenburg`) worden automatisch gekoppeld aan `daniel-giessenburg.md`.
+> - **Afbeelding fallback**: Als een teamlid nog geen foto heeft, wordt automatisch een strakke badge met de initialen van het teamlid in Noppa-stijl getoond.
+> - **Veilige fallback**: Zelfs als er nog geen `.md`-bestand bestaat voor een opgegeven naam, genereert de engine een representatieve kaart met initialen en een contactknop. De site breekt dus nooit!
+
+### Stap 5: Direct bekijken
 Het profiel is direct bereikbaar via:
 - Clean URL: `/team/jan-jansen`
 - Query URL: `index.php?page=team&id=jan-jansen`

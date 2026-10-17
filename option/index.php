@@ -36,7 +36,7 @@ require_once NOPPA_INCLUDES_DIR . '/DienstenEngine.php';
 require_once NOPPA_INCLUDES_DIR . '/LegalEngine.php';
 
 // Initialiseer engines
-$mdEngine         = new MarkdownEngine(NOPPA_CONTENT_DIR, NOPPA_ASSETS_DIR . '/icons');
+$mdEngine         = new MarkdownEngine(NOPPA_CONTENT_DIR, NOPPA_ASSETS_DIR . '/icons', NOPPA_BASE_DIR . '/data/team');
 $navEngine        = new NavigationEngine(NOPPA_CONTENT_DIR . '/navigation.md');
 $footerEngine     = new FooterEngine(NOPPA_CONTENT_DIR . '/footer.md');
 $teamEngine       = new TeamEngine(NOPPA_BASE_DIR . '/data/team', NOPPA_ASSETS_DIR . '/icons');
