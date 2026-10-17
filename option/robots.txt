@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Directe verwijzing naar de XML sitemap
+Sitemap: https://noppa.nl/sitemap.xml
+Sitemap: https://noppa.nl/sitemap.php
+
+# Bescherm interne bestanden en engine mappen
+Disallow: /includes/
+Disallow: /partials/
+Disallow: /content/*.md

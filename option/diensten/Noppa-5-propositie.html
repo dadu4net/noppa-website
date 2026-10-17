@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M365 Managed Services | Dashboard &amp; Pricing</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            padding: 32px 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Metrics Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .metric-card .title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .metric-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 8px 0 4px;
+        }
+
+        .metric-card .subtext {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Pricing Grid */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .pricing-card.highlight {
+            border-color: var(--accent);
+            box-shadow: 0 10px 15px -3px rgba(37,99,235,0.1);
+        }
+
+        .badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--accent);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tier-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .tier-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin: 8px 0 20px;
+            min-height: 40px;
+        }
+
+        .price-box {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .price-base {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .price-per-user {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 28px;
+            flex-grow: 1;
+        }
+
+        .features-list li {
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .features-list li.disabled {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+
+        .icon {
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .icon.check { color: var(--success); }
+        .icon.cross { color: var(--danger); }
+
+        .btn-cta {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            background: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .btn-cta:hover {
+            background: #334155;
+        }
+
+        .pricing-card.highlight .btn-cta {
+            background: var(--accent);
+        }
+
+        .pricing-card.highlight .btn-cta:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Feature Matrix */
+        .matrix-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .matrix-section h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--bg-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        td.text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>M365 Continuïteit &amp; Productiviteit</h1>
+        <p>Voorspelbare maandelijkse ondersteuning op maat van uw organisatie</p>
+    </header>
+
+    <!-- Bedrijfsdashboard Metric Preview -->
+    <section class="dashboard-grid">
+        <div class="metric-card">
+            <div class="title">SLA Responstijd</div>
+            <div class="value">&lt; 24 uur</div>
+            <div class="subtext">Telefonisch, Teams &amp; E-mail</div>
+        </div>
+        <div class="metric-card">
+            <div class="title">Supportvenster</div>
+            <div class="value">08:00 - 18:00</div>
+            <div class="subtext">Beste dekking tijdens kantoortijden</div>
+        </div>
+        <div class="metric-card">
+            <div class="title">Audit Frequentie</div>
+            <div class="value">Per Kwartaal</div>
+            <div class="subtext">Inclusief adviesrapportage</div>
+        </div>
+        <div class="metric-card">
+            <div class="title">Kostenbeheersing</div>
+            <div class="value">Vaste Scope</div>
+            <div class="subtext">Geen onverwachte nacalculaties</div>
+        </div>
+    </section>
+
+    <!-- Pricing Kaarten -->
+    <section class="pricing-grid">
+        <!-- Tier 1: Basic -->
+        <article class="pricing-card">
+            <h2 class="tier-name">Basic</h2>
+            <p class="tier-desc">Continue adoptie en praktische begeleiding voor eindgebruikers.</p>
+            <div class="price-box">
+                <div class="price-base">&euro; 200 <span style="font-size:0.9rem; font-weight:400; color:var(--text-muted);">/ mnd</span></div>
+                <div class="price-per-user">+ &euro; 5 per medewerker / mnd</div>
+            </div>
+            <ul class="features-list">
+                <li><span class="icon check">&check;</span> Maandelijkse digitale Q&amp;A (1 uur)</li>
+                <li><span class="icon check">&check;</span> Maandelijks M365 updatebulletin</li>
+                <li><span class="icon check">&check;</span> Startset cheat sheets &amp; handleidingen</li>
+                <li class="disabled"><span class="icon cross">&times;</span> Kwartaalsessie op locatie</li>
+                <li class="disabled"><span class="icon cross">&times;</span> M365 auditrapportage</li>
+                <li class="disabled"><span class="icon cross">&times;</span> Governance &amp; Purview beheer</li>
+            </ul>
+            <a href="https://noppa.nl/contact" class="btn-cta">Start met Basic</a>
+        </article>
+
+        <!-- Tier 2: Advanced -->
+        <article class="pricing-card">
+            <h2 class="tier-name">Advanced</h2>
+            <p class="tier-desc">Structurele grip op governance, security en platformonderhoud.</p>
+            <div class="price-box">
+                <div class="price-base">&euro; 350 <span style="font-size:0.9rem; font-weight:400; color:var(--text-muted);">/ mnd</span></div>
+                <div class="price-per-user">+ &euro; 10 per medewerker / mnd</div>
+            </div>
+            <ul class="features-list">
+                <li><span class="icon check">&check;</span> Kwartaal M365 audit (sprawl &amp; teams)</li>
+                <li><span class="icon check">&check;</span> Purview compliance &amp; retentiebeleid</li>
+                <li><span class="icon check">&check;</span> SharePoint &amp; Teams instellingenbeheer</li>
+                <li><span class="icon check">&check;</span> SLA: respons &lt; 24 uur (08:00 - 18:00)</li>
+                <li class="disabled"><span class="icon cross">&times;</span> Adoptiesessies op locatie</li>
+                <li class="disabled"><span class="icon cross">&times;</span> Copilot readiness check</li>
+            </ul>
+            <a href="https://noppa.nl/contact" class="btn-cta">Kies Advanced</a>
+        </article>
+
+        <!-- Tier 3: Premium -->
+        <article class="pricing-card highlight">
+            <div class="badge">Meest gekozen</div>
+            <h2 class="tier-name">Premium</h2>
+            <p class="tier-desc">Volledige synergie tussen platformgovernance en maximale adoptie.</p>
+            <div class="price-box">
+                <div class="price-base">&euro; 500 <span style="font-size:0.9rem; font-weight:400; color:var(--text-muted);">/ mnd</span></div>
+                <div class="price-per-user">+ &euro; 15 per medewerker / mnd</div>
+            </div>
+            <ul class="features-list">
+                <li><span class="icon check">&check;</span> Alles uit Basic &amp; Advanced</li>
+                <li><span class="icon check">&check;</span> 1x per kwartaal sessie op locatie</li>
+                <li><span class="icon check">&check;</span> Copilot readiness assessment &amp; advies</li>
+                <li><span class="icon check">&check;</span> Proactieve feature consultancy</li>
+                <li><span class="icon check">&check;</span> Prioriteitssupport (SLA &lt; 24 uur)</li>
+            </ul>
+            <a href="https://noppa.nl/contact" class="btn-cta">Kies Premium</a>
+        </article>
+
+        <!-- Tier 4: Maatwerk / Project-nazorg -->
+        <article class="pricing-card">
+            <h2 class="tier-name">Project Nazorg</h2>
+            <p class="tier-desc">Vaste fee voor continue doorontwikkeling na eerdere oplevering.</p>
+            <div class="price-box">
+                <div class="price-base">Op aanvraag</div>
+                <div class="price-per-user">Vaste maandelijkse retainer</div>
+            </div>
+            <ul class="features-list">
+                <li><span class="icon check">&check;</span> Beheer van opgeleverde projectoplossing</li>
+                <li><span class="icon check">&check;</span> Maandelijkse roadmap &amp; backlog check-in</li>
+                <li><span class="icon check">&check;</span> Dedicated doorontwikkeluren</li>
+                <li><span class="icon check">&check;</span> Evaluatie &amp; optimalisatieadvies</li>
+                <li><span class="icon check">&check;</span> Directe escalatielijn</li>
+            </ul>
+            <a href="https://noppa.nl/contact" class="btn-cta">Vraag Nazorg Aan</a>
+        </article>
+    </section>
+
+    <!-- Feature Matrix -->
+    <section class="matrix-section">
+        <h2>Vergelijking van Functionaliteiten</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Functionaliteit</th>
+                        <th class="text-center">Basic</th>
+                        <th class="text-center">Advanced</th>
+                        <th class="text-center">Premium</th>
+                        <th class="text-center">Project Nazorg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Maandelijkse digitale Q&amp;A sessie</td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center">Op afspraak</td>
+                    </tr>
+                    <tr>
+                        <td>Kwartaalsessie op locatie</td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                    </tr>
+                    <tr>
+                        <td>Gestandaardiseerde M365 auditrapportage</td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                    </tr>
+                    <tr>
+                        <td>Microsoft Purview &amp; retentiebeheer</td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                    </tr>
+                    <tr>
+                        <td>Copilot readiness consult &amp; updates</td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                    </tr>
+                    <tr>
+                        <td>Backlog management &amp; optimalisaties</td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon cross">&times;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                    </tr>
+                    <tr>
+                        <td>SLA (Respons &lt; 24 uur binnen kantoortijden)</td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                        <td class="text-center"><span class="icon check">&check;</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>

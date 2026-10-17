@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+
+<html lang="nl" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882" xmlns:mso="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI-integratie &amp; Microsoft Copilot | Noppa Solutions &amp; Consultants</title>
+<meta content="Noppa Solutions &amp; Consultants begeleidt organisaties bij de adoptie van Microsoft Copilot en AI binnen Microsoft 365. Pilots, governance, training en concrete use cases." name="description"/>
+<link href="https://www.noppa.nl/diensten/ai-copilot.html" rel="canonical"/>
+<link href="../assets/images/DEF_Logo_Noppa.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="../assets/css/noppa.css" rel="stylesheet"/>
+<style>
+        /* INTRO */
+        .intro {
+            background: var(--light); padding: 76px 0;
+        }
+        .intro-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
+        .label {
+            display: inline-block; font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.16em; text-transform: uppercase;
+            color: var(--royal); margin-bottom: 12px;
+        }
+        .h2 {
+            font-size: clamp(1.7rem, 3vw, 2.4rem);
+            font-weight: 800; line-height: 1.2; margin-bottom: 18px;
+        }
+        .h2 em { font-style: normal; color: var(--royal); }
+        .h2.light { color: var(--white); }
+        .h2.light em { color: var(--cyan); }
+        .body-text { font-size: 1.02rem; color: var(--slate); line-height: 1.85; margin-bottom: 16px; }
+
+        .stat-card {
+            background: var(--white); border-radius: 16px; padding: 30px;
+            box-shadow: var(--shadow); display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+        }
+        .stat {
+            text-align: center; padding: 14px 6px;
+            border-right: 1px solid var(--border);
+        }
+        .stat:nth-child(2n) { border-right: none; }
+        .stat:nth-child(-n+2) { border-bottom: 1px solid var(--border); padding-bottom: 24px; }
+        .stat:nth-last-child(-n+2) { padding-top: 24px; }
+        .stat-num {
+            font-size: 2rem; font-weight: 900; color: var(--royal);
+            display: block; line-height: 1; margin-bottom: 6px;
+        }
+        .stat-lbl { font-size: 0.78rem; color: var(--slate); font-weight: 600; }
+
+        /* WAT WE DOEN — features */
+        #wat-doen { background: var(--white); }
+        .features-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 12px;
+        }
+        .feature-card {
+            padding: 30px 26px; border: 1px solid var(--border);
+            border-radius: var(--radius); transition: var(--trans);
+            background: var(--white); position: relative; overflow: hidden;
+        }
+        .feature-card::after {
+            content: ''; position: absolute; left: 0; bottom: 0; right: 0;
+            height: 3px; background: var(--cyan);
+            transform: scaleX(0); transform-origin: left; transition: transform 0.35s;
+        }
+        .feature-card:hover {
+            border-color: transparent; box-shadow: var(--shadow-lg); transform: translateY(-4px);
+        }
+        .feature-card:hover::after { transform: scaleX(1); }
+        .feature-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 9px; }
+        .feature-card p { font-size: 0.88rem; color: var(--slate); line-height: 1.7; }
+
+        /* USE CASES */
+        #cases {
+            background: var(--light);
+        }
+        .cases-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 16px;
+        }
+        .case {
+            background: var(--white); border-radius: var(--radius);
+            padding: 28px 28px; border: 1px solid var(--border); transition: var(--trans);
+            display: flex; gap: 20px; align-items: flex-start;
+        }
+        .case:hover { box-shadow: var(--shadow); border-color: var(--cyan); }
+        .case-num {
+            flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+            background: var(--cyan); color: var(--navy);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.05rem;
+        }
+        .case h4 { font-size: 1rem; font-weight: 800; margin-bottom: 6px; }
+        .case p { font-size: 0.88rem; color: var(--slate); line-height: 1.7; }
+
+        /* AANPAK / PROCES */
+        #aanpak {
+            background: var(--navy); color: var(--white); position: relative; overflow: hidden;
+        }
+        #aanpak .label { color: var(--cyan); }
+        #aanpak .body-text { color: rgba(255,255,255,0.6); }
+        .timeline-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 18px;
+        }
+        .tl-step {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius); padding: 26px 24px; transition: var(--trans);
+        }
+        .tl-step:hover {
+            background: rgba(242,184,44,0.06); border-color: rgba(0,208,240,0.30);
+            transform: translateY(-4px);
+        }
+        .tl-num {
+            display: inline-block; width: 34px; height: 34px; border-radius: 50%;
+            background: var(--cyan); color: var(--navy);
+            text-align: center; line-height: 34px; font-weight: 900;
+            font-size: 0.92rem; margin-bottom: 14px;
+        }
+        .tl-step h4 { font-size: 0.98rem; font-weight: 800; color: var(--white); margin-bottom: 6px; }
+        .tl-step p  { font-size: 0.84rem; color: rgba(255,255,255,0.55); line-height: 1.65; }
+
+        /* GOVERNANCE / WAARDE */
+        #governance { background: var(--white); }
+        .gov-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+        }
+        .gov-list { list-style: none; }
+        .gov-list li {
+            padding: 14px 0; border-bottom: 1px solid var(--border);
+            display: flex; align-items: flex-start; gap: 14px;
+        }
+        .gov-list li:last-child { border-bottom: none; }
+        .gov-check {
+            flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+            background: rgba(242,184,44,0.15);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .gov-check svg { width: 13px; height: 13px; stroke: var(--royal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .gov-text strong { display: block; font-size: 0.96rem; font-weight: 700; margin-bottom: 2px; color: var(--navy); }
+        .gov-text span { font-size: 0.86rem; color: var(--slate); line-height: 1.6; }
+
+        .gov-visual {
+            background: var(--navy); border-radius: 16px; padding: 38px;
+            color: var(--white); position: relative; overflow: hidden;
+        }
+        .gov-visual::before {
+            content: ''; position: absolute; right: -60px; bottom: -60px;
+            width: 260px; height: 260px;
+            border: 38px solid rgba(242,184,44,0.08); border-radius: 50%; pointer-events: none;
+        }
+        .gov-quote {
+            font-size: 1.05rem; font-weight: 600; line-height: 1.6;
+            margin-bottom: 20px; position: relative; z-index: 2;
+        }
+        .gov-quote em { color: var(--cyan); font-style: normal; }
+        .gov-by { font-size: 0.82rem; color: rgba(255,255,255,0.45); position: relative; z-index: 2; }
+
+        .d-link {
+            display: inline-flex; align-items: center; gap: 5px;
+            margin-top: 18px; font-size: 0.82rem; font-weight: 700;
+            color: var(--royal); transition: gap 0.2s;
+        }
+        .d-link:hover { gap: 9px; }
+
+        /* CTA */
+        #cta-final {
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--royal) 100%);
+            text-align: center;
+        }
+        #cta-final h2 {
+            font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 900;
+            color: var(--navy); margin-bottom: 16px;
+        }
+        #cta-final p {
+            font-size: 1.05rem; color: rgba(24,34,43,0.78);
+            max-width: 560px; margin: 0 auto 32px; line-height: 1.7;
+        }
+        .btn-dark { background: var(--navy); color: var(--white); }
+        .btn-dark:hover { background: #222f3e; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.2); }
+
+        @media (max-width: 1024px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .timeline-grid { grid-template-columns: repeat(2, 1fr); }
+            .cases-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 900px) {
+            .intro-grid, .gov-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            section { padding: 60px 0; }
+            .nav-links { display: none; }
+            .features-grid { grid-template-columns: 1fr; }
+            .timeline-grid { grid-template-columns: 1fr; }
+            .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+        }
+        @media (max-width: 540px) {
+            .hero { padding: 130px 0 60px; }
+            .hero-btns .btn { width: 100%; justify-content: center; }
+            .stat-card { grid-template-columns: 1fr; }
+            .stat { border-right: none !important; border-bottom: 1px solid var(--border) !important; padding: 16px 6px !important; }
+            .stat:last-child { border-bottom: none !important; }
+        }
+        @media (prefers-reduced-motion: reduce) { * { transition-duration: 0.01ms !important; } }
+
+    </style>
+<!-- Microsoft Clarity -->
+<script src="assets/js/clarity.js"></script>
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:Begroting msdt:dt="string">Not found</mso:Begroting>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+<!-- Open Graph / Facebook / LinkedIn -->
+<meta content="website" property="og:type"/>
+<meta content="Noppa Solutions &amp; Consultants" property="og:site_name"/>
+<meta content="https://www.noppa.nl/diensten/ai-copilot.html" property="og:url"/>
+<meta content="AI-integratie &amp; Microsoft Copilot | Noppa Solutions &amp; Consultants" property="og:title"/>
+<meta content="Noppa Solutions &amp; Consultants begeleidt organisaties bij de adoptie van Microsoft Copilot en AI binnen Microsoft 365. Pilots, governance, training en concrete use cases." property="og:description"/>
+<meta content="https://www.noppa.nl/assets/images/DEF_Logo_Noppa.png" property="og:image"/>
+<!-- Twitter Card -->
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="AI-integratie &amp; Microsoft Copilot | Noppa Solutions &amp; Consultants" name="twitter:title"/>
+<meta content="Noppa Solutions &amp; Consultants begeleidt organisaties bij de adoptie van Microsoft Copilot en AI binnen Microsoft 365. Pilots, governance, training en concrete use cases." name="twitter:description"/>
+<meta content="https://www.noppa.nl/assets/images/DEF_Logo_Noppa.png" name="twitter:image"/>
+<!-- Theme Switcher Initializer (Anti-FOUC) -->
+<script>
+      (function() {
+        var theme = localStorage.getItem('noppa-theme') || 'light';
+        if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+</head>
+<body>
+<!-- ICON SPRITE (inline voor universele compatibiliteit) -->
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg">
+<symbol fill="none" id="ic-0c40c7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></symbol>
+<symbol fill="none" id="ic-0d33a5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></symbol>
+<symbol fill="none" id="ic-2ecd50" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></symbol>
+<symbol fill="none" id="ic-6142af" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 18L9 11.25l4.306 4.306a11.95 11.95 0 015.814-5.518l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"></path></symbol>
+<symbol fill="none" id="ic-a6c534" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"></path></symbol>
+<symbol fill="none" id="ic-dfe03d" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></symbol>
+<symbol fill="none" id="phone-old" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"></path></symbol>
+<symbol fill="none" id="users-group-2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"></path></symbol>
+<symbol fill="none" id="wrench-2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><path d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63"></path></symbol>
+</svg>
+<!-- NAV (injected by assets/js/site.js) -->
+<!-- ===== NAV ===== -->
+<nav id="navbar">
+    <div class="container nav-inner">
+        <a href="../index.html#home" class="nav-logo">
+            <img src="../assets/images/DEF_Logo_Noppa_wit.png" alt="Noppa Solutions &amp; Consultants" id="nav-logo">
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html#waarom">Waarom ons</a></li>
+            <li><a href="../index.html#diensten">Diensten</a></li>
+            <li><a href="../visie/productiviteit.html">Visie</a></li>
+            <li><a href="../index.html#team">Team</a></li>
+            <li><a href="../index.html#partners">Partners</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+        <a href="../contact.html" class="nav-cta">
+            <button class="btn btn-primary">Kennismaken</button>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menu openen" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mob-menu" id="mobMenu" role="dialog" aria-modal="true">
+    <button class="mob-close" id="mobClose" aria-label="Sluiten">&times;</button>
+    <a href="../index.html#waarom">Waarom ons</a>
+    <a href="../index.html#diensten">Diensten</a>
+    <a href="../visie/productiviteit.html">Visie</a>
+    <a href="../index.html#team">Team</a>
+    <a href="../index.html#partners">Partners</a>
+    <a href="../contact.html">Contact</a>
+    <a href="../contact.html" class="btn btn-primary" style="margin-top: 8px;">Kennismaken</a>
+</div>
+<!-- HERO -->
+<section class="hero">
+<svg aria-hidden="true" class="hero-rings" viewbox="0 0 540 540" xmlns="http://www.w3.org/2000/svg">
+<circle cx="270" cy="270" fill="none" r="244" stroke="rgba(0,208,240,0.14)" stroke-width="44"></circle>
+<circle cx="270" cy="270" fill="none" r="172" stroke="rgba(32,176,240,0.12)" stroke-width="36"></circle>
+<circle cx="270" cy="270" fill="none" r="108" stroke="rgba(32,96,224,0.10)" stroke-width="28"></circle>
+<circle cx="270" cy="270" fill="none" r="58" stroke="rgba(0,208,240,0.08)" stroke-width="20"></circle>
+</svg>
+<div class="container">
+<div class="breadcrumb">
+<a href="../index.html">Home</a>
+<span>›</span>
+<a href="../index.html#diensten">Diensten</a>
+<span>›</span>
+<span style="color: var(--white);">AI-integratie &amp; Copilot</span>
+</div>
+<div class="hero-eyebrow">
+<img src="../assets/icons/sparkles.svg" class="noppa-icon" alt="" style="width:20px;height:20px;display:inline-block;vertical-align:middle;">
+            AI-integratie &amp; Microsoft Copilot
+        </div>
+<h1 class="hero-h1">Maak AI <em>echt waardevol</em><br/>voor uw organisatie</h1>
+<p class="hero-sub">
+            Microsoft Copilot belooft veel — wij zorgen dat het ook <strong>levert</strong>.
+            Van de eerste verkenning tot een gedragen, veilige uitrol: wij begeleiden uw team
+            bij elke stap van de AI-reis binnen Microsoft 365.
+        </p>
+<div class="hero-btns">
+<a class="btn btn-primary" href="../contact.html">
+<img src="../assets/icons/calendar.svg" class="noppa-icon" alt="" style="width:20px;height:20px;display:inline-block;vertical-align:middle;">
+                Plan een afspraak
+            </a>
+<a class="btn btn-outline" href="#aanpak">Onze aanpak →</a>
+</div>
+</div>
+</section>
+<!-- INTRO + STATS -->
+<section class="intro">
+<div class="container">
+<div class="intro-grid">
+<div>
+<span class="label">De uitdaging</span>
+<h2 class="h2">AI is geen tool — het is een <em>verandering</em></h2>
+<p class="body-text">
+                    Veel organisaties schaffen Copilot-licenties aan en hopen dat de productiviteit vanzelf stijgt.
+                    De realiteit: zonder duidelijke use cases, juiste data-governance en gerichte adoptie blijft
+                    Copilot een dure proeftuin.
+                </p>
+<p class="body-text">
+                    Noppa Solutions &amp; Consultants maakt de stap van <strong>licentie naar werkelijke waarde</strong>. Wij combineren
+                    technische kennis van het Microsoft-ecosysteem met onze ervaring in mensgerichte adoptie —
+                    zodat AI bij uw mensen écht blijft plakken.
+                </p>
+</div>
+<div class="stat-card">
+<div class="stat"><span class="stat-num">M365</span><span class="stat-lbl">Native Microsoft</span></div>
+<div class="stat"><span class="stat-num">2025+</span><span class="stat-lbl">Copilot-ready</span></div>
+<div class="stat"><span class="stat-num">5</span><span class="stat-lbl">Specialisten</span></div>
+<div class="stat"><span class="stat-num">A–Z</span><span class="stat-lbl">Strategie tot adoptie</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- WAT WE DOEN -->
+<section id="diensten">
+<div class="container">
+<span class="label">Wat wij voor u doen</span>
+<h2 class="h2">Van strategie tot werkende <em>AI-agents</em></h2>
+<p class="body-text" style="max-width: 680px; margin-bottom: 18px;">
+            Wij dekken het hele Copilot-spectrum binnen Microsoft 365. Of u nu nog onderzoekt of Copilot
+            past bij uw organisatie, of al een pilot draait die meer impact moet maken — wij sluiten aan
+            bij uw situatie.
+        </p>
+<div class="diensten-grid">
+<div class="dienst disabled">
+<div class="c-icon"><img alt="Pilot-begeleiding" class="noppa-icon" src="../assets/icons/rocket.svg"/></div>
+<h3>Pilot-begeleiding</h3>
+<p>Een gerichte pilot met een controlegroep van 10–25 medewerkers. Meetbare doelen, korte sprints, en een afgeronde leerlus voor de bredere uitrol.</p>
+<a class="d-link" href="copilot-plannen.html">Meer weten →</a>
+</div>
+<div class="dienst">
+<div class="c-icon"><img src="../assets/icons/gear.svg" class="noppa-icon" alt="" style="width:20px;height:20px;display:inline-block;vertical-align:middle;"></div>
+<h3>AI-Agents &amp; Copilot Studio</h3>
+<p>Bouw van eigen AI-agents in Copilot Studio: van een HR-assistent tot een offerte-assistent die uw bedrijfskennis ontsluit voor uw medewerkers.</p>
+<a class="d-link" href="copilot-plannen.html">Meer weten →</a>
+</div>
+</div>
+</div>
+</section>
+<!-- USE CASES -->
+<section id="cases">
+<div class="container">
+<span class="label">In de praktijk</span>
+<h2 class="h2">Waar AI <em>direct</em> waarde toevoegt</h2>
+<p class="body-text" style="max-width: 680px;">
+            Vijf gangbare use cases waar wij organisaties mee helpen — bewezen scenario's die snel resultaat opleveren.
+        </p>
+<div class="cases-grid">
+<div class="case">
+<div class="case-num">1</div>
+<div>
+<h4>Vergaderingen samenvatten in Teams</h4>
+<p>Copilot vat meetings automatisch samen, extracteert actiepunten en koppelt deze aan eigenaars. Bespaart elke deelnemer ± 30 min per vergadering.</p>
+</div>
+</div>
+<div class="case">
+<div class="case-num">2</div>
+<div>
+<h4>E-mail efficiënter beheren</h4>
+<p>Threads samenvatten, conceptantwoorden genereren en prioriteit suggereren in Outlook — minder tijd in de inbox, meer tijd voor uw werk.</p>
+</div>
+</div>
+<div class="case">
+<div class="case-num">3</div>
+<div>
+<h4>Documenten &amp; rapporten opstellen</h4>
+<p>In Word: van bullets naar professionele tekst. In Excel: data-analyse en visualisaties zonder formules. In PowerPoint: van outline naar volledig deck.</p>
+</div>
+</div>
+<div class="case">
+<div class="case-num">4</div>
+<div>
+<h4>Bedrijfskennis ontsluiten</h4>
+<p>Copilot Studio-agents die antwoord geven op interne vragen — HR-beleid, IT-procedures, projectinformatie — direct uit SharePoint en Teams.</p>
+</div>
+</div>
+<div class="case">
+<div class="case-num">5</div>
+<div>
+<h4>Onboarding versnellen</h4>
+<p>Nieuwe medewerkers stellen vragen aan een persoonlijke onboarding-agent. Sneller productief, minder belasting voor HR en collega's.</p>
+</div>
+</div>
+<div class="case">
+<div class="case-num">6</div>
+<div>
+<h4>Power Automate × Copilot</h4>
+<p>Werkstromen die slimmer reageren — bijvoorbeeld inkomende offerteaanvragen automatisch classificeren en doorzetten naar de juiste accountmanager.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- AANPAK -->
+<section id="aanpak">
+<div class="container">
+<span class="label">Onze aanpak</span>
+<h2 class="h2 light">In <em>4 stappen</em> naar werkelijke AI-adoptie</h2>
+<p class="body-text" style="max-width: 680px;">
+            Pragmatisch, mensgericht en altijd meetbaar — zo zorgen wij dat AI bij uw mensen blijft plakken.
+        </p>
+<div class="timeline-grid">
+<div class="tl-step">
+<span class="tl-num">1</span>
+<h4>Verkenning &amp; Readiness</h4>
+<p>Workshop met stakeholders, scan van uw M365-tenant en identificatie van high-impact use cases.</p>
+</div>
+<div class="tl-step">
+<span class="tl-num">2</span>
+<h4>Pilot &amp; Bewijs</h4>
+<p>Gerichte pilot met meetbare doelen. Kleine groep, snelle leerlus, concrete resultaten in 6–8 weken.</p>
+</div>
+<div class="tl-step">
+<span class="tl-num">3</span>
+<h4>Uitrol &amp; Training</h4>
+<p>Brede uitrol met workshops per afdeling, prompt-bibliotheken en interne ambassadeurs.</p>
+</div>
+<div class="tl-step">
+<span class="tl-num">4</span>
+<h4>Borging &amp; Doorontwikkeling</h4>
+<p>Periodieke metingen, optimalisaties en uitbreiding naar nieuwe use cases of agents.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- GOVERNANCE -->
+<section id="governance">
+<div class="container">
+<div class="gov-grid">
+<div>
+<span class="label">Veilig én verantwoord</span>
+<h2 class="h2">AI mét <em>governance</em>, niet ondanks</h2>
+<p class="body-text">
+                    Copilot is zo veilig als de data waarop het wordt losgelaten. Wij zorgen dat uw informatie
+                    correct geclassificeerd, beveiligd en gegovernet is — voordat AI er toegang toe krijgt.
+                </p>
+<ul class="gov-list">
+<li>
+<span class="gov-check"><svg aria-hidden="true" height="24" width="24"><use href="#ic-2ecd50"></use></svg></span>
+<div class="gov-text"><strong>Microsoft Purview-inrichting</strong><span>Sensitivity labels, retention policies en informatieclassificatie op orde.</span></div>
+</li>
+<li>
+<span class="gov-check"><svg aria-hidden="true" height="24" width="24"><use href="#ic-2ecd50"></use></svg></span>
+<div class="gov-text"><strong>Rechten &amp; toegang</strong><span>"Oversharing" voorkomen door de juiste SharePoint-rechtenstructuur.</span></div>
+</li>
+<li>
+<span class="gov-check"><svg aria-hidden="true" height="24" width="24"><use href="#ic-2ecd50"></use></svg></span>
+<div class="gov-text"><strong>AVG &amp; verantwoord gebruik</strong><span>Acceptabel gebruik, verantwoordelijkheidsmatrix en heldere afspraken voor uw medewerkers.</span></div>
+</li>
+<li>
+<span class="gov-check"><svg aria-hidden="true" height="24" width="24"><use href="#ic-2ecd50"></use></svg></span>
+<div class="gov-text"><strong>Monitoring &amp; rapportage</strong><span>Inzicht in wie wat doet met Copilot, waar het waarde toevoegt en waar het stagneert.</span></div>
+</li>
+</ul>
+</div>
+<div class="gov-visual">
+<p class="gov-quote">
+                    "Een succesvolle Copilot-introductie begint <em>niet</em> bij de techniek,
+                    maar bij de vraag: <em>waarom</em> doen wij dit, voor <em>wie</em>,
+                    en welke <em>kaders</em> hebben we daarvoor nodig."
+                </p>
+<p class="gov-by">— Noppa Solutions &amp; Consultants, AI-adoptiefilosofie</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA -->
+<section id="cta-final">
+<div class="container">
+<h2>Klaar om de waarde van Copilot te ontsluiten?</h2>
+<p>
+            Plan een vrijblijvend kennismakingsgesprek van 30 minuten. Wij laten zien hoe een gerichte
+            Copilot-pilot binnen 8 weken meetbaar resultaat oplevert voor uw organisatie.
+        </p>
+<a class="btn btn-dark" href="../contact.html">
+            Plan een kennismaking →
+        </a>
+</div>
+</section>
+<!-- FOOTER (injected by assets/js/site.js) -->
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="container footer-inner">
+        <div class="nav-logo">
+            <img src="../assets/images/DEF_Logo_Noppa_wit.png" alt="Noppa Solutions &amp; Consultants">
+        </div>
+        <span class="footer-copy">© 2026 Noppa Solutions &amp; Consultants — Alle rechten voorbehouden</span>
+        <div class="footer-links">
+            <a href="../visie/productiviteit.html">Onze visie</a>
+            <a href="../algemene-voorwaarden.html">Algemene Voorwaarden</a>
+            <a href="../privacy-policy.html">Privacy Policy</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== COOKIE BANNER ===== -->
+<div class="cookie-banner" id="cookieBanner" role="dialog" aria-label="Cookiemelding" aria-live="polite">
+    <div class="cookie-text">
+        <strong>Wij gebruiken cookies.</strong> Noppa Solutions &amp; Consultants gebruikt functionele cookies en geanonimiseerde statistieken om de website optimaal te laten functioneren. Lees onze <a href="../privacy-policy.html">Privacy Policy</a>.
+    </div>
+    <div class="cookie-actions">
+        <button class="cookie-btn cookie-btn-decline" id="cookieDecline" type="button">Weigeren</button>
+        <button class="cookie-btn cookie-btn-accept" id="cookieAccept" type="button">Akkoord</button>
+    </div>
+</div>
+
+<script src="../assets/js/site.js"></script>
+</body>
+</html>
