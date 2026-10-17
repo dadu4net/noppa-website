@@ -33,6 +33,7 @@ require_once NOPPA_INCLUDES_DIR . '/FooterEngine.php';
 require_once NOPPA_INCLUDES_DIR . '/TeamEngine.php';
 require_once NOPPA_INCLUDES_DIR . '/KennisbankEngine.php';
 require_once NOPPA_INCLUDES_DIR . '/DienstenEngine.php';
+require_once NOPPA_INCLUDES_DIR . '/LegalEngine.php';
 
 // Initialiseer engines
 $mdEngine         = new MarkdownEngine(NOPPA_CONTENT_DIR, NOPPA_ASSETS_DIR . '/icons');
@@ -41,6 +42,7 @@ $footerEngine     = new FooterEngine(NOPPA_CONTENT_DIR . '/footer.md');
 $teamEngine       = new TeamEngine(NOPPA_BASE_DIR . '/data/team', NOPPA_ASSETS_DIR . '/icons');
 $kennisbankEngine = new KennisbankEngine(NOPPA_CONTENT_DIR . '/kennisbank/artikelen', NOPPA_ASSETS_DIR . '/icons');
 $dienstenEngine   = new DienstenEngine(NOPPA_BASE_DIR . '/data/diensten', NOPPA_ASSETS_DIR . '/icons');
+$legalEngine      = new LegalEngine(NOPPA_BASE_DIR . '/data/legal', NOPPA_ASSETS_DIR . '/icons');
 
 // Bepaal de opgevraagde pagina (route)
 $requestedPage = $_GET['page'] ?? '';
@@ -75,6 +77,8 @@ $kennisbankCatalogHtml = '';
 $isDienstenPage   = false;
 $isDienstDetail   = false;
 $dienstDetailHtml = '';
+$isLegalPage      = false;
+$legalHtml        = '';
 $pageData         = null;
 
 // 1. Routeer teamprofiel verzoeken (bijv. team, team/rik-dobbelsteen, profiel-poc, of ?page=team&id=...)
@@ -196,9 +200,36 @@ elseif ($cleanRequested === 'diensten' || str_starts_with($cleanRequested, 'dien
         $pageData = $mdEngine->loadPage('diensten');
     }
 }
+// 4. Routeer Juridische documenten (bijv. algemene-voorwaarden, privacy-policy, of ?page=algemene-voorwaarden)
+elseif ($cleanRequested === 'algemene-voorwaarden' || $cleanRequested === 'privacy-policy' || $cleanRequested === 'legal' || str_starts_with($cleanRequested, 'legal/') || ($requestedPage === 'algemene-voorwaarden') || ($requestedPage === 'privacy-policy')) {
+    $isLegalPage = true;
+    $legalSlug = $_GET['id'] ?? $_GET['slug'] ?? '';
+    if (empty($legalSlug)) {
+        if (str_starts_with($cleanRequested, 'legal/')) {
+            $legalSlug = substr($cleanRequested, 6);
+        } else {
+            $legalSlug = $cleanRequested;
+        }
+    }
+    if (empty($legalSlug) || $legalSlug === 'legal') {
+        $legalSlug = 'algemene-voorwaarden';
+    }
+    $legalSlug = strtolower(preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$legalSlug));
 
-// 4. Standaard pagina's (home, over-ons, contact, etc.)
-if (!$isTeamPage && !$isKennisbankPage && !$isDienstenPage) {
+    $legalDoc = $legalEngine->loadDocument($legalSlug);
+    if ($legalDoc) {
+        $pageSlug = 'legal-' . $legalSlug;
+        $pageData = [
+            'meta'     => $legalDoc['meta'],
+            'sections' => [],
+            'toc'      => $legalDoc['toc']
+        ];
+        $legalHtml = $legalEngine->renderDocument($legalDoc);
+    }
+}
+
+// 5. Standaard pagina's (home, over-ons, contact, etc.)
+if (!$isTeamPage && !$isKennisbankPage && !$isDienstenPage && !$isLegalPage) {
     $pageSlug = strtolower(preg_replace('/[^a-zA-Z0-9_-]/', '', $requestedPage));
     if (empty($pageSlug) || $pageSlug === 'index' || $pageSlug === 'indexphp') {
         $pageSlug = 'home';
@@ -253,6 +284,10 @@ if ($isTeamPage && !empty($teamProfileHtml)): ?>
 <?php elseif ($isDienstenPage && $isDienstDetail && !empty($dienstDetailHtml)): ?>
 <main id="main-content" role="main" class="portal-main diensten-detail-main">
     <?= $dienstDetailHtml; ?>
+</main>
+<?php elseif ($isLegalPage && !empty($legalHtml)): ?>
+<main id="main-content" role="main" class="portal-main legal-document-main">
+    <?= $legalHtml; ?>
 </main>
 <?php else:
     // Render Hero Partial indien gedefinieerd in frontmatter (voor home, diensten, over-ons, contact, kennisbank overview)

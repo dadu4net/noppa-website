@@ -109,4 +109,4 @@ Copilot is zo veilig als de data waarop het wordt losgelaten. Wij zorgen dat uw 
 - **Monitoring & rapportage**: Inzicht in wie wat doet met Copilot, waar het waarde toevoegt en waar het stagneert.
 
 > "Een succesvolle Copilot-introductie begint *niet* bij de techniek, maar bij de vraag: *waarom* doen wij dit, voor *wie*, en welke *kaders* hebben we daarvoor nodig."
-> — Noppa Solutions & Consultants, AI-adoptiefilosofie
+> Noppa Solutions & Consultants, AI-adoptiefilosofie

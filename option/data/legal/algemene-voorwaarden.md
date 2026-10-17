@@ -2,6 +2,10 @@
 pageTitle: Algemene Voorwaarden | Noppa
 pageDesc: Algemene Voorwaarden van Noppa Solutions & Consultants — voorwaarden voor het leveren van diensten en producten, vergoedingen, intellectuele eigendom, aansprakelijkheid en geheimhouding.
 date: mei 2026
+badge: Juridisch
+badge_icon: document
+hero_title: "Algemene <span class='gradient-text'>Voorwaarden</span>"
+hero_subtitle: "Deze voorwaarden beheersen alle offertes en overeenkomsten van Noppa B.V. voor het leveren van diensten en producten aan onze opdrachtgevers."
 ---
 
 ## Artikel 1 - Algemeen
