@@ -6,6 +6,7 @@ badge: Juridisch
 badge_icon: document
 hero_title: "Algemene <span class='gradient-text'>Voorwaarden</span>"
 hero_subtitle: "Deze voorwaarden beheersen alle offertes en overeenkomsten van Noppa B.V. voor het leveren van diensten en producten aan onze opdrachtgevers."
+pdf: "assets/documents/algemene-voorwaarden-noppa.pdf"
 ---
 
 ## Artikel 1 - Algemeen

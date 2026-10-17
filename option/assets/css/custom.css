@@ -3981,8 +3981,113 @@ details.faq .faq-answer,
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-top: 16px;
     font-size: 0.88rem;
     font-weight: 600;
     color: var(--text-muted);
+}
+
+.legal-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 22px;
+}
+
+.legal-actions-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legal-actions-group .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    font-size: 0.875rem;
+}
+
+.meta-box-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.meta-box-text {
+    flex: 1 1 300px;
+}
+
+.meta-box-action {
+    flex-shrink: 0;
+}
+
+.meta-box-action .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toc-download-box {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.toc-download-box .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   Print Styles for Clean Legal PDF / Print Output
+   ========================================================================== */
+@media print {
+    header, nav, #tocSidebar, #cta-final, footer, .cookie-banner, .hero-ambient, .legal-actions-group, .meta-box-action, .toc-contact-prompt {
+        display: none !important;
+    }
+    body {
+        background: #ffffff !important;
+        color: #111111 !important;
+        font-size: 11pt !important;
+        line-height: 1.55 !important;
+    }
+    .page-wrap, .page-body, .artikel-layout {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .hero-section {
+        padding: 24px 0 16px !important;
+        background: none !important;
+    }
+    .hero-title {
+        font-size: 24pt !important;
+        color: #000000 !important;
+    }
+    .hero-subtitle {
+        color: #333333 !important;
+    }
+    .av-num {
+        background: none !important;
+        color: #000000 !important;
+        border: 1px solid #333333 !important;
+        font-weight: bold !important;
+    }
+    .artikel-prose h2 {
+        page-break-after: avoid;
+        break-after: avoid;
+        color: #000000 !important;
+        margin-top: 24pt !important;
+    }
+    .page-section {
+        padding: 0 !important;
+    }
 }

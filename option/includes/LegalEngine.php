@@ -62,6 +62,7 @@ class LegalEngine {
         $badgeIcon    = $frontmatter['badge_icon'] ?? 'document';
         $heroTitle    = $frontmatter['hero_title'] ?? '';
         $heroSubtitle = $frontmatter['hero_subtitle'] ?? $pageDesc;
+        $pdf          = $frontmatter['pdf'] ?? ($slug === 'algemene-voorwaarden' ? 'assets/documents/algemene-voorwaarden-noppa.pdf' : '');
 
         if (empty($heroTitle)) {
             if ($slug === 'algemene-voorwaarden') {
@@ -143,6 +144,7 @@ class LegalEngine {
             'badge_icon'   => $badgeIcon,
             'hero_title'   => $heroTitle,
             'hero_subtitle'=> $heroSubtitle,
+            'pdf'          => $pdf,
             'toc'          => $toc,
             'contentHtml'  => $contentHtml,
             'meta'         => $meta
@@ -161,6 +163,8 @@ class LegalEngine {
         $date        = $doc['date'];
         $badge       = $doc['badge'];
         $badgeIcon   = $doc['badge_icon'];
+        $pdf         = $doc['pdf'] ?? '';
+        $assetPrefix = $GLOBALS['assetPrefix'] ?? './';
 
         ob_start();
         ?>
@@ -193,9 +197,23 @@ class LegalEngine {
                     <p class="hero-subtitle"><?= htmlspecialchars($heroSub, ENT_QUOTES, 'UTF-8'); ?></p>
                     <?php endif; ?>
 
-                    <div class="legal-meta-bar">
-                        <span class="meta-icon" aria-hidden="true"><?= $this->getSvgIcon('calendar', 15); ?></span>
-                        <span>Laatst bijgewerkt: <?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8'); ?></span>
+                    <div class="legal-hero-actions">
+                        <div class="legal-meta-bar">
+                            <span class="meta-icon" aria-hidden="true"><?= $this->getSvgIcon('calendar', 15); ?></span>
+                            <span>Laatst bijgewerkt: <?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <?php if (!empty($pdf)): ?>
+                        <div class="legal-actions-group">
+                            <a href="<?= htmlspecialchars($this->formatUrl('/' . ltrim($pdf, '/')), ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary btn-sm" download>
+                                <?= $this->getSvgIcon('document', 15); ?>
+                                <span>Download PDF</span>
+                            </a>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="window.print()" title="Pagina afdrukken">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                                <span>Afdrukken</span>
+                            </button>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -229,6 +247,15 @@ class LegalEngine {
                                 </ul>
                             </nav>
 
+                            <?php if (!empty($pdf)): ?>
+                            <div class="toc-download-box">
+                                <a href="<?= htmlspecialchars($this->formatUrl('/' . ltrim($pdf, '/')), ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-secondary btn-sm btn-block" download>
+                                    <?= $this->getSvgIcon('document', 16); ?>
+                                    <span>Download PDF-versie</span>
+                                </a>
+                            </div>
+                            <?php endif; ?>
+
                             <div class="toc-contact-prompt">
                                 <p><strong>Vragen over de voorwaarden?</strong></p>
                                 <a href="<?= htmlspecialchars($this->formatUrl('/contact'), ENT_QUOTES, 'UTF-8'); ?>" class="toc-contact-link">
@@ -246,8 +273,20 @@ class LegalEngine {
                         </article>
 
                         <div class="artikel-meta-box">
-                            <strong>Vragen over deze voorwaarden?</strong><br>
-                            Neem contact met ons op via <a href="mailto:info@noppa.nl">info@noppa.nl</a> of bel <a href="tel:+31613357723">+31 (0)6 13 35 77 23</a>. Wij beantwoorden uw vraag graag persoonlijk.
+                            <div class="meta-box-inner">
+                                <div class="meta-box-text">
+                                    <strong>Vragen over deze voorwaarden?</strong><br>
+                                    Neem contact met ons op via <a href="mailto:info@noppa.nl">info@noppa.nl</a> of bel <a href="tel:+31613357723">+31 (0)6 13 35 77 23</a>. Wij beantwoorden uw vraag graag persoonlijk.
+                                </div>
+                                <?php if (!empty($pdf)): ?>
+                                <div class="meta-box-action">
+                                    <a href="<?= htmlspecialchars($this->formatUrl('/' . ltrim($pdf, '/')), ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary btn-sm" download>
+                                        <?= $this->getSvgIcon('document', 15); ?>
+                                        <span>Download PDF</span>
+                                    </a>
+                                </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
 
@@ -378,6 +417,12 @@ class LegalEngine {
         $parts       = explode('#', $url, 2);
         $rawPath     = trim($parts[0]);
         $hash        = isset($parts[1]) ? '#' . $parts[1] : '';
+
+        // Directe statische bestanden (PDF, documenten, afbeeldingen)
+        if (preg_match('/\.(pdf|png|jpg|jpeg|svg|webp|ico|docx|xlsx)$/i', $rawPath)) {
+            $assetPrefix = $GLOBALS['assetPrefix'] ?? './';
+            return $assetPrefix . ltrim(preg_replace('/^(\.\.\/|\.\/)+/', '', $rawPath), '/');
+        }
 
         $path = preg_replace('/^(\.\.\/|\.\/)+/', '', $rawPath);
         $path = preg_replace('/\.(php|html)$/i', '', $path);
