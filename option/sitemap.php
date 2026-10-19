@@ -2,99 +2,181 @@
 /**
  * =========================================================================
  * Noppa Solutions & Consultants — Dynamic XML Sitemap Generator
- * Automatically scans content/pages/ and builds a search-engine ready sitemap
+ * Standardized according to all Noppa skills:
+ * - Scans content/pages/, data/diensten/, data/team/,
+ *   content/kennisbank/artikelen/ and data/legal/
+ * - Adheres strictly to the Sitemaps XML protocol (0.9)
+ * - Supports HTTP response, CLI execution, and static XML file generation
  * =========================================================================
  */
 
 $baseUrl = 'https://noppa.nl';
-$pagesDir = __DIR__ . '/content/pages';
+$baseDir = __DIR__;
 
-$files = glob($pagesDir . '/*.md') ?: [];
+$pagesDir    = $baseDir . '/content/pages';
+$dienstenDir = $baseDir . '/data/diensten';
+$teamDir     = $baseDir . '/data/team';
+$kbDir       = $baseDir . '/content/kennisbank/artikelen';
+$legalDir    = $baseDir . '/data/legal';
 
-header('Content-Type: application/xml; charset=utf-8');
+$urls = [];
 
-echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
-
-foreach ($files as $file) {
-    $slug = basename($file, '.md');
-    
-    // Skip 404 pagina
-    if ($slug === '404') {
-        continue;
+// Helper om bestand te inspecteren op noindex, priority en changefreq
+function inspectMeta(string $filePath, string $defaultPrio, string $defaultFreq): ?array {
+    if (!file_exists($filePath)) return null;
+    $raw = file_get_contents($filePath);
+    if (preg_match('/robots:\s*.*noindex/i', $raw)) {
+        return null;
     }
-
-    $lastMod = date('Y-m-d', filemtime($file));
-    $urlPath = ($slug === 'home') ? '/' : '/' . $slug;
-    $fullUrl = $baseUrl . $urlPath;
-
-    // Prioriteit en frequentie
-    $priority = ($slug === 'home') ? '1.0' : '0.8';
-    $changefreq = ($slug === 'home') ? 'weekly' : 'monthly';
-
-    // Optionele override via frontmatter
-    $raw = file_get_contents($file);
-    if (preg_match('/^---\r?\n(.*?)\r?\n---/s', $raw, $m)) {
-        if (preg_match('/priority:\s*([0-9.]+)/i', $m[1], $pm)) {
-            $priority = trim($pm[1]);
-        }
-        if (preg_match('/changefreq:\s*([a-z]+)/i', $m[1], $cm)) {
-            $changefreq = trim($cm[1]);
-        }
-        if (preg_match('/robots:\s*.*noindex/i', $m[1])) {
-            continue; // Skip noindex pagina's
-        }
+    $priority = $defaultPrio;
+    $changefreq = $defaultFreq;
+    if (preg_match('/priority:\s*([0-9.]+)/i', $raw, $pm)) {
+        $priority = trim($pm[1]);
     }
-
-    echo "  <url>\n";
-    echo "    <loc>" . htmlspecialchars($fullUrl, ENT_QUOTES, 'UTF-8') . "</loc>\n";
-    echo "    <lastmod>" . $lastMod . "</lastmod>\n";
-    echo "    <changefreq>" . $changefreq . "</changefreq>\n";
-    echo "    <priority>" . $priority . "</priority>\n";
-    echo "  </url>\n";
+    if (preg_match('/changefreq:\s*([a-z]+)/i', $raw, $cm)) {
+        $changefreq = trim($cm[1]);
+    }
+    $lastmod = date('Y-m-d', filemtime($filePath));
+    return [
+        'priority'   => $priority,
+        'changefreq' => $changefreq,
+        'lastmod'    => $lastmod
+    ];
 }
 
-// Voeg teamleden toe vanuit data/team/
-$teamDir = __DIR__ . '/data/team';
+// 1. Homepage
+$homeMeta = inspectMeta($pagesDir . '/home.md', '1.0', 'weekly');
+if ($homeMeta) {
+    $urls[] = [
+        'loc'        => $baseUrl . '/',
+        'lastmod'    => $homeMeta['lastmod'],
+        'changefreq' => $homeMeta['changefreq'],
+        'priority'   => $homeMeta['priority']
+    ];
+}
+
+// 2. Belangrijkste overzichtspagina's
+$corePages = [
+    'diensten'   => ['prio' => '0.9', 'freq' => 'weekly'],
+    'kennisbank' => ['prio' => '0.9', 'freq' => 'weekly'],
+    'over-ons'   => ['prio' => '0.8', 'freq' => 'monthly'],
+    'contact'    => ['prio' => '0.8', 'freq' => 'monthly'],
+];
+
+foreach ($corePages as $slug => $defaults) {
+    $meta = inspectMeta($pagesDir . '/' . $slug . '.md', $defaults['prio'], $defaults['freq']);
+    if ($meta) {
+        $urls[] = [
+            'loc'        => $baseUrl . '/' . $slug,
+            'lastmod'    => $meta['lastmod'],
+            'changefreq' => $meta['changefreq'],
+            'priority'   => $meta['priority']
+        ];
+    }
+}
+
+// Overige content/pages/ (exclusief 404, teams, home, en al verwerkte core pages)
+$allPageFiles = glob($pagesDir . '/*.md') ?: [];
+$skipPages = array_merge(['home', '404', 'teams'], array_keys($corePages));
+
+foreach ($allPageFiles as $pFile) {
+    $slug = basename($pFile, '.md');
+    if (in_array($slug, $skipPages, true)) continue;
+    $meta = inspectMeta($pFile, '0.8', 'monthly');
+    if ($meta) {
+        $urls[] = [
+            'loc'        => $baseUrl . '/' . $slug,
+            'lastmod'    => $meta['lastmod'],
+            'changefreq' => $meta['changefreq'],
+            'priority'   => $meta['priority']
+        ];
+    }
+}
+
+// 3. Diensten detailpagina's (data/diensten/*.md)
+$dienstenFiles = glob($dienstenDir . '/*.md') ?: [];
+foreach ($dienstenFiles as $dFile) {
+    $slug = basename($dFile, '.md');
+    $meta = inspectMeta($dFile, '0.9', 'monthly');
+    if ($meta) {
+        $urls[] = [
+            'loc'        => $baseUrl . '/diensten/' . $slug,
+            'lastmod'    => $meta['lastmod'],
+            'changefreq' => $meta['changefreq'],
+            'priority'   => $meta['priority']
+        ];
+    }
+}
+
+// 4. Teamlid profielen (data/team/*.md)
 $teamFiles = glob($teamDir . '/*.md') ?: [];
-
-foreach ($teamFiles as $teamFile) {
-    $teamId = basename($teamFile, '.md');
-    $lastMod = date('Y-m-d', filemtime($teamFile));
-    $fullUrl = $baseUrl . '/team/' . $teamId;
-
-    echo "  <url>\n";
-    echo "    <loc>" . htmlspecialchars($fullUrl, ENT_QUOTES, 'UTF-8') . "</loc>\n";
-    echo "    <lastmod>" . $lastMod . "</lastmod>\n";
-    echo "    <changefreq>monthly</changefreq>\n";
-    echo "    <priority>0.7</priority>\n";
-    echo "  </url>\n";
+foreach ($teamFiles as $tFile) {
+    $slug = basename($tFile, '.md');
+    $meta = inspectMeta($tFile, '0.7', 'monthly');
+    if ($meta) {
+        $urls[] = [
+            'loc'        => $baseUrl . '/team/' . $slug,
+            'lastmod'    => $meta['lastmod'],
+            'changefreq' => $meta['changefreq'],
+            'priority'   => $meta['priority']
+        ];
+    }
 }
 
-// Voeg Kennisbank hoofdpagina en artikelen toe
-$kbDir = __DIR__ . '/content/kennisbank/artikelen';
+// 5. Kennisbank artikelen (content/kennisbank/artikelen/*.md)
 $kbFiles = glob($kbDir . '/*.md') ?: [];
-
-echo "  <url>\n";
-echo "    <loc>" . htmlspecialchars($baseUrl . '/kennisbank', ENT_QUOTES, 'UTF-8') . "</loc>\n";
-echo "    <lastmod>" . date('Y-m-d') . "</lastmod>\n";
-echo "    <changefreq>weekly</changefreq>\n";
-echo "    <priority>0.9</priority>\n";
-echo "  </url>\n";
-
 foreach ($kbFiles as $kbFile) {
-    $artSlug = basename($kbFile, '.md');
-    if ($artSlug === 'index' || $artSlug === 'README') continue;
-    
-    $lastMod = date('Y-m-d', filemtime($kbFile));
-    $fullUrl = $baseUrl . '/kennisbank/' . $artSlug;
-
-    echo "  <url>\n";
-    echo "    <loc>" . htmlspecialchars($fullUrl, ENT_QUOTES, 'UTF-8') . "</loc>\n";
-    echo "    <lastmod>" . $lastMod . "</lastmod>\n";
-    echo "    <changefreq>monthly</changefreq>\n";
-    echo "    <priority>0.8</priority>\n";
-    echo "  </url>\n";
+    $slug = basename($kbFile, '.md');
+    if ($slug === 'index' || $slug === 'README') continue;
+    $meta = inspectMeta($kbFile, '0.8', 'monthly');
+    if ($meta) {
+        $urls[] = [
+            'loc'        => $baseUrl . '/kennisbank/' . $slug,
+            'lastmod'    => $meta['lastmod'],
+            'changefreq' => $meta['changefreq'],
+            'priority'   => $meta['priority']
+        ];
+    }
 }
 
-echo '</urlset>' . "\n";
+// 6. Juridische pagina's (data/legal/*.md)
+$legalFiles = glob($legalDir . '/*.md') ?: [];
+foreach ($legalFiles as $lFile) {
+    $slug = basename($lFile, '.md');
+    $meta = inspectMeta($lFile, '0.5', 'monthly');
+    if ($meta) {
+        $urls[] = [
+            'loc'        => $baseUrl . '/' . $slug,
+            'lastmod'    => $meta['lastmod'],
+            'changefreq' => $meta['changefreq'],
+            'priority'   => $meta['priority']
+        ];
+    }
+}
+
+// XML samenstellen
+$xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+$xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+foreach ($urls as $u) {
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>" . htmlspecialchars($u['loc'], ENT_QUOTES, 'UTF-8') . "</loc>\n";
+    $xml .= "    <lastmod>" . $u['lastmod'] . "</lastmod>\n";
+    $xml .= "    <changefreq>" . $u['changefreq'] . "</changefreq>\n";
+    $xml .= "    <priority>" . $u['priority'] . "</priority>\n";
+    $xml .= "  </url>\n";
+}
+
+$xml .= '</urlset>' . "\n";
+
+// Als ?save=1 of CLI argument --save is meegegeven, schrijf ook direct naar static sitemap.xml
+if (isset($_GET['save']) || in_array('--save', $argv ?? [], true)) {
+    file_put_contents($baseDir . '/sitemap.xml', $xml);
+}
+
+// Output headers indien niet via CLI
+if (php_sapi_name() !== 'cli' && !headers_sent()) {
+    header('Content-Type: application/xml; charset=utf-8');
+}
+
+echo $xml;
