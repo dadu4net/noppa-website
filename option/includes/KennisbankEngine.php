@@ -20,10 +20,12 @@ class KennisbankEngine {
     private Parsedown $parsedown;
     private string $contentDir;
     private string $iconsDir;
+    private array $siteConfig;
 
-    public function __construct(string $contentDir = '', string $iconsDir = '') {
+    public function __construct(string $contentDir = '', string $iconsDir = '', array $siteConfig = []) {
         $this->contentDir = rtrim($contentDir ?: dirname(__DIR__) . '/content/kennisbank/artikelen', '/\\') . '/';
         $this->iconsDir   = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
+        $this->siteConfig = $siteConfig ?: ($GLOBALS['siteConfig'] ?? []);
         $this->parsedown  = new Parsedown();
         $this->parsedown->setSafeMode(false);
     }

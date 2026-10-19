@@ -13,6 +13,30 @@ class SeoHelper {
     public static string $defaultImage = './assets/images/DEF_Logo_Noppa.png';
     public static string $defaultDescription = 'Noppa Solutions & Consultants verhoogt de bedrijfsproductiviteit met Microsoft 365, Copilot AI en slimme procesautomatisering.';
 
+    public static array $config = [];
+
+    /**
+     * Configureer SEO defaults vanuit site.config.php.
+     */
+    public static function configure(array $config): void {
+        self::$config = $config;
+        if (!empty($config['site_name'])) {
+            self::$defaultSiteName = $config['site_name'];
+        }
+        if (!empty($config['payoff'])) {
+            self::$defaultPayoff = $config['payoff'];
+        }
+        if (!empty($config['base_url'])) {
+            self::$defaultBaseUrl = rtrim($config['base_url'], '/');
+        }
+        if (!empty($config['assets']['default_og_image'])) {
+            self::$defaultImage = $config['assets']['default_og_image'];
+        }
+        if (!empty($config['seo']['default_description'])) {
+            self::$defaultDescription = $config['seo']['default_description'];
+        }
+    }
+
     /**
      * Genereer complete set aan SEO tags voor in de <head>.
      *
@@ -25,7 +49,7 @@ class SeoHelper {
         
         // Bepaal titel
         $pageTitle = $meta['title'] ?? $meta['titel'] ?? self::$defaultSiteName;
-        $fullTitle = (strpos($pageTitle, 'Noppa') !== false) 
+        $fullTitle = (stripos($pageTitle, self::$defaultSiteName) !== false) 
             ? $pageTitle 
             : $pageTitle . ' | ' . self::$defaultSiteName;
 
@@ -98,17 +122,17 @@ class SeoHelper {
                 ],
                 'contactPoint' => [
                     '@type' => 'ContactPoint',
-                    'telephone' => '+31-6-1335-7723',
+                    'telephone' => self::$config['company']['phone_raw'] ?? (self::$config['company']['phone'] ?? '+31-6-1335-7723'),
                     'contactType' => 'customer service',
-                    'areaServed' => 'NL',
+                    'areaServed' => self::$config['company']['country'] ?? 'NL',
                     'availableLanguage' => ['Dutch', 'English']
                 ],
                 'address' => [
                     '@type' => 'PostalAddress',
-                    'streetAddress' => 'Pijlkruid 44',
-                    'addressLocality' => 'Berlicum',
-                    'postalCode' => '5258 BW',
-                    'addressCountry' => 'NL'
+                    'streetAddress' => self::$config['company']['address'] ?? 'Pijlkruid 44',
+                    'addressLocality' => self::$config['company']['city'] ?? 'Berlicum',
+                    'postalCode' => self::$config['company']['postal_code'] ?? '5258 BW',
+                    'addressCountry' => self::$config['company']['country'] ?? 'NL'
                 ]
             ],
             [

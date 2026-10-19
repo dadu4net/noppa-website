@@ -10,14 +10,20 @@
  * =========================================================================
  */
 
-$baseUrl = 'https://noppa.nl';
 $baseDir = __DIR__;
+$siteConfigFile = $baseDir . '/site.config.php';
+$siteConfig     = file_exists($siteConfigFile) ? require $siteConfigFile : [];
 
-$pagesDir    = $baseDir . '/content/pages';
-$dienstenDir = $baseDir . '/data/diensten';
-$teamDir     = $baseDir . '/data/team';
-$kbDir       = $baseDir . '/content/kennisbank/artikelen';
-$legalDir    = $baseDir . '/data/legal';
+$baseUrl = rtrim($siteConfig['base_url'] ?? 'https://noppa.nl', '/');
+
+$pagesDir    = $siteConfig['paths']['content'] ?? ($baseDir . '/content/pages');
+if (is_dir($baseDir . '/content/pages') && !isset($siteConfig['paths']['content_pages'])) {
+    $pagesDir = $baseDir . '/content/pages';
+}
+$dienstenDir = $siteConfig['paths']['diensten'] ?? ($baseDir . '/data/diensten');
+$teamDir     = $siteConfig['paths']['team'] ?? ($baseDir . '/data/team');
+$kbDir       = $siteConfig['paths']['kennisbank'] ?? ($baseDir . '/content/kennisbank/artikelen');
+$legalDir    = $siteConfig['paths']['legal'] ?? ($baseDir . '/data/legal');
 
 $urls = [];
 
@@ -94,63 +100,71 @@ foreach ($allPageFiles as $pFile) {
 }
 
 // 3. Diensten detailpagina's (data/diensten/*.md)
-$dienstenFiles = glob($dienstenDir . '/*.md') ?: [];
-foreach ($dienstenFiles as $dFile) {
-    $slug = basename($dFile, '.md');
-    $meta = inspectMeta($dFile, '0.9', 'monthly');
-    if ($meta) {
-        $urls[] = [
-            'loc'        => $baseUrl . '/diensten/' . $slug,
-            'lastmod'    => $meta['lastmod'],
-            'changefreq' => $meta['changefreq'],
-            'priority'   => $meta['priority']
-        ];
+if ($siteConfig['modules']['diensten'] ?? true) {
+    $dienstenFiles = glob($dienstenDir . '/*.md') ?: [];
+    foreach ($dienstenFiles as $dFile) {
+        $slug = basename($dFile, '.md');
+        $meta = inspectMeta($dFile, '0.9', 'monthly');
+        if ($meta) {
+            $urls[] = [
+                'loc'        => $baseUrl . '/diensten/' . $slug,
+                'lastmod'    => $meta['lastmod'],
+                'changefreq' => $meta['changefreq'],
+                'priority'   => $meta['priority']
+            ];
+        }
     }
 }
 
 // 4. Teamlid profielen (data/team/*.md)
-$teamFiles = glob($teamDir . '/*.md') ?: [];
-foreach ($teamFiles as $tFile) {
-    $slug = basename($tFile, '.md');
-    $meta = inspectMeta($tFile, '0.7', 'monthly');
-    if ($meta) {
-        $urls[] = [
-            'loc'        => $baseUrl . '/team/' . $slug,
-            'lastmod'    => $meta['lastmod'],
-            'changefreq' => $meta['changefreq'],
-            'priority'   => $meta['priority']
-        ];
+if ($siteConfig['modules']['team'] ?? true) {
+    $teamFiles = glob($teamDir . '/*.md') ?: [];
+    foreach ($teamFiles as $tFile) {
+        $slug = basename($tFile, '.md');
+        $meta = inspectMeta($tFile, '0.7', 'monthly');
+        if ($meta) {
+            $urls[] = [
+                'loc'        => $baseUrl . '/team/' . $slug,
+                'lastmod'    => $meta['lastmod'],
+                'changefreq' => $meta['changefreq'],
+                'priority'   => $meta['priority']
+            ];
+        }
     }
 }
 
 // 5. Kennisbank artikelen (content/kennisbank/artikelen/*.md)
-$kbFiles = glob($kbDir . '/*.md') ?: [];
-foreach ($kbFiles as $kbFile) {
-    $slug = basename($kbFile, '.md');
-    if ($slug === 'index' || $slug === 'README') continue;
-    $meta = inspectMeta($kbFile, '0.8', 'monthly');
-    if ($meta) {
-        $urls[] = [
-            'loc'        => $baseUrl . '/kennisbank/' . $slug,
-            'lastmod'    => $meta['lastmod'],
-            'changefreq' => $meta['changefreq'],
-            'priority'   => $meta['priority']
-        ];
+if ($siteConfig['modules']['kennisbank'] ?? true) {
+    $kbFiles = glob($kbDir . '/*.md') ?: [];
+    foreach ($kbFiles as $kbFile) {
+        $slug = basename($kbFile, '.md');
+        if ($slug === 'index' || $slug === 'README') continue;
+        $meta = inspectMeta($kbFile, '0.8', 'monthly');
+        if ($meta) {
+            $urls[] = [
+                'loc'        => $baseUrl . '/kennisbank/' . $slug,
+                'lastmod'    => $meta['lastmod'],
+                'changefreq' => $meta['changefreq'],
+                'priority'   => $meta['priority']
+            ];
+        }
     }
 }
 
 // 6. Juridische pagina's (data/legal/*.md)
-$legalFiles = glob($legalDir . '/*.md') ?: [];
-foreach ($legalFiles as $lFile) {
-    $slug = basename($lFile, '.md');
-    $meta = inspectMeta($lFile, '0.5', 'monthly');
-    if ($meta) {
-        $urls[] = [
-            'loc'        => $baseUrl . '/' . $slug,
-            'lastmod'    => $meta['lastmod'],
-            'changefreq' => $meta['changefreq'],
-            'priority'   => $meta['priority']
-        ];
+if ($siteConfig['modules']['legal'] ?? true) {
+    $legalFiles = glob($legalDir . '/*.md') ?: [];
+    foreach ($legalFiles as $lFile) {
+        $slug = basename($lFile, '.md');
+        $meta = inspectMeta($lFile, '0.5', 'monthly');
+        if ($meta) {
+            $urls[] = [
+                'loc'        => $baseUrl . '/' . $slug,
+                'lastmod'    => $meta['lastmod'],
+                'changefreq' => $meta['changefreq'],
+                'priority'   => $meta['priority']
+            ];
+        }
     }
 }
 

@@ -13,9 +13,10 @@
 $meta        = $pageData['meta'] ?? [];
 $pageSlug    = $pageSlug ?? 'home';
 $assetPrefix = $assetPrefix ?? './';
+$siteConfig  = $GLOBALS['siteConfig'] ?? [];
 ?>
 <!DOCTYPE html>
-<html lang="nl" data-theme="light">
+<html lang="<?= htmlspecialchars($siteConfig['lang'] ?? 'nl', ENT_QUOTES, 'UTF-8'); ?>" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,8 +39,12 @@ $assetPrefix = $assetPrefix ?? './';
     <?= SeoHelper::renderMetaTags($meta, $pageSlug); ?>
 
     <!-- Favicon & Icons -->
-    <link rel="icon" type="image/png" href="<?= $assetPrefix; ?>assets/logos/DEF_Logo_Noppa.png">
-    <link rel="apple-touch-icon" href="<?= $assetPrefix; ?>assets/logos/DEF_Logo_Noppa.png">
+    <?php
+    $favIcon   = $siteConfig['assets']['favicon'] ?? 'assets/logos/DEF_Logo_Noppa.png';
+    $appleIcon = $siteConfig['assets']['apple_touch_icon'] ?? 'assets/logos/DEF_Logo_Noppa.png';
+    ?>
+    <link rel="icon" type="image/png" href="<?= $assetPrefix . ltrim($favIcon, './'); ?>">
+    <link rel="apple-touch-icon" href="<?= $assetPrefix . ltrim($appleIcon, './'); ?>">
 
     <!-- Kentledge Webfont (noppa-website-branding) -->
     <link rel="preload" href="<?= $assetPrefix; ?>assets/fonts/Kentledge-Regular.woff" as="font" type="font/woff" crossorigin>
@@ -47,6 +52,19 @@ $assetPrefix = $assetPrefix ?? './';
     <!-- Core Stylesheets (noppa-website-css & noppa-ux-ui) -->
     <link rel="stylesheet" href="<?= $assetPrefix; ?>assets/css/noppa.css">
     <link rel="stylesheet" href="<?= $assetPrefix; ?>assets/css/custom.css">
+
+    <!-- Parametriseerbare Merkkleuren uit site.config.php -->
+    <?php if (!empty($siteConfig['brand'])): ?>
+    <style id="site-brand-tokens">
+        :root {
+            <?php if (!empty($siteConfig['brand']['primary'])): ?>--brand-primary: <?= htmlspecialchars($siteConfig['brand']['primary'], ENT_QUOTES, 'UTF-8'); ?>;<?php endif; ?>
+            <?php if (!empty($siteConfig['brand']['accent'])): ?>--brand-accent: <?= htmlspecialchars($siteConfig['brand']['accent'], ENT_QUOTES, 'UTF-8'); ?>;<?php endif; ?>
+            <?php if (!empty($siteConfig['brand']['surface'])): ?>--brand-surface: <?= htmlspecialchars($siteConfig['brand']['surface'], ENT_QUOTES, 'UTF-8'); ?>;<?php endif; ?>
+            <?php if (!empty($siteConfig['brand']['highlight'])): ?>--brand-highlight: <?= htmlspecialchars($siteConfig['brand']['highlight'], ENT_QUOTES, 'UTF-8'); ?>;<?php endif; ?>
+            <?php if (!empty($siteConfig['brand']['font'])): ?>--font-primary: <?= $siteConfig['brand']['font']; ?>;<?php endif; ?>
+        }
+    </style>
+    <?php endif; ?>
 
     <!-- Microsoft Clarity Analytics (Geladen volgens noppa-website-cookie consent) -->
     <script type="text/plain" data-cookie-category="analytics">

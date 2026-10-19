@@ -21,12 +21,14 @@ class MarkdownEngine {
     private string $contentDir;
     private string $iconsDir;
     private string $teamDir;
+    private array $siteConfig;
     private array $teamMembersCache = [];
 
-    public function __construct(string $contentDir = '', string $iconsDir = '', string $teamDir = '') {
+    public function __construct(string $contentDir = '', string $iconsDir = '', string $teamDir = '', array $siteConfig = []) {
         $this->contentDir = rtrim($contentDir ?: dirname(__DIR__) . '/content', '/\\') . '/';
         $this->iconsDir   = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
         $this->teamDir    = rtrim($teamDir ?: dirname(__DIR__) . '/data/team', '/\\') . '/';
+        $this->siteConfig = $siteConfig ?: ($GLOBALS['siteConfig'] ?? []);
         $this->parsedown  = new Parsedown();
         $this->parsedown->setSafeMode(false); // Trusted internal markdown
     }
@@ -385,14 +387,14 @@ class MarkdownEngine {
             'firstName' => $firstName,
             'lastName'  => $lastName,
             'fullName'  => $nameOrSlug,
-            'roleTitle' => 'Consultant Microsoft 365',
+            'roleTitle' => 'Consultant',
             'jobTitle'  => 'Consultant',
-            'shortBio'  => 'Consultant bij Noppa Solutions & Consultants, gedreven door mens en productiviteit.',
+            'shortBio'  => 'Specialist bij ' . ($this->siteConfig['site_name'] ?? 'Noppa Solutions & Consultants') . ', gedreven door mens en productiviteit.',
             'image'     => '',
             'initials'  => strtoupper($initials),
-            'email'     => 'info@noppa.nl',
-            'phone'     => '+31 6 13 35 77 23',
-            'location'  => 'Berlicum, Noord-Brabant'
+            'email'     => $this->siteConfig['company']['email'] ?? 'info@noppa.nl',
+            'phone'     => $this->siteConfig['company']['phone'] ?? '+31 6 13 35 77 23',
+            'location'  => $this->siteConfig['company']['full_address'] ?? 'Berlicum, Noord-Brabant'
         ];
 
         $this->teamMembersCache[$cacheKey] = $fallback;

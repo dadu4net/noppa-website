@@ -12,9 +12,11 @@
 
 class FooterEngine {
     private string $footerFile;
+    private array $siteConfig;
 
-    public function __construct(string $footerFile = '') {
+    public function __construct(string $footerFile = '', array $siteConfig = []) {
         $this->footerFile = $footerFile ?: dirname(__DIR__) . '/content/footer.md';
+        $this->siteConfig = $siteConfig ?: ($GLOBALS['siteConfig'] ?? []);
     }
 
     /**
@@ -24,12 +26,12 @@ class FooterEngine {
         if (!file_exists($this->footerFile)) {
             return [
                 'meta' => [
-                    'company_name' => 'Noppa Solutions & Consultants',
-                    'payoff'       => 'Boosting Business Productivity',
-                    'email'        => 'info@noppa.nl',
-                    'telefoon'     => '+31 (0)6 13 35 77 23',
-                    'kvk'          => '61868388',
-                    'locatie'      => 'Pijlkruid 44, 5258 BW Berlicum'
+                    'company_name' => $this->siteConfig['company']['name'] ?? ($this->siteConfig['site_name'] ?? 'Noppa Solutions & Consultants'),
+                    'payoff'       => $this->siteConfig['payoff'] ?? 'Boosting Business Productivity',
+                    'email'        => $this->siteConfig['company']['email'] ?? 'info@noppa.nl',
+                    'telefoon'     => $this->siteConfig['company']['phone'] ?? '+31 (0)6 13 35 77 23',
+                    'kvk'          => $this->siteConfig['company']['kvk'] ?? '61868388',
+                    'locatie'      => $this->siteConfig['company']['full_address'] ?? 'Pijlkruid 44, 5258 BW Berlicum'
                 ],
                 'columns' => []
             ];

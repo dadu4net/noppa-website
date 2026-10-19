@@ -20,10 +20,12 @@ class DienstenEngine {
     private Parsedown $parsedown;
     private string $dienstenDir;
     private string $iconsDir;
+    private array $siteConfig;
 
-    public function __construct(string $dienstenDir = '', string $iconsDir = '') {
+    public function __construct(string $dienstenDir = '', string $iconsDir = '', array $siteConfig = []) {
         $this->dienstenDir = rtrim($dienstenDir ?: dirname(__DIR__) . '/data/diensten', '/\\') . '/';
         $this->iconsDir    = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
+        $this->siteConfig  = $siteConfig ?: ($GLOBALS['siteConfig'] ?? []);
         $this->parsedown   = new Parsedown();
         $this->parsedown->setSafeMode(false);
     }

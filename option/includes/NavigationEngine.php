@@ -12,9 +12,11 @@
 
 class NavigationEngine {
     private string $navFile;
+    private array $siteConfig;
 
-    public function __construct(string $navFile = '') {
-        $this->navFile = $navFile ?: dirname(__DIR__) . '/content/navigation.md';
+    public function __construct(string $navFile = '', array $siteConfig = []) {
+        $this->navFile    = $navFile ?: dirname(__DIR__) . '/content/navigation.md';
+        $this->siteConfig = $siteConfig ?: ($GLOBALS['siteConfig'] ?? []);
     }
 
     /**
@@ -74,10 +76,15 @@ class NavigationEngine {
         <!-- Sticky Translucent Glass Header (noppa-ux-ui & noppa-website-navigation) -->
         <header class="portal-header" id="navbar" role="banner">
             <div class="nav-container">
-                <!-- Noppa Logo -->
-                <a href="<?= htmlspecialchars($this->formatUrl('/'), ENT_QUOTES, 'UTF-8'); ?>" class="nav-logo" aria-label="Noppa Solutions & Consultants - Naar homepage">
-                    <img src="<?= $assetPrefix; ?>assets/logos/DEF_Logo_Noppa.png" alt="Noppa Solutions & Consultants" class="logo-light" width="138" height="42">
-                    <img src="<?= $assetPrefix; ?>assets/logos/DEF_Logo_Noppa_wit.png" alt="Noppa Solutions & Consultants" class="logo-dark" width="138" height="42">
+                <!-- Site Logo -->
+                <?php
+                $siteName  = htmlspecialchars($this->siteConfig['site_name'] ?? 'Noppa Solutions & Consultants', ENT_QUOTES, 'UTF-8');
+                $logoLight = $this->siteConfig['assets']['logo_light'] ?? 'assets/logos/DEF_Logo_Noppa.png';
+                $logoDark  = $this->siteConfig['assets']['logo_dark'] ?? 'assets/logos/DEF_Logo_Noppa_wit.png';
+                ?>
+                <a href="<?= htmlspecialchars($this->formatUrl('/'), ENT_QUOTES, 'UTF-8'); ?>" class="nav-logo" aria-label="<?= $siteName; ?> - Naar homepage">
+                    <img src="<?= $assetPrefix . ltrim($logoLight, './'); ?>" alt="<?= $siteName; ?>" class="logo-light" width="138" height="42">
+                    <img src="<?= $assetPrefix . ltrim($logoDark, './'); ?>" alt="<?= $siteName; ?>" class="logo-dark" width="138" height="42">
                 </a>
 
                 <!-- Desktop Nav Links -->

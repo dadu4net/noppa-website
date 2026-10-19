@@ -22,22 +22,29 @@
 }
 
 :root {
+    /* Brand Design Tokens (configureerbaar via site.config.php of custom styling) */
+    --brand-primary: #2060E0;
+    --brand-accent: #00D0F0;
+    --brand-surface: #0F2A66;
+    --brand-highlight: #FFCC00;
     --font-primary: 'Kentledge', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     
-    /* 60-30-10 Noppa Brand Kleuren */
-    --color-cyan: #00D0F0;
+    /* 60-30-10 Brand Kleuren (gemapt naar de core brand tokens) */
+    --color-cyan: var(--brand-accent);
     --color-sky: #20B0F0;
-    --color-royal: #2060E0;
+    --color-royal: var(--brand-primary);
     --color-indigo: #3A4FD0;
-    --color-navy: #0F2A66;
+    --color-navy: var(--brand-surface);
+    --color-highlight: var(--brand-highlight);
     --color-ink: #1A2440;
     --color-slate: #6B7280;
     --color-mist: #E4E9F2;
     --color-light: #F1F5FB;
 
-    /* Signature 4-staps gradient */
-    --gradient-signature: linear-gradient(90deg, #00D0F0 0%, #20B0F0 30%, #2060E0 70%, #3A4FD0 100%);
-    --gradient-hero: radial-gradient(circle at 50% 20%, #0F2A66 0%, #070D1B 100%);
+    /* Signature gradients (automatisch meeschalend met de brand tokens) */
+    --gradient-signature: linear-gradient(90deg, var(--brand-accent) 0%, #20B0F0 30%, var(--brand-primary) 70%, #3A4FD0 100%);
+    --gradient-noppa: linear-gradient(135deg, var(--brand-accent) 0%, var(--brand-primary) 50%, var(--brand-highlight) 100%);
+    --gradient-hero: radial-gradient(circle at 50% 20%, var(--brand-surface) 0%, #070D1B 100%);
 
     /* Semantische Thema Tokens (Light) */
     --bg-page: #F1F5FB;
@@ -45,7 +52,7 @@
     --bg-card: #FFFFFF;
     --border-color: #E4E9F2;
     --text-primary: #1A2440;
-    --text-heading: #0F2A66;
+    --text-heading: var(--brand-surface);
     --text-muted: #6B7280;
 
     /* Glassmorphism */

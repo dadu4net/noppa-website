@@ -20,7 +20,8 @@ Geen complexe databases, geen trage CMS-plugins en **geen honderden regels onove
 9. [Officiële Noppa Vector Iconen (24 Iconen)](#-officiële-noppa-vector-iconen-24-iconen)
 10. [Noppa Design System & Richtlijnen (UX/UI)](#-noppa-design-system--richtlijnen-uxui)
 11. [SEO, Sitemap & Server Configuratie](#-seo-sitemap--server-configuratie)
-12. [Troubleshooting & Veelvoorkomende Valkuilen](#-troubleshooting--veelvoorkomende-valkuilen)
+12. [White-Label & Hergebruik voor Andere Projecten](#-white-label--hergebruik-voor-andere-projecten)
+13. [Troubleshooting & Veelvoorkomende Valkuilen](#-troubleshooting--veelvoorkomende-valkuilen)
 
 ---
 
@@ -31,6 +32,7 @@ Het platform combineert de flexibiliteit van statische Markdown-bestanden met de
 ```mermaid
 flowchart TD
     User["Bezoeker / Browser"] --> Router["index.php (Master Router & Controller)"]
+    Config["site.config.php (Single Source of Truth)"] --> Router
     
     Router -->|?page=diensten&id=...| DienstenEng["DienstenEngine.php"]
     Router -->|?page=team&id=...| TeamEng["TeamEngine.php"]
@@ -62,13 +64,14 @@ Inhoudsbestanden (`.md`) bevatten **geen ruwe HTML-tags** (`<div>`, `<section>`,
 
 ```text
 option/
+├── site.config.php                # Centrale configuratie & white-label instellingen (Single Source of Truth)
 ├── index.php                      # Centrale router & controller
 ├── .htaccess                      # Apache rewrite rules voor schone URLs
 ├── robots.txt                     # Instructies voor Google/Bing & sitemap link
 ├── sitemap.php                    # Dynamische XML sitemap generator
 ├── sitemap.xml                    # Statische XML sitemap fallback
 │
-├── includes/                      # De PHP Core Engines
+├── includes/                      # De PHP Core Engines (100% white-label & configureerbaar)
 │   ├── Parsedown.php              # Snelle, betrouwbare GitHub Flavored Markdown parser
 │   ├── DienstenEngine.php         # Slimme component-compiler voor diensten & pricing
 │   ├── TeamEngine.php             # Consultant profiel-compiler met quick facts & vCard
@@ -727,6 +730,91 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
 ```
+
+---
+
+## 🚀 White-Label & Hergebruik voor Andere Projecten
+
+Het Noppa platform is ontworpen als een **100% white-label starter kit**. Je kunt deze complete codebase kopiëren en direct inzetten voor andere websites, klanten of portals zonder ook maar één regel PHP core-code of ruwe CSS aan te passen.
+
+### 1. Centrale Configuratie: `site.config.php`
+In de hoofdmap van de site staat [`site.config.php`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/option/site.config.php). Dit bestand fungeert als de **Single Source of Truth** voor de hele website:
+
+```php
+return [
+    'site_name'   => 'Bedrijfsnaam',
+    'legal_name'  => 'Bedrijfsnaam B.V.',
+    'payoff'      => 'Slimme Oplossingen voor Bedrijven',
+    'base_url'    => 'https://jouwdomein.nl',
+    'lang'        => 'nl',
+
+    // Bedrijfsgegevens (gebruikt in Schema.org JSON-LD, vCards, footer & juridische docs)
+    'company' => [
+        'email'       => 'info@jouwdomein.nl',
+        'phone'       => '+31 (0)85 000 0000',
+        'kvk'         => '12345678',
+        'address'     => 'Straatnaam 1, 1000 AA Amsterdam',
+        'country'     => 'Nederland',
+    ],
+
+    // Design Tokens & Kleurenpalet (60-30-10 regel)
+    'brand' => [
+        'primary'   => '#2060E0',  // Hoofdkleur (knoppen, links, accenten)
+        'accent'    => '#00D0F0',  // Cyaan / secundaire gradient kleur
+        'surface'   => '#0F2A66',  // Donkerblauw (headings, hero background)
+        'highlight' => '#FFCC00',  // Warm geel (highlights, badges, pills)
+        'font'      => "'Kentledge', -apple-system, BlinkMacSystemFont, sans-serif",
+    ],
+
+    // Assets & Logo's
+    'assets' => [
+        'logo_light'   => 'assets/logos/logo.png',
+        'logo_dark'    => 'assets/logos/logo.png',
+        'favicon'      => 'assets/favicon.ico',
+        'apple_icon'   => 'assets/apple-touch-icon.png',
+    ],
+
+    // Module Toggles (schakel functionaliteiten in of uit)
+    'modules' => [
+        'diensten'   => true,
+        'team'       => true,
+        'kennisbank' => true,
+        'legal'      => true,
+        'cookies'    => true,
+    ],
+];
+```
+
+### 2. Dynamische Design Theming (CSS Variables)
+Het platform maakt gebruik van CSS Custom Properties (`:root`). In [`header.php`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/option/partials/header.php) worden de kleuren uit `site.config.php` dynamisch geïnjecteerd in de `<head>`:
+
+```css
+:root {
+    --brand-primary: #2060E0;
+    --brand-accent: #00D0F0;
+    --brand-surface: #0F2A66;
+    --brand-highlight: #FFCC00;
+}
+```
+
+Alle componenten in `custom.css` (knoppen, hero gradient, feature badges, links, navigatie-indicatoren) maken gebruik van deze tokens via:
+- `var(--brand-primary)`
+- `var(--brand-accent)`
+- `var(--brand-surface)`
+- `var(--brand-highlight)`
+- `var(--gradient-signature)`
+
+> [!TIP]
+> **Huisstijl wijzigen in 10 seconden:** Verander simpelweg de hex-codes in `site.config.php`. De knoppen, gradients, footer en headers veranderen direct mee, zonder Node.js build-stap of Sass compilatie!
+
+### 3. Stappenplan: Nieuw Project Opstarten in 5 Minuten
+
+1. **Codebase Kopiëren:** Kopieer de map `option/` naar de nieuwe webroot.
+2. **`site.config.php` Aanpassen:** Wijzig sitenaam, domeinnaam, bedrijfsgegevens en de 4 merkkleuren.
+3. **Logo's & Favicons Plaatsen:** Plaats de nieuwe logo's in `assets/logos/`.
+4. **Navigatie & Footer Instellen:** Bewerk [`content/navigation.md`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/option/content/navigation.md) en [`content/footer.md`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/option/content/footer.md) voor de gewenste menustructuur.
+5. **Pagina's & Data Vullen:** Pas `content/pages/home.md`, `content/pages/over-ons.md`, en eventuele diensten of teamleden aan in `data/`.
+6. **Klaar!** Test direct in de browser. Sitemap en SEO worden automatisch gegenereerd.
 
 ---
 

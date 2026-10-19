@@ -20,11 +20,13 @@ class TeamEngine {
     private Parsedown $parsedown;
     private string $teamDir;
     private string $iconsDir;
+    private array $siteConfig;
 
-    public function __construct(string $teamDir = '', string $iconsDir = '') {
-        $this->teamDir   = rtrim($teamDir ?: dirname(__DIR__) . '/data/team', '/\\') . '/';
-        $this->iconsDir  = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
-        $this->parsedown = new Parsedown();
+    public function __construct(string $teamDir = '', string $iconsDir = '', array $siteConfig = []) {
+        $this->teamDir    = rtrim($teamDir ?: dirname(__DIR__) . '/data/team', '/\\') . '/';
+        $this->iconsDir   = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
+        $this->siteConfig = $siteConfig ?: ($GLOBALS['siteConfig'] ?? []);
+        $this->parsedown  = new Parsedown();
         $this->parsedown->setSafeMode(false);
     }
 
@@ -62,10 +64,10 @@ class TeamEngine {
         $jobTitle  = $frontmatter['jobTitle'] ?? 'Consultant';
         $roleTitle = $frontmatter['roleTitle'] ?? $jobTitle;
         $shortBio  = $frontmatter['shortBio'] ?? '';
-        $phone     = $frontmatter['phone'] ?? '+31 (0)6 13 35 77 23';
-        $email     = $frontmatter['email'] ?? 'info@noppa.nl';
-        $linkedin  = $frontmatter['linkedin'] ?? '';
-        $location  = $frontmatter['location'] ?? 'Berlicum, Noord-Brabant';
+        $phone     = $frontmatter['phone'] ?? ($this->siteConfig['company']['phone'] ?? '+31 (0)6 13 35 77 23');
+        $email     = $frontmatter['email'] ?? ($this->siteConfig['company']['email'] ?? 'info@noppa.nl');
+        $linkedin  = $frontmatter['linkedin'] ?? ($this->siteConfig['company']['linkedin'] ?? '');
+        $location  = $frontmatter['location'] ?? ($this->siteConfig['company']['full_address'] ?? 'Berlicum, Noord-Brabant');
         $image     = $frontmatter['image'] ?? './assets/images/Rik Dobbelsteen.jpeg';
         $initials  = mb_substr($firstName, 0, 1) . mb_substr($lastName, 0, 1);
 
@@ -390,13 +392,13 @@ class TeamEngine {
                     'VERSION:3.0',
                     'N:<?= addslashes($p['lastName']); ?>;<?= addslashes($p['firstName']); ?>;;;',
                     'FN:<?= addslashes($p['fullName']); ?>',
-                    'ORG:Noppa Solutions & Consultants',
+                    'ORG:<?= addslashes($this->siteConfig['company']['name'] ?? ($this->siteConfig['site_name'] ?? 'Noppa Solutions & Consultants')); ?>',
                     'TITLE:<?= addslashes($p['jobTitle']); ?>',
                     'TEL;TYPE=CELL:<?= addslashes($p['phone']); ?>',
                     'EMAIL;TYPE=WORK:<?= addslashes($p['email']); ?>',
-                    'URL:https://noppa.nl',
+                    'URL:<?= addslashes($this->siteConfig['base_url'] ?? 'https://noppa.nl'); ?>',
                     'URL;TYPE=LinkedIn:https://<?= addslashes(ltrim($p['linkedin'], 'https://')); ?>',
-                    'ADR;TYPE=WORK:;;Pijlkruid 44;Berlicum;Noord-Brabant;5258 BW;Nederland',
+                    'ADR;TYPE=WORK:;;<?= addslashes($this->siteConfig['company']['address'] ?? 'Pijlkruid 44'); ?>;<?= addslashes($this->siteConfig['company']['city'] ?? 'Berlicum'); ?>;<?= addslashes($this->siteConfig['company']['region'] ?? 'Noord-Brabant'); ?>;<?= addslashes($this->siteConfig['company']['postal_code'] ?? '5258 BW'); ?>;<?= addslashes($this->siteConfig['company']['country'] ?? 'Nederland'); ?>',
                     'END:VCARD'
                 ].join('\r\n');
                 
@@ -404,7 +406,7 @@ class TeamEngine {
                 var url = URL.createObjectURL(blob);
                 var a = document.createElement('a');
                 a.href = url;
-                a.download = '<?= addslashes($p['firstName'] . '-' . $p['lastName']); ?>-Noppa.vcf';
+                a.download = '<?= addslashes($p['firstName'] . '-' . $p['lastName']); ?>-<?= addslashes(preg_replace('/[^a-zA-Z0-9_-]/', '', $this->siteConfig['site_name'] ?? 'Noppa')); ?>.vcf';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);

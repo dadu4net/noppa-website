@@ -20,11 +20,13 @@ class LegalEngine {
     private Parsedown $parsedown;
     private string $legalDir;
     private string $iconsDir;
+    private array $siteConfig;
 
-    public function __construct(string $legalDir = '', string $iconsDir = '') {
-        $this->legalDir  = rtrim($legalDir ?: dirname(__DIR__) . '/data/legal', '/\\') . '/';
-        $this->iconsDir  = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
-        $this->parsedown = new Parsedown();
+    public function __construct(string $legalDir = '', string $iconsDir = '', array $siteConfig = []) {
+        $this->legalDir   = rtrim($legalDir ?: dirname(__DIR__) . '/data/legal', '/\\') . '/';
+        $this->iconsDir   = rtrim($iconsDir ?: dirname(__DIR__) . '/assets/icons', '/\\') . '/';
+        $this->siteConfig = $siteConfig ?: ($GLOBALS['siteConfig'] ?? []);
+        $this->parsedown  = new Parsedown();
         $this->parsedown->setSafeMode(false);
     }
 
@@ -276,7 +278,7 @@ class LegalEngine {
                             <div class="meta-box-inner">
                                 <div class="meta-box-text">
                                     <strong>Vragen over deze voorwaarden?</strong><br>
-                                    Neem contact met ons op via <a href="mailto:info@noppa.nl">info@noppa.nl</a> of bel <a href="tel:+31613357723">+31 (0)6 13 35 77 23</a>. Wij beantwoorden uw vraag graag persoonlijk.
+                                    Neem contact met ons op via <a href="mailto:<?= htmlspecialchars($this->siteConfig['company']['email'] ?? 'info@noppa.nl'); ?>"><?= htmlspecialchars($this->siteConfig['company']['email'] ?? 'info@noppa.nl'); ?></a> of bel <a href="tel:<?= htmlspecialchars($this->siteConfig['company']['phone_raw'] ?? '+31613357723'); ?>"><?= htmlspecialchars($this->siteConfig['company']['phone'] ?? '+31 (0)6 13 35 77 23'); ?></a>. Wij beantwoorden uw vraag graag persoonlijk.
                                 </div>
                                 <?php if (!empty($pdf)): ?>
                                 <div class="meta-box-action">
@@ -297,9 +299,9 @@ class LegalEngine {
         <!-- AFSLUITENDE CTA BANNER -->
         <section id="cta-final" aria-label="Afsluitende Call to Action">
             <div class="container">
-                <h2>Samenwerken met Noppa?</h2>
+                <h2>Samenwerken met <?= htmlspecialchars($this->siteConfig['company']['name'] ?? ($this->siteConfig['site_name'] ?? 'Noppa')); ?>?</h2>
                 <p>
-                    Wij denken graag met u mee — over uw Microsoft 365-omgeving, governance of adoptie.
+                    Wij denken graag met u mee — over uw IT-omgeving, governance of adoptie.
                     Neem gerust contact met ons op voor een vrijblijvend gesprek.
                 </p>
                 <a href="<?= htmlspecialchars($this->formatUrl('/contact'), ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary">

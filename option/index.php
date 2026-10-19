@@ -24,6 +24,11 @@ define('NOPPA_CONTENT_DIR', NOPPA_BASE_DIR . '/content');
 define('NOPPA_PARTIALS_DIR', NOPPA_BASE_DIR . '/partials');
 define('NOPPA_ASSETS_DIR', NOPPA_BASE_DIR . '/assets');
 
+// Laad site configuratie (white-label & herbruikbaar)
+$siteConfigFile = NOPPA_BASE_DIR . '/site.config.php';
+$siteConfig     = file_exists($siteConfigFile) ? require $siteConfigFile : [];
+$GLOBALS['siteConfig'] = $siteConfig;
+
 // Laad vereiste engines
 require_once NOPPA_INCLUDES_DIR . '/Parsedown.php';
 require_once NOPPA_INCLUDES_DIR . '/SeoHelper.php';
@@ -35,14 +40,17 @@ require_once NOPPA_INCLUDES_DIR . '/KennisbankEngine.php';
 require_once NOPPA_INCLUDES_DIR . '/DienstenEngine.php';
 require_once NOPPA_INCLUDES_DIR . '/LegalEngine.php';
 
+// Configureer SEO defaults vanuit siteConfig
+SeoHelper::configure($siteConfig);
+
 // Initialiseer engines
-$mdEngine         = new MarkdownEngine(NOPPA_CONTENT_DIR, NOPPA_ASSETS_DIR . '/icons', NOPPA_BASE_DIR . '/data/team');
-$navEngine        = new NavigationEngine(NOPPA_CONTENT_DIR . '/navigation.md');
-$footerEngine     = new FooterEngine(NOPPA_CONTENT_DIR . '/footer.md');
-$teamEngine       = new TeamEngine(NOPPA_BASE_DIR . '/data/team', NOPPA_ASSETS_DIR . '/icons');
-$kennisbankEngine = new KennisbankEngine(NOPPA_CONTENT_DIR . '/kennisbank/artikelen', NOPPA_ASSETS_DIR . '/icons');
-$dienstenEngine   = new DienstenEngine(NOPPA_BASE_DIR . '/data/diensten', NOPPA_ASSETS_DIR . '/icons');
-$legalEngine      = new LegalEngine(NOPPA_BASE_DIR . '/data/legal', NOPPA_ASSETS_DIR . '/icons');
+$mdEngine         = new MarkdownEngine(NOPPA_CONTENT_DIR, NOPPA_ASSETS_DIR . '/icons', NOPPA_BASE_DIR . '/data/team', $siteConfig);
+$navEngine        = new NavigationEngine(NOPPA_CONTENT_DIR . '/navigation.md', $siteConfig);
+$footerEngine     = new FooterEngine(NOPPA_CONTENT_DIR . '/footer.md', $siteConfig);
+$teamEngine       = new TeamEngine(NOPPA_BASE_DIR . '/data/team', NOPPA_ASSETS_DIR . '/icons', $siteConfig);
+$kennisbankEngine = new KennisbankEngine(NOPPA_CONTENT_DIR . '/kennisbank/artikelen', NOPPA_ASSETS_DIR . '/icons', $siteConfig);
+$dienstenEngine   = new DienstenEngine(NOPPA_BASE_DIR . '/data/diensten', NOPPA_ASSETS_DIR . '/icons', $siteConfig);
+$legalEngine      = new LegalEngine(NOPPA_BASE_DIR . '/data/legal', NOPPA_ASSETS_DIR . '/icons', $siteConfig);
 
 // Bepaal de opgevraagde pagina (route)
 $requestedPage = $_GET['page'] ?? '';
@@ -123,13 +131,17 @@ elseif ($cleanRequested === 'kennisbank' || str_starts_with($cleanRequested, 'ke
             $gerelateerd = array_values(array_filter($allInCategory, fn($a) => $a['slug'] !== $artSlug));
             $gerelateerd = array_slice($gerelateerd, 0, 3);
 
+            $siteName = $siteConfig['site_name'] ?? 'Noppa Solutions & Consultants';
+            $siteBase = rtrim($siteConfig['base_url'] ?? 'https://noppa.nl', '/');
+            $logoPath = $siteConfig['assets']['logo_light'] ?? 'assets/logos/DEF_Logo_Noppa.png';
+
             $pageData = [
                 'meta' => [
-                    'title'          => $artikel['title'] . ' | Kennisbank | Noppa Solutions & Consultants',
+                    'title'          => $artikel['title'] . ' | Kennisbank | ' . $siteName,
                     'description'    => $artikel['description'],
-                    'canonical'      => 'https://noppa.nl/kennisbank/' . $artSlug,
+                    'canonical'      => $siteBase . '/kennisbank/' . $artSlug,
                     'og_type'        => 'article',
-                    'og_image'       => $assetPrefix . 'assets/logos/DEF_Logo_Noppa.png',
+                    'og_image'       => $assetPrefix . $logoPath,
                     'published_time' => $artikel['datum'],
                     'author'         => $artikel['auteur'],
                     'section'        => $artikel['categorie'],
@@ -150,11 +162,13 @@ elseif ($cleanRequested === 'kennisbank' || str_starts_with($cleanRequested, 'ke
         $pageSlug = 'kennisbank';
         $pageData = $mdEngine->loadPage('kennisbank');
         if (!$pageData) {
+            $siteName = $siteConfig['site_name'] ?? 'Noppa Solutions & Consultants';
+            $siteBase = rtrim($siteConfig['base_url'] ?? 'https://noppa.nl', '/');
             $pageData = [
                 'meta' => [
-                    'title'       => 'Kennisbank | Praktische Gidsen & Inzichten | Noppa Solutions & Consultants',
-                    'description' => 'Praktische gidsen, how-to\'s en diepgaande analyses over Microsoft 365, Copilot AI en adoptie.',
-                    'canonical'   => 'https://noppa.nl/kennisbank' . (!empty($activeCat) ? '?cat=' . urlencode($activeCat) : ''),
+                    'title'       => 'Kennisbank | Praktische Gidsen & Inzichten | ' . $siteName,
+                    'description' => 'Praktische gidsen, how-to\'s en diepgaande analyses.',
+                    'canonical'   => $siteBase . '/kennisbank' . (!empty($activeCat) ? '?cat=' . urlencode($activeCat) : ''),
                     'robots'      => 'index, follow'
                 ],
                 'sections' => [
