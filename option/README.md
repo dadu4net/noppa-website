@@ -22,6 +22,7 @@ Geen complexe databases, geen trage CMS-plugins en **geen honderden regels onove
 11. [SEO, Sitemap & Server Configuratie](#-seo-sitemap--server-configuratie)
 12. [White-Label & Hergebruik voor Andere Projecten](#-white-label--hergebruik-voor-andere-projecten)
 13. [Troubleshooting & Veelvoorkomende Valkuilen](#-troubleshooting--veelvoorkomende-valkuilen)
+14. [Conversie Skills & Automatisering (PDF, Word, PHP, HTML naar MD)](#-conversie-skills--automatisering-pdf-word-php-html-naar-md)
 
 ---
 
@@ -838,4 +839,41 @@ Alle componenten in `custom.css` (knoppen, hero gradient, feature badges, links,
 
 ---
 
+## ⚡ Conversie Skills & Automatisering (PDF, Word, PHP, HTML naar MD)
+
+Het platform wordt geleverd met **4 gespecialiseerde Antigravity AI Skills** en een krachtig CLI conversiescript (`scripts/convert_to_md.py`) om willekeurige bronbestanden (zoals CV's, offertes, whitepapers en oude HTML/PHP pagina's) in één stap om te zetten naar gestandaardiseerde, 100% zuivere Markdown-bestanden.
+
+### 1. Beschikbare Skills
+
+| Skill Naam | Bronbestanden | Doelpad | Toepassing |
+| :--- | :--- | :--- | :--- |
+| `md-converter-teamlid` | PDF CV's, Word .docx, LinkedIn exports, PHP/HTML profielen | `data/team/{slug}.md` | Maakt consultantprofielen met frontmatter, biografie, quick facts, vCard en automatische profile-cards. |
+| `md-converter-dienst` | PDF brochures, offertes, Word .docx, PHP dienstenpagina's | `data/diensten/{slug}.md` | Maakt dienstenpagina's met hero, pillars, use cases, stappenplan, pricing grid en FAQ. |
+| `md-converter-pagina` | PDF rapporten, Word pagina's, legacy PHP templates, HTML sites | `content/pages/{slug}.md` | Maakt contentpagina's met `<!-- section: id type="..." -->` indeling (cards, team grids, stats, cta). |
+| `md-converter-kennisbank` | PDF whitepapers, Word artikelen, blog posts, HTML artikelen | `content/kennisbank/artikelen/{slug}.md` | Maakt kennisbankartikelen met leestijd, categorie, auteur-koppeling en automatische Table of Contents. |
+
+### 2. Automatisch Converteren via het Python CLI Script
+
+Het meegeleverde script [`scripts/convert_to_md.py`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/scripts/convert_to_md.py) ondersteunt automatische tekst- en structuurextractie uit `.pdf`, `.docx`, `.php` en `.html`:
+
+```bash
+# 1. Teamlid converteren vanuit PDF of Word CV:
+python scripts/convert_to_md.py --input "pad/naar/cv.pdf" --type teamlid --slug jan-jansen --title "Jan Jansen"
+
+# 2. Dienst converteren vanuit een Word-offerte of PDF brochure:
+python scripts/convert_to_md.py --input "pad/naar/brochure.pdf" --type dienst --slug ai-security --title "AI Security"
+
+# 3. Pagina converteren vanuit een oude PHP of HTML pagina:
+python scripts/convert_to_md.py --input "pad/naar/oude-visie.php" --type pagina --slug visie --title "Onze Visie"
+
+# 4. Kennisbank artikel converteren vanuit een Word-artikel of PDF whitepaper:
+python scripts/convert_to_md.py --input "pad/naar/artikel.docx" --type kennisbank --slug copilot-tips --title "Copilot Tips"
+```
+
+### 3. Locatie van de Skills
+De skills zijn zowel **globaal** beschikbaar in de gebruikersconfiguratie (`~/.gemini/config/skills/`), als **lokaal in het project** via `.agents/skills/` en gebundeld in de `starter-kit/.agents/skills/`.
+
+---
+
 © 2026 Noppa Solutions & Consultants — Alle rechten voorbehouden.
+
