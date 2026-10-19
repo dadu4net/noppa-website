@@ -154,6 +154,7 @@ class DienstenEngine {
             'pricing'       => $frontmatter['pricing'] ?? null,
             'stats'         => $frontmatter['stats'] ?? null,
             'intro_pillars' => $frontmatter['intro_pillars'] ?? null,
+            'features'      => $frontmatter['features'] ?? null,
             'cta'           => $frontmatter['cta'] ?? null,
             'sections'      => $sections,
             'faq'           => $faqItems,
@@ -288,6 +289,11 @@ class DienstenEngine {
             <!-- 3. Meerkoloms Pricing Grid (indien nog niet getoond) -->
             <?php if (!empty($service['pricing']) && !$hasPricingRendered): ?>
                 <?= $this->renderPricingSection($service['pricing']); ?>
+            <?php endif; ?>
+
+            <!-- 3b. Optionele Features Sectie vanuit frontmatter -->
+            <?php if (!empty($service['features']) && is_array($service['features'])): ?>
+                <?= $this->renderFeaturesListSection($service['features'], $service); ?>
             <?php endif; ?>
 
             <!-- 4. Veelgestelde Vragen (FAQ) -->
@@ -742,12 +748,14 @@ class DienstenEngine {
 
                 <?php if (!empty($feats)): ?>
                 <ul class="p-features">
-                    <?php foreach ($feats as $feat): ?>
+                    <?php foreach ($feats as $feat):
+                        $featText = is_array($feat) ? ($feat['text'] ?? ($feat['title'] ?? json_encode($feat))) : (string)$feat;
+                    ?>
                     <li>
                         <span class="p-check" aria-hidden="true">
                             <span class="p-check-tick">✓</span>
                         </span>
-                        <span><?= htmlspecialchars($feat, ENT_QUOTES, 'UTF-8'); ?></span>
+                        <span><?= htmlspecialchars($featText, ENT_QUOTES, 'UTF-8'); ?></span>
                     </li>
                     <?php endforeach; ?>
                 </ul>
@@ -759,6 +767,39 @@ class DienstenEngine {
             </div>
             <?php endforeach; ?>
         </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Render een overzichtelijke features-sectie vanuit frontmatter metadata (.pillars-grid met iconen).
+     */
+    public function renderFeaturesListSection(array $features, array $service): string {
+        ob_start();
+        ?>
+        <section class="page-section section-features section-alt" id="features">
+            <div class="container">
+                <span class="label"><span class="dot"></span>Features & Mogelijkheden</span>
+                <h2 class="h2">Belangrijkste <em>functionaliteiten</em></h2>
+                <div class="pillars-grid">
+                    <?php foreach ($features as $f):
+                        $fTitle = is_array($f) ? ($f['title'] ?? ($f['name'] ?? '')) : (string)$f;
+                        $fDesc  = is_array($f) ? ($f['desc'] ?? ($f['text'] ?? '')) : '';
+                        $fIcon  = is_array($f) ? ($f['icon'] ?? 'sparkles') : 'sparkles';
+                    ?>
+                    <div class="pillar">
+                        <div class="pillar-ic">
+                            <?= $this->getSvgIcon($fIcon, 22); ?>
+                        </div>
+                        <h3><?= htmlspecialchars($fTitle, ENT_QUOTES, 'UTF-8'); ?></h3>
+                        <?php if (!empty($fDesc)): ?>
+                        <p><?= $this->parsedown->line($fDesc); ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
         <?php
         return ob_get_clean();
     }
@@ -919,6 +960,7 @@ class DienstenEngine {
                 $num = (int)$m[1];
                 $cleanTitle = trim($m[2]);
             }
+            $cleanTitle = trim($cleanTitle, "* \t\n\r");
 
             $items[] = [
                 'rawTitle'   => $rawTitle,
@@ -926,6 +968,39 @@ class DienstenEngine {
                 'num'        => $num,
                 'content'    => $body
             ];
+        }
+
+        // Fallback: Als er geen ### koppen zijn, controleer op bullet- of genummerde lijstitems
+        if (empty($items)) {
+            $lines = explode("\n", $markdown);
+            foreach ($lines as $line) {
+                $t = trim($line);
+                if (preg_match('/^[-*]\s+\*\*(.*?)\*\*:\s*(.*)$/', $t, $m)) {
+                    $items[] = [
+                        'rawTitle'   => $m[1],
+                        'cleanTitle' => trim($m[1]),
+                        'num'        => null,
+                        'content'    => trim($m[2])
+                    ];
+                } elseif (preg_match('/^[-*]\s+(.*)$/', $t, $m)) {
+                    $val = trim($m[1]);
+                    if ($val !== '') {
+                        $items[] = [
+                            'rawTitle'   => $val,
+                            'cleanTitle' => trim($val, "* \t"),
+                            'num'        => null,
+                            'content'    => ''
+                        ];
+                    }
+                } elseif (preg_match('/^(\d+)\.\s+\*\*(.*?)\*\*:\s*(.*)$/', $t, $m)) {
+                    $items[] = [
+                        'rawTitle'   => $m[2],
+                        'cleanTitle' => trim($m[2]),
+                        'num'        => (int)$m[1],
+                        'content'    => trim($m[3])
+                    ];
+                }
+            }
         }
 
         return $items;
@@ -1079,14 +1154,15 @@ class DienstenEngine {
 
     /**
      * Robuuste YAML frontmatter parser voor geneste structures, arrays en objecten.
+     * Maakt gebruik van index-tracking om alle features en CTA's zonder reference-bugs te laden.
      */
     private function parseYaml(string $yaml): array {
         $lines = explode("\n", str_replace(["\r\n", "\r"], "\n", $yaml));
         $result = [];
         $currentSection = null;
         $currentSub = null;
-        $currentPlan = null;
-        $currentFeatures = null;
+        $currentPlanIdx = null;
+        $currentField = null;
 
         foreach ($lines as $line) {
             $trimmed = trim($line);
@@ -1094,7 +1170,7 @@ class DienstenEngine {
 
             $indent = strlen($line) - strlen(ltrim($line));
 
-            // Indent 0: Root keys
+            // Indent 0: Root keys (bijv. title: "...", pricing:, stats:, etc.)
             if ($indent === 0) {
                 if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
                     $key = $m[1];
@@ -1103,37 +1179,38 @@ class DienstenEngine {
                         $result[$key] = [];
                         $currentSection = $key;
                         $currentSub = null;
-                        $currentPlan = null;
-                        $currentFeatures = null;
+                        $currentPlanIdx = null;
+                        $currentField = null;
                     } else {
                         $result[$key] = $this->cleanYamlValue($val);
                         $currentSection = null;
                         $currentSub = null;
-                        $currentPlan = null;
-                        $currentFeatures = null;
+                        $currentPlanIdx = null;
+                        $currentField = null;
                     }
                     continue;
                 }
             }
 
-            // Indent 2: Sub-keys onder root (bijv. pricing: -> title: "..." of stats: -> - num: ...)
+            // Indent 2: Sub-keys onder root section (bijv. title: "...", plans: onder pricing:)
+            // OF list items onder root (bijv. - num: "M365" onder stats:)
             if ($indent === 2 && $currentSection) {
                 if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
                     $k = $m[1];
                     $v = trim($m[2]);
-                    if (!isset($result[$currentSection]) || (is_array($result[$currentSection]) && empty($result[$currentSection]))) {
+                    if (!isset($result[$currentSection]) || !is_array($result[$currentSection])) {
                         $result[$currentSection] = [];
                     }
                     if ($v === '') {
                         $result[$currentSection][$k] = [];
                         $currentSub = $k;
-                        $currentPlan = null;
-                        $currentFeatures = null;
+                        $currentPlanIdx = null;
+                        $currentField = null;
                     } else {
                         $result[$currentSection][$k] = $this->cleanYamlValue($v);
                         $currentSub = null;
-                        $currentPlan = null;
-                        $currentFeatures = null;
+                        $currentPlanIdx = null;
+                        $currentField = null;
                     }
                     continue;
                 }
@@ -1146,79 +1223,105 @@ class DienstenEngine {
                     if ($rest !== '' && preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $rest, $rm)) {
                         $item = [$rm[1] => $this->cleanYamlValue($rm[2])];
                         $result[$currentSection][] = $item;
-                        $lastIdx = array_key_last($result[$currentSection]);
-                        $currentPlan = &$result[$currentSection][$lastIdx];
+                        $currentPlanIdx = array_key_last($result[$currentSection]);
                         $currentSub = null;
-                        $currentFeatures = null;
+                        $currentField = null;
                     } else {
                         $result[$currentSection][] = $this->cleanYamlValue($m[1]);
-                        $currentPlan = null;
+                        $currentPlanIdx = null;
+                        $currentField = null;
                     }
                     continue;
                 }
             }
 
-            // Indent 4: Onder sub-section (pricing.plans -> - tier: ...) OF onder indent-2 list item
-            if ($indent === 4 && $currentSection) {
-                // Case A: Onder indent-2 list item (bijv. stats of intro_pillars)
-                if ($currentPlan !== null && $currentSub === null) {
-                    if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
-                        $currentPlan[$m[1]] = $this->cleanYamlValue($m[2]);
-                        continue;
+            // Indent 4:
+            // Case A: Volgend veld onder indent-2 list item (bijv. lbl: "Native Microsoft" onder stats:)
+            if ($indent === 4 && $currentSection && $currentSub === null && $currentPlanIdx !== null) {
+                if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
+                    if (isset($result[$currentSection][$currentPlanIdx]) && is_array($result[$currentSection][$currentPlanIdx])) {
+                        $result[$currentSection][$currentPlanIdx][$m[1]] = $this->cleanYamlValue($m[2]);
                     }
-                }
-
-                // Case B: List item onder currentSub (bijv. pricing.plans -> - tier: ...)
-                if ($currentSub) {
-                    if (preg_match('/^-\s*(.*)$/', $trimmed, $m)) {
-                        $rest = trim($m[1]);
-                        $newPlan = [];
-                        if ($rest !== '' && preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $rest, $rm)) {
-                            $newPlan[$rm[1]] = $this->cleanYamlValue($rm[2]);
-                        }
-                        if (!isset($result[$currentSection][$currentSub]) || !is_array($result[$currentSection][$currentSub])) {
-                            $result[$currentSection][$currentSub] = [];
-                        }
-                        $result[$currentSection][$currentSub][] = $newPlan;
-                        $lastIdx = array_key_last($result[$currentSection][$currentSub]);
-                        $currentPlan = &$result[$currentSection][$currentSub][$lastIdx];
-                        $currentFeatures = null;
-                        continue;
-                    }
-                    if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
-                        $k = $m[1];
-                        $v = trim($m[2]);
-                        $result[$currentSection][$currentSub][$k] = $this->cleanYamlValue($v);
-                        continue;
-                    }
+                    continue;
                 }
             }
 
-            // Indent 6: Velden binnen een plan (bijv. tier, name, features:)
-            if ($indent === 6 && $currentPlan !== null) {
+            // Case B: List item onder currentSub (bijv. - tier: "Basis" onder pricing.plans:)
+            if ($indent === 4 && $currentSection && $currentSub) {
+                if (preg_match('/^-\s*(.*)$/', $trimmed, $m)) {
+                    $rest = trim($m[1]);
+                    $newPlan = [];
+                    if ($rest !== '' && preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $rest, $rm)) {
+                        $newPlan[$rm[1]] = $this->cleanYamlValue($rm[2]);
+                    }
+                    if (!isset($result[$currentSection][$currentSub]) || !is_array($result[$currentSection][$currentSub])) {
+                        $result[$currentSection][$currentSub] = [];
+                    }
+                    $result[$currentSection][$currentSub][] = $newPlan;
+                    $currentPlanIdx = array_key_last($result[$currentSection][$currentSub]);
+                    $currentField = null;
+                    continue;
+                }
+
+                // Normale key-val onder currentSub
                 if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
                     $k = $m[1];
                     $v = trim($m[2]);
                     if ($v === '') {
-                        $currentPlan[$k] = [];
-                        $currentFeatures = &$currentPlan[$k];
+                        $result[$currentSection][$currentSub][$k] = [];
+                        $currentField = $k;
                     } else {
-                        $currentPlan[$k] = $this->cleanYamlValue($v);
-                        $currentFeatures = null;
+                        $result[$currentSection][$currentSub][$k] = $this->cleanYamlValue($v);
+                        $currentField = null;
                     }
-                    continue;
-                }
-                if (preg_match('/^-\s+(.*)$/', $trimmed, $m)) {
-                    $currentPlan[] = $this->cleanYamlValue($m[1]);
                     continue;
                 }
             }
 
-            // Indent 8: Feature items binnen een featurelijst
-            if ($indent === 8 && $currentFeatures !== null) {
-                if (preg_match('/^-\s+(.*)$/', $trimmed, $m)) {
-                    $currentFeatures[] = $this->cleanYamlValue($m[1]);
+            // Indent 6: Velden binnen een plan (bijv. name: "...", price_amount: "...", features:, cta:)
+            if ($indent === 6 && $currentSection && $currentSub && $currentPlanIdx !== null) {
+                if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
+                    $k = $m[1];
+                    $v = trim($m[2]);
+                    if (isset($result[$currentSection][$currentSub][$currentPlanIdx])) {
+                        if ($v === '') {
+                            $result[$currentSection][$currentSub][$currentPlanIdx][$k] = [];
+                            $currentField = $k;
+                        } else {
+                            $result[$currentSection][$currentSub][$currentPlanIdx][$k] = $this->cleanYamlValue($v);
+                            $currentField = null;
+                        }
+                    }
                     continue;
+                }
+                if (preg_match('/^-\s+(.*)$/', $trimmed, $m)) {
+                    if (isset($result[$currentSection][$currentSub][$currentPlanIdx])) {
+                        $result[$currentSection][$currentSub][$currentPlanIdx][] = $this->cleanYamlValue($m[1]);
+                    }
+                    continue;
+                }
+            }
+
+            // Indent 8 of hoger (bijv. 8, 10, 12): Feature items in features list OF key-values onder cta
+            if ($indent >= 8 && $currentSection && $currentSub && $currentPlanIdx !== null && $currentField !== null) {
+                if (isset($result[$currentSection][$currentSub][$currentPlanIdx][$currentField])) {
+                    // Controleer of het een lijst-item is: - "..."
+                    if (preg_match('/^-\s+(.*)$/', $trimmed, $m)) {
+                        if (!is_array($result[$currentSection][$currentSub][$currentPlanIdx][$currentField])) {
+                            $result[$currentSection][$currentSub][$currentPlanIdx][$currentField] = [];
+                        }
+                        $result[$currentSection][$currentSub][$currentPlanIdx][$currentField][] = $this->cleanYamlValue($m[1]);
+                        continue;
+                    }
+
+                    // Controleer of het een key-value paar is: text: "..." of url: "..." (bijv. onder cta:)
+                    if (preg_match('/^([a-zA-Z0-9_-]+):\s*(.*)$/', $trimmed, $m)) {
+                        if (is_array($result[$currentSection][$currentSub][$currentPlanIdx][$currentField]) && empty($result[$currentSection][$currentSub][$currentPlanIdx][$currentField])) {
+                            $result[$currentSection][$currentSub][$currentPlanIdx][$currentField] = [];
+                        }
+                        $result[$currentSection][$currentSub][$currentPlanIdx][$currentField][$m[1]] = $this->cleanYamlValue($m[2]);
+                        continue;
+                    }
                 }
             }
         }
