@@ -1,0 +1,37 @@
+# =========================================================================
+# Noppa Solutions & Consultants — Apache .htaccess Configuration
+# Clean URLs, Caching, and Security
+# =========================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # RewriteBase / (Uitgecommentarieerd voor automatische submap compatibiliteit)
+
+    # Sitemap redirect naar dynamische generator (optioneel als static niet bestaat)
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+    # Bestaande bestanden en mappen direct serveren
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Route alle overige verzoeken naar index.php?page=$1
+    RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
+</IfModule>
+
+# Caching van statische assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Beveiliging van interne PHP includes en Markdown content
+<FilesMatch "\.(md|json|log)$">
+    Require all denied
+</FilesMatch>
