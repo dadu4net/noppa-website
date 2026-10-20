@@ -890,6 +890,9 @@ Alle componenten in `custom.css` (knoppen, hero gradient, feature badges, links,
 
 Het platform wordt geleverd met **4 gespecialiseerde Antigravity AI Skills** en een krachtig CLI conversiescript (`scripts/convert_to_md.py`) om willekeurige bronbestanden (zoals CV's, offertes, whitepapers en oude HTML/PHP pagina's) in één stap om te zetten naar gestandaardiseerde, 100% zuivere Markdown-bestanden.
 
+> [!NOTE]
+> **Uitgebreide Handleiding & Specificaties:** Raadpleeg het dedicated document [`.agents/skills/README.md`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/.agents/skills/README.md) voor de complete handleiding, YAML-schema's, batch-scripts en Antigravity AI agent instructies.
+
 ### 1. Beschikbare Skills
 
 | Skill Naam | Bronbestanden | Doelpad | Toepassing |
