@@ -3,7 +3,7 @@ title: Welkom bij de Noppa Solutions & Consultants Kennisbank
 beschrijving: Een eerste blik op de kennisbank — wat je hier vindt, hoe je een nieuw artikel toevoegt en waarom we deze plek bouwen.
 datum: 2026-05-25
 categorie: Aankondiging
-auteur: Kees Koertshuis
+auteur: Rik Dobbelsteen
 leestijd: 3 min
 ---
 

@@ -163,6 +163,50 @@ class MarkdownEngine {
             case 'hero':
                 return $this->renderHeroSection($raw, $attrs, $pageMeta);
 
+            case 'pinned-scroll':
+            case 'pillars':
+            case 'pilaren':
+                return $this->renderPinnedScrollSection($raw, $attrs);
+
+            case 'visual':
+            case 'ijsberg':
+                return $this->renderVisualSection($raw, $attrs);
+
+            case 'formula':
+            case 'formule':
+                return $this->renderFormulaSection($raw, $attrs);
+
+            case 'decisions':
+            case 'besluiten':
+                return $this->renderDecisionsSection($raw, $attrs);
+
+            case 'checklist':
+                return $this->renderChecklistSection($raw, $attrs);
+
+            case 'scorecard':
+                return $this->renderScorecardSection($raw, $attrs);
+
+            case 'split':
+            case 'media-text':
+                return $this->renderSplitSection($raw, $attrs);
+
+            case 'overlay':
+            case 'banner':
+                return $this->renderOverlaySection($raw, $attrs);
+
+            case 'modules':
+            case 'services':
+            case 'diensten-modules':
+                return $this->renderModulesSection($raw, $attrs);
+
+            case 'contact':
+            case 'contact-cta':
+                return $this->renderContactSection($raw, $attrs);
+
+            case 'sources':
+            case 'bronnen':
+                return $this->renderSourcesSection($raw, $attrs);
+
             case 'content':
             default:
                 return $this->renderProse($raw, $attrs);
@@ -528,9 +572,11 @@ class MarkdownEngine {
             if (preg_match('/-\s+\*\*([^\*]+)\*\*\s+(.+)/', $line, $m)) {
                 $val = trim($m[1]);
                 $lbl = trim($m[2]);
+                $numClean = preg_replace('/[^0-9]/', '', $val);
+                $dataAttr = (!empty($numClean)) ? ' data-counter="' . htmlspecialchars($numClean, ENT_QUOTES, 'UTF-8') . '"' : '';
                 $stats[] = '
-                <div class="stat-card">
-                    <div class="stat-value tabular-nums">' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '</div>
+                <div class="stat-card reveal">
+                    <div class="stat-value tabular-nums"' . $dataAttr . '>' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '</div>
                     <div class="stat-label">' . htmlspecialchars($lbl, ENT_QUOTES, 'UTF-8') . '</div>
                 </div>';
             }
@@ -550,7 +596,7 @@ class MarkdownEngine {
         }, $parsed);
 
         return '
-        <div class="cta-banner">
+        <div class="cta-banner reveal">
             <div class="cta-content">
                 ' . $parsed . '
             </div>
@@ -572,18 +618,643 @@ class MarkdownEngine {
 
         $out = '<div class="hero-inner">';
         if ($badge) {
-            $out .= '<div class="hero-badge"><span class="badge-dot badge-pulse"></span> ' . htmlspecialchars($badge, ENT_QUOTES, 'UTF-8') . '</div>';
+            $out .= '<div class="hero-badge reveal"><span class="badge-dot badge-pulse"></span> ' . htmlspecialchars($badge, ENT_QUOTES, 'UTF-8') . '</div>';
         }
-        $out .= '<h1 class="hero-title">' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h1>';
+        $out .= '<h1 class="hero-title reveal">' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h1>';
         if ($subtitle) {
-            $out .= '<p class="hero-subtitle">' . htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8') . '</p>';
+            $out .= '<p class="hero-subtitle reveal">' . htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8') . '</p>';
         }
-        $out .= '<div class="hero-actions">';
+        $out .= '<div class="hero-actions reveal">';
         $out .= '<a href="' . htmlspecialchars($this->formatUrl($ctaUrl), ENT_QUOTES, 'UTF-8') . '" class="btn btn-primary btn-lg">' . htmlspecialchars($ctaText, ENT_QUOTES, 'UTF-8') . ' <span aria-hidden="true">&rarr;</span></a>';
         $out .= '</div>';
         $out .= '</div>';
 
         return $out;
+    }
+
+    /**
+     * Render Pinned Horizontal Scroll Pilaren (De 3 Pilaren).
+     */
+    public function renderPinnedScrollSection(string $markdown, array $attrs = []): string {
+        $trackId = $attrs['id'] ?? 'risico';
+        $trackTitle = $attrs['title'] ?? 'De 3 Pilaren';
+        $trackBg = !empty($attrs['bg']) ? 'bg-' . htmlspecialchars($attrs['bg'], ENT_QUOTES, 'UTF-8') : 'bg-deep';
+
+        // Splits slides op H2 koppen (## 1. ..., ## 2. ..., etc.)
+        $rawSlides = preg_split('/(?=^##\s+)/m', $markdown, -1, PREG_SPLIT_NO_EMPTY);
+        $slidesHtml = [];
+        $navPillsHtml = [];
+
+        foreach ($rawSlides as $index => $chunk) {
+            $chunk = trim($chunk);
+            if (empty($chunk)) continue;
+
+            $pillarNum = (string)($index + 1);
+            $title = '';
+            if (preg_match('/^##\s+(?:(\d+)\.\s*)?(.+)$/m', $chunk, $tm)) {
+                if (!empty($tm[1])) {
+                    $pillarNum = $tm[1];
+                }
+                $title = trim($tm[2]);
+                $chunk = preg_replace('/^##\s+.+$/m', '', $chunk, 1);
+            }
+
+            // Extraheer optioneel pill-label
+            $pillLabel = $title;
+            if (preg_match('/\*Label:\s*(.*?)\*/i', $chunk, $lm)) {
+                $pillLabel = trim($lm[1]);
+                $chunk = str_replace($lm[0], '', $chunk);
+            }
+
+            // Extraheer optionele voorwaarde
+            $conditionText = '';
+            if (preg_match('/\*Voorwaarde:\s*(.*?)\*/i', $chunk, $cm)) {
+                $conditionText = trim($cm[1]);
+                $chunk = str_replace($cm[0], '', $chunk);
+            }
+
+            // Extraheer optioneel thema
+            $slideTheme = '';
+            if (preg_match('/\*Thema:\s*(.*?)\*/i', $chunk, $thm)) {
+                $slideTheme = trim($thm[1]) === 'dark' ? 'on-dark' : '';
+                $chunk = str_replace($thm[0], '', $chunk);
+            }
+
+            $activeClass = ($index === 0) ? ' active' : '';
+            $navPillsHtml[] = '<button class="h-nav-pill' . $activeClass . '" type="button" data-slide="' . $index . '">' .
+                '<span class="pill-num">' . htmlspecialchars($pillarNum, ENT_QUOTES, 'UTF-8') . '</span> ' .
+                '<span class="pill-text">' . htmlspecialchars($pillLabel, ENT_QUOTES, 'UTF-8') . '</span>' .
+                '</button>';
+
+            $conditionHtml = '';
+            if (!empty($conditionText)) {
+                $conditionHtml = '
+                <div class="condition-box">
+                    <div>
+                        <div class="lbl">Rendementsvoorwaarde ' . htmlspecialchars($pillarNum, ENT_QUOTES, 'UTF-8') . '</div>
+                        <p>' . htmlspecialchars($conditionText, ENT_QUOTES, 'UTF-8') . '</p>
+                    </div>
+                </div>';
+            }
+
+            // Splits eventueel in twee kolommen via <!-- col --> of |||
+            $cols = preg_split('/<!--\s*(?:col|column)\s*-->|(?:\r?\n)\s*\|\|\|\s*(?:\r?\n)/i', $chunk);
+
+            if (count($cols) > 1) {
+                $col1Html = $this->parseSlideChunk(trim($cols[0]));
+                $col2Html = $this->parseSlideChunk(trim($cols[1]));
+
+                $slideColsHtml = '
+                <div class="h-slide-col">
+                    <div class="pillar-index">' . htmlspecialchars($pillarNum, ENT_QUOTES, 'UTF-8') . '</div>
+                    <h2>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h2>
+                    ' . $col1Html . '
+                    ' . $conditionHtml . '
+                </div>
+                <div class="h-slide-col">
+                    ' . $col2Html . '
+                </div>';
+            } else {
+                $bodyHtml = $this->parseSlideChunk(trim($chunk));
+                $slideColsHtml = '
+                <div class="h-slide-col" style="grid-column: 1 / -1; max-width: 820px;">
+                    <div class="pillar-index">' . htmlspecialchars($pillarNum, ENT_QUOTES, 'UTF-8') . '</div>
+                    <h2>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h2>
+                    ' . $bodyHtml . '
+                    ' . $conditionHtml . '
+                </div>';
+            }
+
+            $slideIndexClass = 'h-slide-' . htmlspecialchars($pillarNum, ENT_QUOTES, 'UTF-8');
+            $slidesHtml[] = '
+            <div class="h-slide ' . $slideIndexClass . ' ' . $slideTheme . '" data-slide-index="' . $index . '">
+                <div class="h-slide-inner">
+                    <div class="h-slide-grid">
+                        ' . $slideColsHtml . '
+                    </div>
+                </div>
+            </div>';
+        }
+
+        return '
+        <div class="h-scroll-track ' . $trackBg . '" id="' . htmlspecialchars($trackId, ENT_QUOTES, 'UTF-8') . '">
+            <div class="h-scroll-sticky">
+                <div class="h-scroll-nav">
+                    <div class="h-scroll-nav-inner">
+                        <span class="h-nav-label">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            ' . htmlspecialchars($trackTitle, ENT_QUOTES, 'UTF-8') . '
+                        </span>
+                        <div class="h-nav-pills">
+                            ' . implode("\n", $navPillsHtml) . '
+                        </div>
+                        <div class="h-scroll-progress-bg" title="Scroll-voortgang">
+                            <div class="h-scroll-progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-scroll-slider">
+                    ' . implode("\n", $slidesHtml) . '
+                </div>
+            </div>
+        </div>';
+    }
+
+    /**
+     * Parseer individuele slide chunks inclusief directives (route-a, route-b, law-box, flow, etc.)
+     */
+    private function parseSlideChunk(string $markdown): string {
+        // Directives: ::: directive_name ... :::
+        $markdown = preg_replace_callback('/:::\s*([a-zA-Z0-9_-]+)\r?\n(.*?)\r?\n:::/s', function($m) {
+            $dir = strtolower($m[1]);
+            $inner = trim($m[2]);
+
+            if ($dir === 'route-a' || $dir === 'route-b') {
+                $head = '';
+                if (preg_match('/^#{3,4}\s+(.+)$/m', $inner, $hm)) {
+                    $head = trim($hm[1]);
+                    $inner = preg_replace('/^#{3,4}\s+.+$/m', '', $inner, 1);
+                }
+                $icon = ($dir === 'route-a') ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+                $innerHtml = $this->parsedown->text(trim($inner));
+                return '<div class="route-card ' . $dir . '"><div class="route-head">' . $icon . ' ' . htmlspecialchars($head, ENT_QUOTES, 'UTF-8') . '</div>' . $innerHtml . '</div>';
+            }
+
+            if ($dir === 'routes') {
+                return '<div class="routes">' . $this->parseSlideChunk($inner) . '</div>';
+            }
+
+            if ($dir === 'law-box') {
+                $title = 'Wettelijke verplichting: AI Act artikel 4';
+                $sub = 'Van kracht sinds 2 februari 2025';
+                if (preg_match('/^#{2,3}\s+(.+)$/m', $inner, $tm)) {
+                    $title = trim($tm[1]);
+                    $inner = preg_replace('/^#{2,3}\s+.+$/m', '', $inner, 1);
+                }
+                if (preg_match('/^\*(?:Sub:)?\s*(.*?)\*/m', $inner, $sm)) {
+                    $sub = trim($sm[1]);
+                    $inner = preg_replace('/^\*(?:Sub:)?\s*.*?\*/m', '', $inner, 1);
+                }
+                $iconSvg = $this->renderIconSvg('scale', 28);
+                $innerHtml = $this->parsedown->text(trim($inner));
+                $innerHtml = str_replace('<ul>', '<ul class="bullet-list">', $innerHtml);
+                $innerHtml = preg_replace_callback('/<li>(.*?)<\/li>/s', function($lm) {
+                    return '<li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>' . $lm[1] . '</span></li>';
+                }, $innerHtml);
+
+                return '
+                <div class="law-box">
+                    <div class="law-head">
+                        <div class="icon-badge">' . $iconSvg . '</div>
+                        <div>
+                            <h3>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h3>
+                            <div class="law-sub">' . htmlspecialchars($sub, ENT_QUOTES, 'UTF-8') . '</div>
+                        </div>
+                    </div>
+                    ' . $innerHtml . '
+                </div>';
+            }
+
+            return '<div class="' . htmlspecialchars($dir, ENT_QUOTES, 'UTF-8') . '">' . $this->parsedown->text($inner) . '</div>';
+        }, $markdown);
+
+        $html = $this->parsedown->text(trim($markdown));
+
+        // Transformeer lijsten
+        $html = str_replace('<ul>', '<ul class="bullet-list">', $html);
+        $html = preg_replace_callback('/<li>(.*?)<\/li>/s', function($lm) {
+            return '<li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>' . $lm[1] . '</span></li>';
+        }, $html);
+
+        // Transformeer genummerde lijsten naar roi-list
+        $html = str_replace('<ol>', '<ol class="roi-list">', $html);
+
+        return $html;
+    }
+
+    /**
+     * Render Visual Model Sectie (zoals de Copilot Waarde-IJsberg).
+     */
+    public function renderVisualSection(string $markdown, array $attrs = []): string {
+        $image = $attrs['image'] ?? '';
+        $alt   = $attrs['alt'] ?? ($attrs['title'] ?? 'Visueel Model');
+
+        // Automatische detectie van afbeelding uit Markdown indien leeg
+        if (empty($image) && preg_match('/!\[(.*?)\]\((.*?)\)/', $markdown, $im)) {
+            $alt = $im[1] ?: $alt;
+            $image = $im[2];
+            $markdown = str_replace($im[0], '', $markdown);
+        }
+
+        // Extraheer eventuele caption uit blockquote (> ...)
+        $caption = '';
+        if (preg_match('/^>\s*(.+)$/m', $markdown, $cm)) {
+            $caption = trim($cm[1]);
+            $markdown = preg_replace('/^>\s*.+$/m', '', $markdown);
+        }
+
+        $introHtml = !empty(trim($markdown)) ? '<div class="visual-intro artikel-prose reveal mb-4">' . $this->parsedown->text(trim($markdown)) . '</div>' : '';
+
+        $captionHtml = !empty($caption) ? '<p class="iceberg-caption reveal">' . htmlspecialchars($caption, ENT_QUOTES, 'UTF-8') . '</p>' : '';
+
+        return '
+        ' . $introHtml . '
+        <div class="iceberg-wrap reveal">
+            <img src="' . htmlspecialchars($image, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlspecialchars($alt, ENT_QUOTES, 'UTF-8') . '" loading="lazy">
+        </div>
+        ' . $captionHtml;
+    }
+
+    /**
+     * Render Formule Kaart met Pijler Voorwaarden (noppa-website-content).
+     */
+    public function renderFormulaSection(string $markdown, array $attrs = []): string {
+        $eq = $attrs['eq'] ?? '';
+        $note = $attrs['note'] ?? '';
+
+        // Formatteer eventuele wiskundige symbolen in de formule
+        $eqFormatted = htmlspecialchars($eq, ENT_QUOTES, 'UTF-8');
+        $eqFormatted = str_replace('&times;', '<span class="x">&times;</span>', $eqFormatted);
+        $eqFormatted = str_replace('×', '<span class="x">&times;</span>', $eqFormatted);
+        $eqFormatted = str_replace('−', '<span class="op">&minus;</span>', $eqFormatted);
+        $eqFormatted = str_replace('-', '<span class="op">&minus;</span>', $eqFormatted);
+
+        // Splits conditiekaarten op H2 of H3
+        $chunks = preg_split('/(?=^#{2,3}\s+)/m', $markdown, -1, PREG_SPLIT_NO_EMPTY);
+        $cardsHtml = [];
+        $introText = '';
+
+        foreach ($chunks as $chunk) {
+            $chunk = trim($chunk);
+            if (empty($chunk)) continue;
+
+            if (!preg_match('/^#{2,3}\s+(.+)$/m', $chunk)) {
+                $introText .= $this->parsedown->text($chunk);
+                continue;
+            }
+
+            $title = '';
+            if (preg_match('/^#{2,3}\s+(.+)$/m', $chunk, $tm)) {
+                $title = trim($tm[1]);
+                $chunk = preg_replace('/^#{2,3}\s+.+$/m', '', $chunk, 1);
+            }
+
+            $icon = 'sparkles';
+            if (preg_match('/(?:(?:\*Icoon:\s*|\[icon:|\bicon:\s*)([a-z0-9_-]+)(?:\*|\])?)/i', $chunk, $im)) {
+                $icon = strtolower(trim($im[1]));
+                $chunk = preg_replace('/(?:(?:\*Icoon:\s*|\[icon:|\bicon:\s*)[a-z0-9_-]+(?:\*|\])?)/i', '', $chunk);
+            }
+
+            $body = $this->parsedown->text(trim($chunk));
+
+            $cardsHtml[] = '
+            <div class="cond-card reveal">
+                <div class="icon-badge">' . $this->renderIconSvg($icon, 28) . '</div>
+                <h3>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h3>
+                <div class="cond-body">' . $body . '</div>
+            </div>';
+        }
+
+        $formulaHtml = '';
+        if (!empty($eq)) {
+            $formulaHtml = '
+            <div class="formula-card reveal">
+                <div class="formula-eq">' . $eqFormatted . '</div>
+                ' . (!empty($note) ? '<div class="formula-note">' . htmlspecialchars($note, ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
+            </div>';
+        }
+
+        return $introText . $formulaHtml . '<div class="cond-grid">' . implode("\n", $cardsHtml) . '</div>';
+    }
+
+    /**
+     * Render Strategische Besluitkaarten (Directieperspectief).
+     */
+    public function renderDecisionsSection(string $markdown, array $attrs = []): string {
+        $chunks = preg_split('/(?=^#{2,3}\s+)/m', $markdown, -1, PREG_SPLIT_NO_EMPTY);
+        $cardsHtml = [];
+        $questionHtml = '';
+
+        foreach ($chunks as $index => $chunk) {
+            $chunk = trim($chunk);
+            if (empty($chunk)) continue;
+
+            // Vraagbox onderaan herkennen
+            if (stripos($chunk, 'Besluitvraag') !== false && preg_match('/^#{2,3}\s+Besluitvraag/i', $chunk)) {
+                $qText = preg_replace('/^#{2,3}\s+.+$/m', '', $chunk, 1);
+                $questionHtml = '
+                <div class="decision-question reveal">
+                    <div class="icon-badge">' . $this->renderIconSvg('search', 28) . '</div>
+                    <div>
+                        <h3>Besluitvraag voor het directieteam</h3>
+                        <p>' . htmlspecialchars(trim(strip_tags($qText)), ENT_QUOTES, 'UTF-8') . '</p>
+                    </div>
+                </div>';
+                continue;
+            }
+
+            $num = (string)($index + 1);
+            $title = '';
+            if (preg_match('/^#{2,3}\s+(?:(\d+)\.\s*)?(.+)$/m', $chunk, $tm)) {
+                if (!empty($tm[1])) $num = $tm[1];
+                $title = trim($tm[2]);
+                $chunk = preg_replace('/^#{2,3}\s+.+$/m', '', $chunk, 1);
+            }
+
+            $parsed = $this->parsedown->text(trim($chunk));
+
+            $cardsHtml[] = '
+            <div class="decision-card reveal">
+                <div class="decision-num">' . htmlspecialchars($num, ENT_QUOTES, 'UTF-8') . '</div>
+                <div class="decision-body">
+                    <h3>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h3>
+                    <div class="decision-content">' . $parsed . '</div>
+                </div>
+            </div>';
+        }
+
+        return '<div class="decision-list">' . implode("\n", $cardsHtml) . '</div>' . $questionHtml;
+    }
+
+    /**
+     * Render Interactieve Management Checklist.
+     */
+    public function renderChecklistSection(string $markdown, array $attrs = []): string {
+        $lines = explode("\n", trim($markdown));
+        $itemsHtml = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+
+            // Formaat: - [ ] Tekst of - [x] Tekst of - Tekst
+            $checked = false;
+            $text = $line;
+            if (preg_match('/^-\s*\[([ xX])\]\s*(.+)$/', $line, $m)) {
+                $checked = strtolower($m[1]) === 'x';
+                $text = $m[2];
+            } elseif (preg_match('/^-\s*(.+)$/', $line, $m)) {
+                $text = $m[1];
+            }
+
+            $checkedClass = $checked ? ' checked' : '';
+            $ariaChecked  = $checked ? 'true' : 'false';
+
+            $itemsHtml[] = '
+            <div class="check-item' . $checkedClass . '" role="checkbox" aria-checked="' . $ariaChecked . '" tabindex="0">
+                <div class="check-box">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <span>' . htmlspecialchars($text, ENT_QUOTES, 'UTF-8') . '</span>
+            </div>';
+        }
+
+        return '<div class="checklist reveal">' . implode("\n", $itemsHtml) . '</div>';
+    }
+
+    /**
+     * Render Scorecard Matrix (Rood / Oranje / Groen).
+     */
+    public function renderScorecardSection(string $markdown, array $attrs = []): string {
+        $legendHtml = '
+        <div class="legend reveal">
+            <div class="legend-pill legend-red"><span class="dot"></span>Rood · Nulmeting (Vertrekpunt voor optimalisatie)</div>
+            <div class="legend-pill legend-orange"><span class="dot"></span>Oranje · In ontwikkeling (Verdere verfijning mogelijk)</div>
+            <div class="legend-pill legend-green"><span class="dot"></span>Groen · AI-Ready (Klaar voor schaalbaar succes)</div>
+        </div>';
+
+        // Verwerk eventuele Markdown tabel
+        $tableHtml = $this->parsedown->text($markdown);
+        // Voeg scorecard classes toe aan cellen
+        $tableHtml = preg_replace('/<table>/i', '<table class="score-table reveal">', $tableHtml);
+
+        return $legendHtml . $tableHtml;
+    }
+
+    /**
+     * Render Split Media-Tekst Sectie (Afbeelding links of rechts naast tekst).
+     */
+    public function renderSplitSection(string $markdown, array $attrs = []): string {
+        $image = $attrs['image'] ?? '';
+        $imagePos = $attrs['image_pos'] ?? 'right';
+        $ratio = $attrs['ratio'] ?? '50-50';
+        $alt = $attrs['image_alt'] ?? ($attrs['title'] ?? 'Illustratie');
+
+        // Detectie van afbeelding uit Markdown indien niet in attributen
+        if (empty($image) && preg_match('/!\[(.*?)\]\((.*?)\)/', $markdown, $im)) {
+            $alt = $im[1] ?: $alt;
+            $image = $im[2];
+            $markdown = str_replace($im[0], '', $markdown);
+        }
+
+        $posClass = ($imagePos === 'left') ? 'split-media-left' : 'split-media-right';
+        $ratioClass = 'split-ratio-' . htmlspecialchars($ratio, ENT_QUOTES, 'UTF-8');
+
+        $contentHtml = $this->parsedown->text(trim($markdown));
+
+        return '
+        <div class="split-grid ' . $posClass . ' ' . $ratioClass . '">
+            <div class="split-media reveal">
+                <img src="' . htmlspecialchars($image, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlspecialchars($alt, ENT_QUOTES, 'UTF-8') . '" loading="lazy">
+            </div>
+            <div class="split-content artikel-prose reveal">
+                ' . $contentHtml . '
+            </div>
+        </div>';
+    }
+
+    /**
+     * Render Gecentreerde Overlay Banner met Achtergrondafbeelding.
+     */
+    public function renderOverlaySection(string $markdown, array $attrs = []): string {
+        $image = $attrs['image'] ?? '';
+        $overlay = $attrs['overlay'] ?? 'dark';
+
+        $parsed = $this->parsedown->text(trim($markdown));
+        // Transformeer knoppen
+        $parsed = preg_replace_callback('/<a\s+href="([^"]+)">([^<]+)<\/a>/i', function($m) {
+            return '<a href="' . htmlspecialchars($this->formatUrl($m[1]), ENT_QUOTES, 'UTF-8') . '" class="btn btn-primary btn-lg">' . $m[2] . ' <span aria-hidden="true">&rarr;</span></a>';
+        }, $parsed);
+
+        return '
+        <div class="section-overlay-banner reveal">
+            <div class="overlay-banner-media" aria-hidden="true">
+                <img src="' . htmlspecialchars($image, ENT_QUOTES, 'UTF-8') . '" alt="" loading="lazy">
+            </div>
+            <div class="overlay-banner-overlay hero-overlay-' . htmlspecialchars($overlay, ENT_QUOTES, 'UTF-8') . '" aria-hidden="true"></div>
+            <div class="overlay-banner-content">
+                ' . $parsed . '
+            </div>
+        </div>';
+    }
+
+    /**
+     * Render Dienstmodules (5-card grid + accordions).
+     */
+    public function renderModulesSection(string $markdown, array $attrs = []): string {
+        $chunks = preg_split('/(?=^##\s+)/m', $markdown, -1, PREG_SPLIT_NO_EMPTY);
+        $serviceCards = [];
+        $accordionModules = [];
+
+        foreach ($chunks as $index => $chunk) {
+            $chunk = trim($chunk);
+            if (empty($chunk)) continue;
+
+            $idx = sprintf('%02d', $index + 1);
+            $title = '';
+            if (preg_match('/^##\s+(?:(\d+)\.\s*)?(.+)$/m', $chunk, $tm)) {
+                if (!empty($tm[1])) $idx = sprintf('%02d', (int)$tm[1]);
+                $title = trim($tm[2]);
+                $chunk = preg_replace('/^##\s+.+$/m', '', $chunk, 1);
+            }
+
+            $icon = 'sparkles';
+            if (preg_match('/\*Icoon:\s*(.*?)\*/i', $chunk, $im)) {
+                $icon = strtolower(trim($im[1]));
+                $chunk = str_replace($im[0], '', $chunk);
+            }
+
+            $result = '';
+            if (preg_match('/\*Resultaat:\s*(.*?)\*/i', $chunk, $rm)) {
+                $result = trim($rm[1]);
+                $chunk = str_replace($rm[0], '', $chunk);
+            }
+
+            $sub = '';
+            if (preg_match('/\*Sub:\s*(.*?)\*/i', $chunk, $sm)) {
+                $sub = trim($sm[1]);
+                $chunk = str_replace($sm[0], '', $chunk);
+            }
+
+            // Scheid korte samenvatting (eerste alinea) van module body
+            $parts = preg_split('/\r?\n\r?\n/', trim($chunk), 2);
+            $summaryText = trim($parts[0] ?? '');
+            $detailBody = trim($parts[1] ?? $parts[0] ?? '');
+
+            $serviceCards[] = '
+            <div class="service-card reveal">
+                <div class="idx">' . htmlspecialchars($idx, ENT_QUOTES, 'UTF-8') . '</div>
+                <div class="icon-badge on-light sm" style="margin-bottom:14px;">' . $this->renderIconSvg($icon, 24) . '</div>
+                <h4>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h4>
+                <p>' . htmlspecialchars($summaryText, ENT_QUOTES, 'UTF-8') . '</p>
+                ' . (!empty($result) ? '<div class="result">Resultaat: ' . htmlspecialchars($result, ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
+            </div>';
+
+            $detailHtml = $this->parsedown->text($detailBody);
+
+            $accordionModules[] = '
+            <details class="module reveal">
+                <summary>
+                    <div class="module-title">
+                        <div class="icon-badge on-light">' . $this->renderIconSvg($icon, 28) . '</div>
+                        <div>
+                            <h3>Module ' . (int)$idx . ' · ' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h3>
+                            ' . (!empty($sub) ? '<div class="sub">' . htmlspecialchars($sub, ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
+                        </div>
+                    </div>
+                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </summary>
+                <div class="module-body">
+                    ' . $detailHtml . '
+                </div>
+            </details>';
+        }
+
+        return '
+        <div class="service-grid reveal">
+            ' . implode("\n", $serviceCards) . '
+        </div>
+        <div class="modules-accordion" style="max-width:820px; margin: 0 auto;">
+            ' . implode("\n", $accordionModules) . '
+        </div>';
+    }
+
+    /**
+     * Render Conclusie & Contact Sectie met CTA Knoppen en Contact Grid.
+     */
+    public function renderContactSection(string $markdown, array $attrs = []): string {
+        $contactCardsHtml = [];
+
+        if (preg_match('/:::\s*contact-grid\r?\n(.*?)\r?\n:::/s', $markdown, $cm)) {
+            $gridText = $cm[1];
+            $markdown = str_replace($cm[0], '', $markdown);
+
+            $lines = explode("\n", trim($gridText));
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (empty($line) || strpos($line, '-') !== 0) continue;
+
+                $label = '';
+                $url = '';
+                $val = '';
+                $icon = 'chat';
+
+                if (preg_match('/-\s+\[(.*?)\]\((.*?)\):\s*(.+)/', $line, $lm)) {
+                    $label = trim($lm[1]);
+                    $url = trim($lm[2]);
+                    $val = trim($lm[3]);
+                } elseif (preg_match('/-\s+([^:]+):\s*(.+)/', $line, $lm)) {
+                    $label = trim($lm[1]);
+                    $val = trim($lm[2]);
+                }
+
+                $lowerLabel = strtolower($label);
+                if (str_contains($lowerLabel, 'telefoon') || str_contains($lowerLabel, 'bel')) $icon = 'phone';
+                elseif (str_contains($lowerLabel, 'mail')) $icon = 'email';
+                elseif (str_contains($lowerLabel, 'web')) $icon = 'globe';
+                elseif (str_contains($lowerLabel, 'adres')) $icon = 'pin';
+
+                $iconSvg = $this->renderIconSvg($icon, 22);
+
+                if (!empty($url)) {
+                    $contactCardsHtml[] = '
+                    <a href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" class="contact-card reveal">
+                        <div class="icon-badge sm">' . $iconSvg . '</div>
+                        <div class="lbl">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</div>
+                        <div class="val">' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '</div>
+                    </a>';
+                } else {
+                    $contactCardsHtml[] = '
+                    <div class="contact-card reveal" style="cursor:default;">
+                        <div class="icon-badge sm">' . $iconSvg . '</div>
+                        <div class="lbl">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</div>
+                        <div class="val">' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '</div>
+                    </div>';
+                }
+            }
+        }
+
+        $parsed = $this->parsedown->text(trim($markdown));
+
+        // Transformeer knoppen
+        $parsed = preg_replace_callback('/<a\s+href="([^"]+)">([^<]+)<\/a>/i', function($m) {
+            $url = $m[1];
+            $text = $m[2];
+            $btnClass = (str_starts_with($url, 'tel:')) ? 'btn-ghost-dark' : 'btn-primary';
+            return '<a href="' . htmlspecialchars($this->formatUrl($url), ENT_QUOTES, 'UTF-8') . '" class="btn ' . $btnClass . ' btn-lg">' . $text . '</a>';
+        }, $parsed);
+
+        $gridHtml = !empty($contactCardsHtml) ? '<div class="contact-grid reveal">' . implode("\n", $contactCardsHtml) . '</div>' : '';
+
+        return '<div class="contact-section-inner prose center reveal" style="max-width:760px; margin: 0 auto;">' . $parsed . '</div>' . $gridHtml;
+    }
+
+    /**
+     * Render Bronnen & Verantwoording Sectie.
+     */
+    public function renderSourcesSection(string $markdown, array $attrs = []): string {
+        $title = $attrs['title'] ?? 'Bronnen en verantwoording';
+        $parsed = $this->parsedown->text(trim($markdown));
+
+        return '
+        <div class="sources reveal">
+            <div class="wrap">
+                <h4>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h4>
+                ' . $parsed . '
+            </div>
+        </div>';
     }
 
     /**
@@ -627,6 +1298,20 @@ class MarkdownEngine {
      */
     public function renderIconSvg(string $name, int $size = 28): string {
         $safeName = strtolower(preg_replace('/[^a-zA-Z0-9_-]/', '', $name));
+
+        // Aliassen mappen naar beschikbare iconen
+        $aliases = [
+            'mail'    => 'email',
+            'data'    => 'dashboard',
+            'people'  => 'team',
+            'spark'   => 'sparkles',
+            'process' => 'workflow',
+            'target'  => 'target',
+        ];
+        if (isset($aliases[$safeName])) {
+            $safeName = $aliases[$safeName];
+        }
+
         $file = $this->iconsDir . $safeName . '.svg';
 
         if (file_exists($file)) {
@@ -641,6 +1326,23 @@ class MarkdownEngine {
             // Zorg voor schone afmetingen en aria attributen
             $svg = preg_replace('/<svg\b([^>]*)>/i', '<svg$1 width="' . $size . '" height="' . $size . '" class="noppa-icon" role="img" aria-label="' . $safeName . '">', $svg, 1);
             return $svg;
+        }
+
+        // Inline SVGs voor extra iconen
+        if ($safeName === 'phone') {
+            return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="noppa-icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>';
+        }
+        if ($safeName === 'pin') {
+            return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="noppa-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
+        }
+        if ($safeName === 'globe') {
+            return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="noppa-icon"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
+        }
+        if ($safeName === 'scale') {
+            return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="noppa-icon"><path d="M12 3v18M12 3l-6 3m6-3l6 3M4 9l2.5 6a2.5 2.5 0 0 0 5 0L9 9m10 0l-2.5 6a2.5 2.5 0 0 1-5 0L14 9M4 9h5m5 0h5"></path></svg>';
+        }
+        if ($safeName === 'warn') {
+            return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="noppa-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
         }
 
         // Fallback: toon img tag

@@ -18,12 +18,14 @@ hero:
 We zijn eenvoudig bereikbaar via telefoon, e-mail of voor een persoonlijke ontmoeting op onze vestiging in Berlicum.
 
 ### Bedrijfsgegevens
+
 - **Telefoon**: [+31 (0)6 13 35 77 23](tel:+31613357723)
 - **E-mail**: [info@noppa.nl](mailto:info@noppa.nl)
 - **KvK-nummer**: 61868388
 - **BTW-nummer**: NL859223348B01
 
 ### Bezoekadres
+
 - **Noppa Solutions & Consultants**
 - Pijlkruid 44
 - 5258 BW Berlicum

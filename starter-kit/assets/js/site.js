@@ -293,11 +293,236 @@
     window.openCookieSettings = openCookieModal;
     window.closeCookieModal = closeCookieModal;
 
-    /* ---------- 4. Boot --------------------------------------------------- */
+    /* ---------- 4. Scroll Reveal Engine (noppa-ux-ui) --------------------- */
+    function initScrollReveal() {
+        var reveals = document.querySelectorAll('.reveal');
+        if (!reveals.length) return;
+
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('in');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+            reveals.forEach(function (el) { io.observe(el); });
+        } else {
+            reveals.forEach(function (el) { el.classList.add('in'); });
+        }
+    }
+
+    /* ---------- 5. Animated Number Counters ------------------------------ */
+    function initNumberCounters() {
+        var counters = document.querySelectorAll('[data-counter], .stat-value.tabular-nums, .hero-stat .num');
+        if (!counters.length) return;
+
+        // Controleer op voorkeur voor minder beweging
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            return;
+        }
+
+        var countObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    countObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        counters.forEach(function (el) {
+            // Als er nog geen data-counter attribuut is, probeer numerieke waarde te extraheren
+            if (!el.hasAttribute('data-counter')) {
+                var text = el.textContent.trim();
+                // Match bijv. "300+", "100%", "€ 1.850", "4 uur", "85%"
+                var numMatch = text.match(/([0-9]+(?:\.[0-9]+)?)/);
+                if (numMatch) {
+                    var rawVal = numMatch[1];
+                    var num = parseFloat(rawVal.replace(/\./g, ''));
+                    if (!isNaN(num) && num > 0) {
+                        el.setAttribute('data-counter', num);
+                        var parts = text.split(rawVal);
+                        if (parts[0]) el.setAttribute('data-prefix', parts[0]);
+                        if (parts[1]) el.setAttribute('data-suffix', parts[1]);
+                    }
+                }
+            }
+
+            if (el.hasAttribute('data-counter')) {
+                countObserver.observe(el);
+            }
+        });
+    }
+
+    function animateCounter(el) {
+        var target = parseFloat(el.getAttribute('data-counter'));
+        var prefix = el.getAttribute('data-prefix') || '';
+        var suffix = el.getAttribute('data-suffix') || '';
+        var duration = parseInt(el.getAttribute('data-duration') || '1600', 10);
+        var startTime = null;
+
+        function step(now) {
+            if (!startTime) startTime = now;
+            var elapsed = now - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+            // Easing: easeOutCubic
+            var easeOut = 1 - Math.pow(1 - progress, 3);
+            var currentVal = Math.floor(easeOut * target);
+
+            el.textContent = prefix + currentVal.toLocaleString('nl-NL') + suffix;
+
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                el.textContent = prefix + target.toLocaleString('nl-NL') + suffix;
+            }
+        }
+        window.requestAnimationFrame(step);
+    }
+
+    /* ---------- 6. Pinned Horizontal Scroll Engine (De 3 Pilaren) ---------- */
+    function initPinnedScroll() {
+        var tracks = document.querySelectorAll('.h-scroll-track');
+        if (!tracks.length) return;
+
+        tracks.forEach(function (track) {
+            var slider = track.querySelector('.h-scroll-slider');
+            var progressBar = track.querySelector('.h-scroll-progress-bar');
+            var navPills = track.querySelectorAll('.h-nav-pill');
+            if (!slider) return;
+
+            var ticking = false;
+
+            function update() {
+                // Alleen actief op desktop/tablet breedtes (> 1024px)
+                if (window.innerWidth <= 1024) {
+                    slider.style.transform = 'none';
+                    ticking = false;
+                    return;
+                }
+
+                var rect = track.getBoundingClientRect();
+                var trackHeight = track.offsetHeight;
+                var windowHeight = window.innerHeight;
+                var maxScroll = trackHeight - windowHeight;
+
+                if (maxScroll <= 0) {
+                    ticking = false;
+                    return;
+                }
+
+                var currentScroll = -rect.top;
+                var progress = Math.min(Math.max(currentScroll / maxScroll, 0), 1);
+                var maxTranslate = slider.scrollWidth - window.innerWidth;
+                var translateX = progress * maxTranslate;
+
+                slider.style.transform = 'translate3d(-' + translateX + 'px, 0, 0)';
+
+                if (progressBar) {
+                    progressBar.style.width = (progress * 100) + '%';
+                }
+
+                // Actieve slide indicator
+                var slideCount = navPills.length;
+                if (slideCount > 0) {
+                    var activeIndex = Math.min(Math.floor(progress * slideCount), slideCount - 1);
+                    navPills.forEach(function (pill, idx) {
+                        pill.classList.toggle('active', idx === activeIndex);
+                    });
+                }
+
+                ticking = false;
+            }
+
+            function onScroll() {
+                if (!ticking) {
+                    window.requestAnimationFrame(update);
+                    ticking = true;
+                }
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            update();
+
+            // Klikken op nav-pills voor soepel scrollen naar de slide
+            navPills.forEach(function (pill, idx) {
+                pill.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var trackTop = track.getBoundingClientRect().top + window.pageYOffset;
+                    var maxScroll = track.offsetHeight - window.innerHeight;
+                    var targetScroll = trackTop + (idx / Math.max(navPills.length - 1, 1)) * maxScroll + 2;
+                    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+                });
+            });
+        });
+    }
+
+    /* ---------- 7. Interactive Checklist Engine --------------------------- */
+    function initChecklist() {
+        document.querySelectorAll('.check-item').forEach(function (item) {
+            function toggle() {
+                var on = item.classList.toggle('checked');
+                item.setAttribute('aria-checked', on ? 'true' : 'false');
+            }
+            item.addEventListener('click', toggle);
+            item.addEventListener('keydown', function (ev) {
+                if (ev.key === 'Enter' || ev.key === ' ') {
+                    ev.preventDefault();
+                    toggle();
+                }
+            });
+        });
+    }
+
+    /* ---------- 8. Vertical Full-Page Scroll Navigation (Side Dots) -------- */
+    function initVerticalScrollNav() {
+        var nav = document.querySelector('.vertical-scroll-nav');
+        if (!nav) return;
+
+        var dots = nav.querySelectorAll('.v-dot');
+        var sections = document.querySelectorAll('.page-vertical-scroll .page-section, main > section');
+        if (!dots.length || !sections.length) return;
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    var id = entry.target.id;
+                    dots.forEach(function (dot) {
+                        var target = dot.getAttribute('data-target');
+                        dot.classList.toggle('active', target === id);
+                    });
+                }
+            });
+        }, { threshold: 0.4 });
+
+        sections.forEach(function (sec) { observer.observe(sec); });
+
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function (e) {
+                e.preventDefault();
+                var targetId = this.getAttribute('data-target');
+                var targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    }
+
+    /* ---------- 9. Boot --------------------------------------------------- */
     function boot() {
         initTheme();
         wireNav();
         wireCookies();
+        initScrollReveal();
+        initNumberCounters();
+        initPinnedScroll();
+        initChecklist();
+        initVerticalScrollNav();
     }
 
     if (document.readyState === 'loading') {

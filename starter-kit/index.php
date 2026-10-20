@@ -308,30 +308,59 @@ if ($isTeamPage && !empty($teamProfileHtml)): ?>
     if (!empty($pageData['meta']['hero'])) {
         require NOPPA_PARTIALS_DIR . '/hero.php';
     }
-?>
-<main id="main-content" role="main" class="portal-main">
-    <?php
-    $sections = $pageData['sections'] ?? [];
 
+    $scrollMode = $pageData['meta']['scroll_mode'] ?? '';
+    $scrollNav  = !empty($pageData['meta']['scroll_nav']);
+    $mainScrollClass = ($scrollMode === 'snap' || $scrollMode === 'vertical-snap') ? 'page-vertical-scroll' : '';
+    $sections = $pageData['sections'] ?? [];
+?>
+<main id="main-content" role="main" class="portal-main <?= $mainScrollClass; ?>">
+    <?php if ($scrollNav && !empty($sections)): ?>
+    <!-- Floating Vertical Side Dots Navigation -->
+    <nav class="vertical-scroll-nav" aria-label="Sectie navigatie">
+        <?php foreach ($sections as $s): 
+            $sId = htmlspecialchars($s['id'], ENT_QUOTES, 'UTF-8');
+            $sTitle = htmlspecialchars($s['attrs']['title'] ?? $s['id'], ENT_QUOTES, 'UTF-8');
+        ?>
+        <button class="v-dot" data-target="<?= $sId; ?>" title="<?= $sTitle; ?>" aria-label="<?= $sTitle; ?>"></button>
+        <?php endforeach; ?>
+    </nav>
+    <?php endif; ?>
+
+    <?php
     foreach ($sections as $index => $section):
         $sectionId    = htmlspecialchars($section['id'], ENT_QUOTES, 'UTF-8');
         $sectionType  = $section['type'];
         $sectionAttrs = $section['attrs'];
         $html         = $section['html'];
 
+        // Voor pinned-scroll tracks rendert de engine zelf de complete track structuur
+        if ($sectionType === 'pinned-scroll' || $sectionType === 'pillars' || $sectionType === 'pilaren') {
+            echo $html;
+            continue;
+        }
+
         // Styling en layout modifiers
         $bgClass = !empty($sectionAttrs['bg']) ? 'page-section-' . htmlspecialchars($sectionAttrs['bg'], ENT_QUOTES, 'UTF-8') : ($index % 2 === 1 ? 'page-section-alt' : '');
+        $isContainerNone = ($sectionAttrs['container'] ?? '') === 'none' || ($sectionAttrs['container'] ?? '') === 'full';
         $containerClass = ($sectionAttrs['container'] ?? '') === 'narrow' ? 'container-narrow' : 'container';
 
         // Optionele sectie header
         $sectionTitle    = $sectionAttrs['title'] ?? '';
         $sectionSubtitle = $sectionAttrs['subtitle'] ?? '';
         $sectionDesc     = $sectionAttrs['desc'] ?? '';
+        $sectionKicker   = $sectionAttrs['kicker'] ?? '';
     ?>
     <section id="<?= $sectionId; ?>" class="page-section section-<?= $sectionType; ?> <?= $bgClass; ?>" aria-label="<?= htmlspecialchars($sectionTitle ?: $sectionId, ENT_QUOTES, 'UTF-8'); ?>">
+        <?php if (!$isContainerNone): ?>
         <div class="<?= $containerClass; ?>">
+        <?php endif; ?>
+
             <?php if (!empty($sectionTitle)): ?>
-            <header class="section-header">
+            <header class="section-header reveal">
+                <?php if (!empty($sectionKicker)): ?>
+                <div class="kicker"><?= htmlspecialchars($sectionKicker, ENT_QUOTES, 'UTF-8'); ?></div>
+                <?php endif; ?>
                 <?php if (!empty($sectionSubtitle)): ?>
                 <span class="section-subtitle-tag"><?= htmlspecialchars($sectionSubtitle, ENT_QUOTES, 'UTF-8'); ?></span>
                 <?php endif; ?>
@@ -349,7 +378,10 @@ if ($isTeamPage && !empty($teamProfileHtml)): ?>
                     <?= $html; ?>
                 <?php endif; ?>
             </div>
+
+        <?php if (!$isContainerNone): ?>
         </div>
+        <?php endif; ?>
     </section>
     <?php endforeach; ?>
 </main>

@@ -20,8 +20,28 @@ $badge       = $hero['badge'] ?? 'Microsoft 365 & Copilot Specialisten';
 $badgeIcon   = $hero['badge_icon'] ?? 'sparkles';
 $ctaPrimary  = $hero['cta_primary'] ?? ['text' => 'Boek een adviesgesprek', 'url' => '/contact', 'icon' => 'calendar'];
 $ctaSecondary= $hero['cta_secondary'] ?? ['text' => 'Ontdek onze diensten', 'url' => '#diensten', 'icon' => 'arrow-right'];
+$bgImage     = $hero['bg_image'] ?? '';
+$bgOverlay   = $hero['bg_overlay'] ?? 'dark';
+$stats       = $hero['stats'] ?? ($pageData['meta']['stats'] ?? []);
+
+$hasBgClass  = !empty($bgImage) ? 'hero-has-bg' : '';
+$overlayClass= 'hero-overlay-' . htmlspecialchars($bgOverlay, ENT_QUOTES, 'UTF-8');
+
+// Toestaan van veilige span tags met class gradient-text in hero titel
+$titleFormatted = preg_replace('/<span class=([\'"])gradient-text\1>(.*?)<\/span>/i', '<span class="gradient-text">$2</span>', $title);
+if ($titleFormatted === $title && !str_contains($title, '<span')) {
+    $titleFormatted = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+}
 ?>
-<section class="hero-section" aria-label="Introductie">
+<section class="hero-section <?= $hasBgClass; ?>" aria-label="Introductie">
+    <?php if (!empty($bgImage)): ?>
+    <!-- Background Image Media Layer -->
+    <div class="hero-bg-media" aria-hidden="true">
+        <img src="<?= htmlspecialchars($bgImage, ENT_QUOTES, 'UTF-8'); ?>" alt="" loading="eager">
+    </div>
+    <div class="hero-overlay <?= $overlayClass; ?>" aria-hidden="true"></div>
+    <?php endif; ?>
+
     <!-- Floating Glowing Background Circles (noppa-website-hero) -->
     <div class="hero-ambient" aria-hidden="true">
         <div class="hero-circle hero-circle-1"></div>
@@ -32,20 +52,20 @@ $ctaSecondary= $hero['cta_secondary'] ?? ['text' => 'Ontdek onze diensten', 'url
         <div class="hero-content">
             <?php if (!empty($badge)): ?>
             <!-- Live Status Badge with Pulse (noppa-ux-ui) -->
-            <div class="hero-badge">
+            <div class="hero-badge reveal">
                 <span class="badge-dot badge-pulse" aria-hidden="true"></span>
                 <span><?= htmlspecialchars($badge, ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
             <?php endif; ?>
 
             <!-- H1 Hoofdtitel (Kentledge 900) -->
-            <h1 class="hero-title"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); ?></h1>
+            <h1 class="hero-title reveal"><?= $titleFormatted; ?></h1>
 
             <!-- Subtitel -->
-            <p class="hero-subtitle"><?= htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8'); ?></p>
+            <p class="hero-subtitle reveal"><?= htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8'); ?></p>
 
             <!-- CTA Knoppen -->
-            <div class="hero-actions">
+            <div class="hero-actions reveal">
                 <?php if (!empty($ctaPrimary['text'])): ?>
                 <a href="<?= htmlspecialchars($ctaPrimary['url'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary btn-lg">
                     <span><?= htmlspecialchars($ctaPrimary['text'], ENT_QUOTES, 'UTF-8'); ?></span>
@@ -59,6 +79,18 @@ $ctaSecondary= $hero['cta_secondary'] ?? ['text' => 'Ontdek onze diensten', 'url
                 </a>
                 <?php endif; ?>
             </div>
+
+            <?php if (!empty($stats) && is_array($stats)): ?>
+            <!-- Hero Stats Bar (geanimeerd via site.js) -->
+            <div class="hero-stats reveal">
+                <?php foreach ($stats as $st): ?>
+                <div class="hero-stat">
+                    <div class="num"><?= htmlspecialchars($st['num'] ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
+                    <div class="lbl"><?= htmlspecialchars($st['lbl'] ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>

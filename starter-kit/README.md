@@ -520,14 +520,61 @@ Plan een vrijblijvende inspiratiesessie van 30 minuten met een van onze adviseur
 
 ### Ondersteunde Sectietypes (`type="..."`)
 
-| Type | Doel | Kenmerken |
+| Type | Doel | Kenmerken & Markdown Voorbeeld |
 | :--- | :--- | :--- |
 | `content` | Rijke artikelen en tekstblokken | Verpakt in `.artikel-prose` met automatische responsive tabellen |
 | `cards` | Responsief kaarten-grid (2 of 3 kolommen) | Gebruik `cols="2"` of `cols="3"`, ondersteunt `*Icoon: naam*` |
-| `stats` | Statistieken en kerncijfers | Tabulaire cijfers (`tabular-nums`) met pulserende indicatoren |
+| `stats` | Statistieken en kerncijfers | Tabulaire cijfers (`tabular-nums`) met geanimeerde number counters (`data-counter`) |
+| `pinned-scroll` | Horizontale pinned scroll track (350vh) | Sticky viewport (100vh), pill-nav, progress bar, `<!-- col -->` split en `:::` directives |
+| `visual` | Visueel model & illustraties (bv. Waarde-IJsberg) | `image="..."`, `bg="deep"`, caption via blockquote (`> ...`) |
+| `formula` | Rendements- & rekenformules | Formulekaart met wiskundige operatoren (`eq="..."`), conditiekaarten en Noppa iconen |
+| `decisions` | Strategische bestuurskeuzes | Genummerde kaarten met 2-koloms opbouw (`Waarom noodzakelijk` vs `Direct resultaat`) |
+| `scorecard` | Stoplicht Readiness Matrix | Rood / Oranje / Groen indicatoren en responsive Markdown tabellen |
+| `checklist` | Interactieve management checklist | Taaklijsten (`- [ ]`), klikbare vinkjes, toetsenbordtoegankelijk (`aria-checked`) |
+| `modules` | Dienstenmodules & Accordions | 5-koloms overzichtskaarten gekoppeld aan interactieve `<details class="module">` uitklapsecties |
+| `split` | Media-Tekst split sectie | Afbeelding flexibel links of rechts (`image_pos="left|right"`), ratio `50-50` / `60-40` |
+| `overlay` | Gecentreerde overlay banner | Horizontaal en verticaal gecentreerd met achtergrondafbeelding en contrast-overlay |
+| `contact` | Conclusie & Contact grid | Tekstconclusie, actiebox en 4-koloms interactieve contactkaarten (`::: contact-grid`) |
+| `sources` | Bronnen & verantwoording | Genummerde voetnoten en documentatieverantwoording |
 | `values` | Noppa kernwaarden | Rendert automatisch de 4 Noppa merkwaarden |
 | `cta` | Conversiebanner over de volle breedte | Noppa signature 4-staps gradient met donkerblauwe pill-button |
 | `kennisbank` | Dynamische catalogus | Rendert artikelkaarten, categorie-tabs en zoekfunctie |
+
+### Geavanceerde Pagina-Instellingen (Frontmatter)
+
+In `content/pages/*.md` kunnen daarnaast geavanceerde scroll- en hero-opties worden ingeschakeld:
+
+```yaml
+---
+title: "De M365 & Copilot Realiteitscheck | Noppa"
+description: "Waarom Microsoft 365 Copilot pas rendeert als data, governance en adoptie op orde zijn."
+
+# Verticale scroll-snap & zwevende zij-navigatie (dots)
+scroll_mode: "snap"        # 'snap' voor 100vh viewport snapping op desktop
+scroll_nav: true           # Toont zwevende interactieve side-dots aan de rechterkant
+
+hero:
+  badge: "Whitepaper"
+  badge_icon: "document"
+  title: "Copilot versterkt alleen wat er <span class='gradient-text'>al staat.</span>"
+  subtitle: "Het feitenkader voor directie en IT-management."
+  bg_image: "./assets/images/header-bg.jpg" # Optionele header achtergrondafbeelding
+  bg_overlay: "dark"                       # 'dark', 'gradient' of 'glass'
+  cta_primary:
+    text: "Plan de scan"
+    url: "#contact"
+  stats:                                   # 4-koloms cijferbalk onder actieknoppen
+    - num: "± € 360"
+      label: "per licentie per jaar"
+    - num: "Art. 4"
+      label: "AI Act verplichting"
+    - num: "5 modules"
+      label: "van scan tot beheer"
+    - num: "3 pilots"
+      label: "meetbare KPI's"
+---
+```
+
 
 ---
 

@@ -43,9 +43,9 @@ pricing:
       target: "Voor teams en organisaties tot ± 15 medewerkers."
       featured: false
       price_prefix: "Eenmalig"
-      price_amount: "€ 4.410"
+      price_amount: "€ 4.750"
       price_suffix: "excl. BTW · onderhoud optioneel"
-      price_permw: "≈ € 0,72 per medewerker per maand"
+      price_permw: "≈ € x,xx per medewerker per maand over 3 jr"
       cta:
         text: "Vraag een offerte aan"
         url: "/contact"
@@ -62,9 +62,9 @@ pricing:
       featured: true
       badge: "Meest gekozen"
       price_prefix: "Eenmalig vanaf"
-      price_amount: "€ 6.890"
-      price_suffix: "+ € 3.630 / jaar onderhoud"
-      price_permw: "≈ € 2,90 per medewerker per maand"
+      price_amount: "€ 7.250"
+      price_suffix: "+ € 3.650 / jaar onderhoud"
+      price_permw: "≈ € x,xx per medewerker per maand over 3 jr"
       cta:
         text: "Vraag een offerte aan"
         url: "/contact"
@@ -81,9 +81,9 @@ pricing:
       target: "Voor organisaties vanaf 35 medewerkers en complexere wensen."
       featured: false
       price_prefix: "Eenmalig vanaf"
-      price_amount: "€ 11.025"
-      price_suffix: "+ vanaf € 5.940 / jaar onderhoud"
-      price_permw: "≈ € 4,71 per medewerker per maand"
+      price_amount: "€ 11.250"
+      price_suffix: "+ vanaf € 5.950 / jaar onderhoud"
+      price_permw: "≈ € x,xx per medewerker per maand over 3 jr""
       cta:
         text: "Plan een gesprek"
         url: "/contact"
@@ -107,27 +107,27 @@ Wij bouwen op **SharePoint Online** — onderdeel van uw bestaande Microsoft 365
 
 Een volledig overzicht van onze drie proposities — zodat u in één oogopslag ziet welk pakket past bij uw organisatie.
 
-| Onderdeel | Basis | Standaard | Custom |
-| :--- | :---: | :---: | :---: |
-| **Inventarisatiesessie** | ✓ 1 sessie | ✓ 1 sessie | ✓ Meerdere sessies |
-| **Ontwerp & wireframes** | Basis-template | Aangepast ontwerp | Volledig op maat |
-| **Hoofdpagina met nieuws** | ✓ | ✓ | ✓ |
-| **Afdelingspagina's** | 2 | 3 | 5+ |
-| **Projecthub** | — | — | ✓ |
-| **Huisstijlkleuren** | 2 | 2 | 3 |
-| **Merkencenter & sjablonen** | — | ✓ | ✓ |
-| **Mediabibliotheek** | — | ✓ | ✓ |
-| **Geavanceerd zoeken** | — | — | ✓ |
-| **Rechtenstructuur** | Basis | Met redactie-toegang | Complex / op maat |
-| **Online naslagwerk** | ✓ | ✓ | ✓ |
-| **Workshop voor redacteuren** | — | ✓ | ✓ Uitgebreid |
-| **Power Automate-flows** | — | — | ✓ |
-| **Viva Connections (Teams)** | — | ✓ | ✓ |
-| **Viva Learning** | — | — | ✓ |
-| **Teams-app & Extranet** | — | — | ✓ |
-| **Doorlopend onderhoud** | Optioneel | Maandelijks inbegrepen | Maandelijks + uitbreidingen |
-| **Eenmalig (excl. BTW)** | **€ 4.410** | **vanaf € 6.890** | **vanaf € 11.025** |
-| **Jaarlijks onderhoud** | Optioneel | **€ 3.630** | **vanaf € 5.940** |
+| Onderdeel                     |     Basis      |       Standaard        |           Custom            |
+| :---------------------------- | :------------: | :--------------------: | :-------------------------: |
+| **Inventarisatiesessie**      |   ✓ 1 sessie   |       ✓ 1 sessie       |     ✓ Meerdere sessies      |
+| **Ontwerp & wireframes**      | Basis-template |   Aangepast ontwerp    |      Volledig op maat       |
+| **Hoofdpagina met nieuws**    |       ✓        |           ✓            |              ✓              |
+| **Afdelingspagina's**         |       2        |           3            |             5+              |
+| **Projecthub**                |       —        |           —            |              ✓              |
+| **Huisstijlkleuren**          |       2        |           2            |              3              |
+| **Merkencenter & sjablonen**  |       —        |           ✓            |              ✓              |
+| **Mediabibliotheek**          |       —        |           ✓            |              ✓              |
+| **Geavanceerd zoeken**        |       —        |           —            |              ✓              |
+| **Rechtenstructuur**          |     Basis      |  Met redactie-toegang  |      Complex / op maat      |
+| **Online naslagwerk**         |       ✓        |           ✓            |              ✓              |
+| **Workshop voor redacteuren** |       —        |           ✓            |        ✓ Uitgebreid         |
+| **Power Automate-flows**      |       —        |           —            |              ✓              |
+| **Viva Connections (Teams)**  |       —        |           ✓            |              ✓              |
+| **Viva Learning**             |       —        |           —            |              ✓              |
+| **Teams-app & Extranet**      |       —        |           —            |              ✓              |
+| **Doorlopend onderhoud**      |   Optioneel    | Maandelijks inbegrepen | Maandelijks + uitbreidingen |
+| **Eenmalig (excl. BTW)**      |  **€ 4.750**   |   **vanaf € 7.250**    |     **vanaf € 11.250**      |
+| **Jaarlijks onderhoud**       |   Optioneel    |      **€ 3.650**       |      **vanaf € 5.950**      |
 
 ## In 5 stappen naar een werkend intranet
 
