@@ -106,7 +106,23 @@ class KennisbankEngine {
         $file = $this->contentDir . $cleanSlug . '.md';
 
         if (!file_exists($file)) {
-            return null;
+            // Case-insensitive & dash/underscore flexibele fallback (essentieel voor Linux webservers)
+            $normalizedSlug = strtolower(str_replace('_', '-', $cleanSlug));
+            $foundFile = null;
+            $allFiles = glob($this->contentDir . '*.md') ?: [];
+            foreach ($allFiles as $candidate) {
+                $base = basename($candidate, '.md');
+                $normCandidate = strtolower(str_replace('_', '-', $base));
+                if ($normCandidate === $normalizedSlug || strtolower($base) === strtolower($cleanSlug)) {
+                    $file = $candidate;
+                    $cleanSlug = $base;
+                    $foundFile = true;
+                    break;
+                }
+            }
+            if (!$foundFile) {
+                return null;
+            }
         }
 
         $raw = file_get_contents($file);

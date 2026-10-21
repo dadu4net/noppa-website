@@ -121,8 +121,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://noppa.nl/kennisbank/cowork-overzicht-instructie-Cowork-sessies</loc>
-    <lastmod>2026-10-16</lastmod>
+    <loc>https://noppa.nl/kennisbank/cowork-overzicht-instructie-cowork-sessies</loc>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -133,14 +133,38 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://noppa.nl/kennisbank/m365-Copilot-Cowork-payg</loc>
-    <lastmod>2026-10-16</lastmod>
+    <loc>https://noppa.nl/kennisbank/m365-copilot-cowork-payg</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://noppa.nl/kennisbank/microsoft-365-targeted-release-retirement</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://noppa.nl/kennisbank/microsoft-365-uitfasering-van-targeted-release</loc>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://noppa.nl/kennisbank/power-automate-voor-beginners</loc>
     <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://noppa.nl/kennisbank/prompt-bedrijfsonderzoek</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://noppa.nl/kennisbank/prompt-researcher-due-diligence</loc>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -152,13 +176,13 @@
   </url>
   <url>
     <loc>https://noppa.nl/kennisbank/updated-onedrive-for-business-bug-fixes-to-ensure-storage-quota-aligns-with-license-limits</loc>
-    <lastmod>2026-10-16</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://noppa.nl/kennisbank/welkom-bij-de-kennisbank</loc>
-    <lastmod>2026-10-16</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

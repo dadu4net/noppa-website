@@ -41,7 +41,23 @@ class MarkdownEngine {
         $filePath = $this->contentDir . 'pages/' . $cleanSlug . '.md';
 
         if (!file_exists($filePath)) {
-            return null;
+            // Case-insensitive & dash-flexibele fallback voor Linux webservers
+            $normalizedSlug = strtolower(str_replace('_', '-', $cleanSlug));
+            $pagesDir = $this->contentDir . 'pages/';
+            $allPages = glob($pagesDir . '*.md') ?: [];
+            $found = false;
+            foreach ($allPages as $candidate) {
+                $base = basename($candidate, '.md');
+                if (strtolower(str_replace('_', '-', $base)) === $normalizedSlug || strtolower($base) === strtolower($cleanSlug)) {
+                    $filePath = $candidate;
+                    $cleanSlug = $base;
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                return null;
+            }
         }
 
         $raw = file_get_contents($filePath);
