@@ -113,7 +113,7 @@ class NavigationEngine {
 
                     <?php if (!empty($cta['text'])): ?>
                     <!-- Primary CTA Button -->
-                    <a href="<?= htmlspecialchars($cta['url'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary btn-nav">
+                    <a href="<?= htmlspecialchars($this->formatUrl($cta['url']), ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary btn-nav">
                         <span><?= htmlspecialchars($cta['text'], ENT_QUOTES, 'UTF-8'); ?></span>
                         <span class="btn-arrow" aria-hidden="true">&rarr;</span>
                     </a>
@@ -157,29 +157,90 @@ class NavigationEngine {
     }
 
     /**
-     * Bouw desktop HTML van de navigatie items.
+     * Controleer recursief of een afstammeling actief is.
+     */
+    private function hasActiveDescendant(array $item, string $currentPage): bool {
+        if (empty($item['children'])) {
+            return false;
+        }
+        foreach ($item['children'] as $child) {
+            if ($this->isItemActive($child['url'] ?? '', $currentPage)) {
+                return true;
+            }
+            if (!empty($child['children']) && $this->hasActiveDescendant($child, $currentPage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Bouw desktop HTML van de navigatie items met ondersteuning voor 3 lagen onder elkaar.
+     * Laag 1: Hoofdmenu in de topbar
+     * Laag 2: Dropdown secties / categorieën (verticaal onder elkaar)
+     * Laag 3: Sub-items direct verticaal ingesprongen onder Laag 2 (met optionele accordion collapse)
      */
     private function buildDesktopNavHtml(array $items, string $currentPage): string {
         $html = [];
         foreach ($items as $item) {
-            $isActive = $this->isItemActive($item['url'], $currentPage);
+            $isDirectActive = $this->isItemActive($item['url'], $currentPage);
+            $hasChildActive = $this->hasActiveDescendant($item, $currentPage);
+            $isActive = $isDirectActive || $hasChildActive;
             $activeClass = $isActive ? ' active' : '';
-            $ariaCurrent = $isActive ? ' aria-current="page"' : '';
+            $ariaCurrent = $isDirectActive ? ' aria-current="page"' : '';
 
             if (!empty($item['children'])) {
-                // Dropdown menu
                 $subHtml = [];
                 foreach ($item['children'] as $child) {
-                    $childActive = $this->isItemActive($child['url'], $currentPage);
-                    $subHtml[] = '<li><a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="dropdown-link' . ($childActive ? ' active' : '') . '">' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . '</a></li>';
+                    $childDirectActive = $this->isItemActive($child['url'], $currentPage);
+                    $childHasActive    = $this->hasActiveDescendant($child, $currentPage);
+                    $childActive       = $childDirectActive || $childHasActive;
+                    $childActiveClass  = $childActive ? ' active' : '';
+
+                    if (!empty($child['children'])) {
+                        // Laag 2 met Laag 3 eronder (verticaal onder elkaar)
+                        $grandHtml = [];
+                        foreach ($child['children'] as $grandChild) {
+                            $grandActive = $this->isItemActive($grandChild['url'], $currentPage);
+                            $grandClass  = $grandActive ? ' active' : '';
+                            $grandHtml[] = '<li class="dropdown-sub-item">' .
+                                '<a href="' . htmlspecialchars($this->formatUrl($grandChild['url']), ENT_QUOTES, 'UTF-8') . '" class="dropdown-sub-link' . $grandClass . '">' .
+                                htmlspecialchars($grandChild['title'], ENT_QUOTES, 'UTF-8') .
+                                '</a></li>';
+                        }
+
+                        $subHtml[] = '
+                        <li class="dropdown-group has-sub-items">
+                            <div class="dropdown-group-header">
+                                <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="dropdown-link' . $childActiveClass . '">' .
+                                    htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') .
+                                '</a>
+                                <button type="button" class="dropdown-sub-toggle" aria-expanded="true" aria-label="Toon sub-links voor ' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . '">
+                                    <span class="sub-toggle-icon" aria-hidden="true">&rsaquo;</span>
+                                </button>
+                            </div>
+                            <ul class="dropdown-sub-menu">
+                                ' . implode("\n", $grandHtml) . '
+                            </ul>
+                        </li>';
+                    } else {
+                        // Enkel Laag 2 item
+                        $subHtml[] = '
+                        <li class="dropdown-group">
+                            <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="dropdown-link' . $childActiveClass . '">' .
+                                htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') .
+                            '</a>
+                        </li>';
+                    }
                 }
+
                 $html[] = '
                 <li class="nav-item has-dropdown">
-                    <a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="nav-link' . $activeClass . '"' . $ariaCurrent . '>
+                    <a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="nav-link' . $activeClass . '"' . $ariaCurrent . ' aria-haspopup="true" aria-expanded="false">
                         ' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . '
                         <span class="dropdown-caret" aria-hidden="true">&dtrif;</span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-vertical-tree" role="menu">
                         ' . implode("\n", $subHtml) . '
                     </ul>
                 </li>';
@@ -196,26 +257,67 @@ class NavigationEngine {
     }
 
     /**
-     * Bouw mobiele HTML van de navigatie items.
+     * Bouw mobiele HTML van de navigatie items met volledige 3-laags accordions.
      */
     private function buildMobileNavHtml(array $items, string $currentPage, array $cta): string {
         $html = [];
         foreach ($items as $item) {
-            $isActive = $this->isItemActive($item['url'], $currentPage);
+            $isDirectActive = $this->isItemActive($item['url'], $currentPage);
+            $hasChildActive = $this->hasActiveDescendant($item, $currentPage);
+            $isActive = $isDirectActive || $hasChildActive;
             $activeClass = $isActive ? ' active' : '';
 
-            $html[] = '<li class="mobile-nav-item">';
-            $html[] = '<a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-nav-link' . $activeClass . '">' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . '</a>';
-
             if (!empty($item['children'])) {
-                $html[] = '<ul class="mobile-subnav-list">';
+                $html[] = '<li class="mobile-nav-item has-children' . ($hasChildActive ? ' is-expanded' : '') . '">';
+                $html[] = '  <div class="mobile-nav-row">';
+                $html[] = '    <a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-nav-link' . $activeClass . '">' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . '</a>';
+                $html[] = '    <button type="button" class="mobile-nav-toggle" aria-expanded="' . ($hasChildActive ? 'true' : 'false') . '" aria-label="Submenu van ' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . ' in- of uitklappen">';
+                $html[] = '      <span class="mobile-caret" aria-hidden="true">&rsaquo;</span>';
+                $html[] = '    </button>';
+                $html[] = '  </div>';
+
+                $subDisplay = $hasChildActive ? '' : ' style="display:none;"';
+                $html[] = '  <ul class="mobile-subnav-list"' . $subDisplay . '>';
+
                 foreach ($item['children'] as $child) {
-                    $childActive = $this->isItemActive($child['url'], $currentPage);
-                    $html[] = '<li><a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-sublink' . ($childActive ? ' active' : '') . '">' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . '</a></li>';
+                    $childDirectActive = $this->isItemActive($child['url'], $currentPage);
+                    $childHasActive    = $this->hasActiveDescendant($child, $currentPage);
+                    $childActive       = $childDirectActive || $childHasActive;
+                    $childActiveClass  = $childActive ? ' active' : '';
+
+                    if (!empty($child['children'])) {
+                        // Laag 2 met Laag 3 eronder
+                        $html[] = '    <li class="mobile-subnav-item has-sub-children' . ($childHasActive ? ' is-expanded' : '') . '">';
+                        $html[] = '      <div class="mobile-subnav-row">';
+                        $html[] = '        <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-sublink' . $childActiveClass . '">' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . '</a>';
+                        $html[] = '        <button type="button" class="mobile-subnav-toggle" aria-expanded="' . ($childHasActive ? 'true' : 'false') . '" aria-label="Sub-submenu van ' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . ' in- of uitklappen">';
+                        $html[] = '          <span class="mobile-caret" aria-hidden="true">&rsaquo;</span>';
+                        $html[] = '        </button>';
+                        $html[] = '      </div>';
+
+                        $subSubDisplay = $childHasActive ? '' : ' style="display:none;"';
+                        $html[] = '      <ul class="mobile-sub-subnav-list"' . $subSubDisplay . '>';
+                        foreach ($child['children'] as $grandChild) {
+                            $grandActive = $this->isItemActive($grandChild['url'], $currentPage);
+                            $grandClass  = $grandActive ? ' active' : '';
+                            $html[] = '        <li><a href="' . htmlspecialchars($this->formatUrl($grandChild['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-sub-sublink' . $grandClass . '">' . htmlspecialchars($grandChild['title'], ENT_QUOTES, 'UTF-8') . '</a></li>';
+                        }
+                        $html[] = '      </ul>';
+                        $html[] = '    </li>';
+                    } else {
+                        $html[] = '    <li class="mobile-subnav-item">';
+                        $html[] = '      <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-sublink' . $childActiveClass . '">' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . '</a>';
+                        $html[] = '    </li>';
+                    }
                 }
-                $html[] = '</ul>';
+
+                $html[] = '  </ul>';
+                $html[] = '</li>';
+            } else {
+                $html[] = '<li class="mobile-nav-item">';
+                $html[] = '  <a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-nav-link' . $activeClass . '">' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . '</a>';
+                $html[] = '</li>';
             }
-            $html[] = '</li>';
         }
         return implode("\n", $html);
     }
@@ -270,36 +372,59 @@ class NavigationEngine {
     }
 
     /**
-     * Parseer Markdown lijstitems en sub-items.
+     * Parseer Markdown lijstitems en sub-items tot 3 lagen diep.
+     * Laag 1: - [Titel](url) (0 spaties)
+     * Laag 2:   - [Titel](url) (2-3 spaties)
+     * Laag 3:     - [Titel](url) (4+ spaties)
      */
     private function parseNavList(string $markdown): array {
         $lines = explode("\n", $markdown);
         $items = [];
-        $lastParentIndex = -1;
+        $lastL1Index = -1;
+        $lastL2Index = -1;
 
         foreach ($lines as $line) {
             $rawLine = rtrim($line);
             if (empty(trim($rawLine))) continue;
 
-            // Sub-item (ingesprongen met 2 of 4 spaties)
-            if (preg_match('/^\s{2,4}-\s+\[(.+?)\]\((.+?)\)/', $rawLine, $m)) {
-                if ($lastParentIndex >= 0) {
-                    $items[$lastParentIndex]['children'][] = [
-                        'title' => trim($m[1]),
-                        'url'   => trim($m[2])
-                    ];
-                }
-                continue;
-            }
-
-            // Hoofditem (geen indent)
-            if (preg_match('/^-\s+\[(.+?)\]\((.+?)\)/', $rawLine, $m)) {
-                $items[] = [
-                    'title'    => trim($m[1]),
-                    'url'      => trim($m[2]),
+            // Zoek lijstitem met markdown link
+            if (preg_match('/^(\s*)[-*+]\s+\[(.+?)\]\((.+?)\)/', $rawLine, $m)) {
+                $leadingSpaces = strlen(str_replace("\t", '    ', $m[1]));
+                $title  = trim($m[2]);
+                $url    = trim($m[3]);
+                $node   = [
+                    'title'    => $title,
+                    'url'      => $url,
                     'children' => []
                 ];
-                $lastParentIndex = count($items) - 1;
+
+                if ($leadingSpaces >= 4) {
+                    // Laag 3 (sub-sub-item ingesprongen onder Laag 2)
+                    if ($lastL1Index >= 0 && $lastL2Index >= 0 && isset($items[$lastL1Index]['children'][$lastL2Index])) {
+                        $items[$lastL1Index]['children'][$lastL2Index]['children'][] = $node;
+                    } elseif ($lastL1Index >= 0) {
+                        // Fallback onder laag 1 als er geen voorafgaande laag 2 is
+                        $items[$lastL1Index]['children'][] = $node;
+                    } else {
+                        $items[] = $node;
+                        $lastL1Index = count($items) - 1;
+                    }
+                } elseif ($leadingSpaces >= 2) {
+                    // Laag 2 (sub-item ingesprongen onder Laag 1)
+                    if ($lastL1Index >= 0) {
+                        $items[$lastL1Index]['children'][] = $node;
+                        $lastL2Index = count($items[$lastL1Index]['children']) - 1;
+                    } else {
+                        $items[] = $node;
+                        $lastL1Index = count($items) - 1;
+                        $lastL2Index = -1;
+                    }
+                } else {
+                    // Laag 1 (hoofditem, geen inspringing)
+                    $items[] = $node;
+                    $lastL1Index = count($items) - 1;
+                    $lastL2Index = -1;
+                }
             }
         }
 

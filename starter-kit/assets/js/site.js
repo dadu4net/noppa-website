@@ -116,12 +116,57 @@
         }
 
         if (mobileNav) {
+            // Sluit drawer bij klikken op daadwerkelijke link (niet toggle buttons)
             mobileNav.querySelectorAll('a').forEach(function (a) {
                 a.addEventListener('click', function () {
                     setOpen(false);
                 });
             });
+
+            // 3-Laags Mobile Accordion Toggles (Laag 1 -> Laag 2)
+            mobileNav.querySelectorAll('.mobile-nav-toggle').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var item = btn.closest('.mobile-nav-item');
+                    if (!item) return;
+                    var sublist = item.querySelector('.mobile-subnav-list');
+                    var isExpanded = item.classList.toggle('is-expanded');
+                    btn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                    if (sublist) {
+                        sublist.style.display = isExpanded ? '' : 'none';
+                    }
+                });
+            });
+
+            // 3-Laags Mobile Accordion Toggles (Laag 2 -> Laag 3)
+            mobileNav.querySelectorAll('.mobile-subnav-toggle').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var item = btn.closest('.mobile-subnav-item');
+                    if (!item) return;
+                    var subsublist = item.querySelector('.mobile-sub-subnav-list');
+                    var isExpanded = item.classList.toggle('is-expanded');
+                    btn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                    if (subsublist) {
+                        subsublist.style.display = isExpanded ? '' : 'none';
+                    }
+                });
+            });
         }
+
+        // Desktop Dropdown Sub-toggles (Laag 2 -> Laag 3 verticaal inklappen/uitklappen)
+        document.querySelectorAll('.dropdown-sub-toggle').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var group = btn.closest('.dropdown-group');
+                if (!group) return;
+                var isCollapsed = group.classList.toggle('is-collapsed');
+                btn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+            });
+        });
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
