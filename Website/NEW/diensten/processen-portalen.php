@@ -1,19 +1,9 @@
-﻿<?php
+<?php
 $pageTitle = "Processen & Portalen — Intranet op SharePoint | Noppa";
 $pageDesc = "Een modern intranet op SharePoint Online — drie heldere proposities (Basis, Standaard, Custom). Noppa levert van inventarisatie tot live en daarna.";
 $base = "../";
 include $base . "partials/header.php";
 ?>
-
-<!-- ICON SPRITE (inline voor universele compatibiliteit) -->
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-<symbol id="check-small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></symbol>
-<symbol id="ic-0d33a5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></symbol>
-<symbol id="ic-2ba45b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></symbol>
-<symbol id="ic-ad82be" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
-<symbol id="ic-b65be9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 4l9 5.5M5 10v9h14v-9M9 19v-5h6v5"/></symbol>
-<symbol id="ic-c03fd1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></symbol>
-</svg>
 
 <!-- NAV (injected by assets/js/site.js) -->
 <?php include $base . "partials/nav.php"; ?>
@@ -39,11 +29,11 @@ include $base . "partials/header.php";
             Zonder verrassingen, mét borging.
         </p>
         <div class="hero-actions">
-            <a href="#pricing" class="btn btn-accent">
+            <a href="#pricing" class="btn btn-primary">
                 <img src="../assets/icons/dashboard.svg" class="noppa-icon" alt="" style="width:20px;height:20px;display:inline-block;vertical-align:middle;">
                 Bekijk onze proposities
             </a>
-            <a href="#proces" class="btn btn-ghost-dark">Onze aanpak →</a>
+            <a href="#proces" class="btn btn-outline">Onze aanpak →</a>
         </div>
     </div>
 </section>
@@ -126,7 +116,7 @@ include $base . "partials/header.php";
                     <li><span class="p-check"><span style="color:var(--cyan);font-weight:900;display:inline-block;margin-right:6px;">✓</span></span>Basis-rechtenstructuur</li>
                     <li><span class="p-check"><span style="color:var(--cyan);font-weight:900;display:inline-block;margin-right:6px;">✓</span></span>Online naslagwerk voor beheerders</li>
                 </ul>
-                <a href="../contact.php" class="btn btn-dark p-cta">Vraag een offerte aan</a>
+                <a href="../contact.php" class="btn btn-primary p-cta">Vraag een offerte aan</a>
             </div>
 
             <!-- STANDAARD (FEATURED) -->
@@ -173,7 +163,7 @@ include $base . "partials/header.php";
                     <li><span class="p-check"><span style="color:var(--cyan);font-weight:900;display:inline-block;margin-right:6px;">✓</span></span>Power Automate-integraties</li>
                     <li><span class="p-check"><span style="color:var(--cyan);font-weight:900;display:inline-block;margin-right:6px;">✓</span></span>Teams-app, Viva Learning & Extranet</li>
                 </ul>
-                <a href="../contact.php" class="btn btn-dark p-cta">Plan een gesprek</a>
+                <a href="../contact.php" class="btn btn-primary p-cta">Plan een gesprek</a>
             </div>
 
         </div>
@@ -417,17 +407,11 @@ include $base . "partials/header.php";
             Plan een vrijblijvend kennismakingsgesprek van 30 minuten. Wij denken graag mee over welke
             propositie het beste past bij uw situatie — geheel zonder verplichtingen.
         </p>
-        <a href="../contact.php" class="btn btn-dark">
+        <a href="../contact.php" class="btn btn-primary">
             Plan een kennismaking &rarr;→
         </a>
     </div>
 </section>
 
-<!-- FOOTER (injected by assets/js/site.js) -->
+<!-- FOOTER -->
 <?php include $base . "partials/footer.php"; ?>
-
-</body>
-</html>
-
-
-

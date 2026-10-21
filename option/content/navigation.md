@@ -13,5 +13,7 @@ theme_switcher: true
   - [Processen & Portalen](/diensten#processen)
   - [Workshops & Trainingen](/diensten#workshops)
 - [Over Ons](/over-ons)
+- [Visie](/)
+  - [Ai kiezen binnen M365](/verschillen-overeenkomsten-ai-tools-2026)
 - [Kennisbank](/kennisbank)
 - [Contact](/contact)

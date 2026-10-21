@@ -207,6 +207,16 @@ class MarkdownEngine {
             case 'bronnen':
                 return $this->renderSourcesSection($raw, $attrs);
 
+            case 'charts':
+            case 'grafieken':
+            case 'chart-grid':
+                return $this->renderChartsSection($raw, $attrs);
+
+            case 'roadmap':
+            case 'steps':
+            case 'stappen':
+                return $this->renderRoadmapSection($raw, $attrs);
+
             case 'content':
             default:
                 return $this->renderProse($raw, $attrs);
@@ -1258,6 +1268,138 @@ class MarkdownEngine {
     }
 
     /**
+     * Render Interactieve Grafieken / Besliskader (bars & donut charts).
+     */
+    public function renderChartsSection(string $markdown, array $attrs = []): string {
+        $chunks = preg_split('/(?=^#{2,3}\s+)/m', $markdown, -1, PREG_SPLIT_NO_EMPTY);
+        $chartsHtml = [];
+
+        foreach ($chunks as $chunk) {
+            $chunk = trim($chunk);
+            if (empty($chunk)) continue;
+
+            $title = '';
+            if (preg_match('/^#{2,3}\s+(.+)$/m', $chunk, $tm)) {
+                $title = trim($tm[1]);
+                $chunk = preg_replace('/^#{2,3}\s+.+$/m', '', $chunk, 1);
+            }
+
+            $note = '';
+            if (preg_match('/^\*(?:Note|Toelichting):\s*(.*?)\*/m', $chunk, $nm)) {
+                $note = trim($nm[1]);
+                $chunk = preg_replace('/^\*(?:Note|Toelichting):\s*.*?\*/m', '', $chunk, 1);
+            }
+
+            $chartType = 'bars';
+            if (preg_match('/^\*Type:\s*(.*?)\*/m', $chunk, $ctm)) {
+                $chartType = strtolower(trim($ctm[1]));
+                $chunk = preg_replace('/^\*Type:\s*.*?\*/m', '', $chunk, 1);
+            }
+
+            $centerLabel = 'Beheerde basis';
+            if (preg_match('/^\*(?:Center|Label):\s*(.*?)\*/m', $chunk, $clm)) {
+                $centerLabel = trim($clm[1]);
+                $chunk = preg_replace('/^\*(?:Center|Label):\s*.*?\*/m', '', $chunk, 1);
+            }
+
+            $innerContentHtml = '';
+
+            if ($chartType === 'donut') {
+                $legendItems = [];
+                $slices = [];
+                $lines = explode("\n", trim($chunk));
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line) || strpos($line, '-') !== 0) continue;
+                    if (preg_match('/^-\s+(.+?)(?::\s*(\d+)%?)?$/', $line, $lm)) {
+                        $label = trim($lm[1]);
+                        $pct = isset($lm[2]) ? (int)$lm[2] : 50;
+                        $slices[] = ['label' => $label, 'pct' => $pct];
+                        $legendItems[] = '<span>' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</span>';
+                    }
+                }
+                $firstPct = !empty($slices[0]['pct']) ? $slices[0]['pct'] : 72;
+                $innerContentHtml = '
+                <div class="donut-wrap">
+                    <div class="donut" role="img" aria-label="' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '" style="background: conic-gradient(var(--color-royal, #2060E0) 0% ' . $firstPct . '%, #CBD5E1 ' . $firstPct . '% 100%);">
+                        <span class="donut-center-text">' . htmlspecialchars($centerLabel, ENT_QUOTES, 'UTF-8') . '</span>
+                    </div>
+                    <div class="legend">
+                        ' . implode("\n", $legendItems) . '
+                    </div>
+                </div>';
+            } else {
+                // Default: bar chart
+                $barRows = [];
+                $lines = explode("\n", trim($chunk));
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line) || strpos($line, '-') !== 0) continue;
+                    if (preg_match('/^-\s+(.+?):\s*(\d+)%?(?:\s*\|\s*([0-9.]+))?$/', $line, $bm)) {
+                        $label = trim($bm[1]);
+                        $pct   = $bm[2];
+                        $score = $bm[3] ?? round((int)$pct / 20, 1);
+                        $barRows[] = '
+                        <div class="bar-row">
+                            <span>' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</span>
+                            <div class="track"><div class="fill" style="width:' . (int)$pct . '%"></div></div>
+                            <b>' . htmlspecialchars((string)$score, ENT_QUOTES, 'UTF-8') . '</b>
+                        </div>';
+                    }
+                }
+                $innerContentHtml = '<div class="bars">' . implode("\n", $barRows) . '</div>';
+            }
+
+            $chartsHtml[] = '
+            <section class="chart reveal">
+                <h3>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h3>
+                ' . (!empty($note) ? '<p class="chart-note">' . htmlspecialchars($note, ENT_QUOTES, 'UTF-8') . '</p>' : '') . '
+                ' . $innerContentHtml . '
+            </section>';
+        }
+
+        return '<div class="chart-grid reveal">' . implode("\n", $chartsHtml) . '</div>';
+    }
+
+    /**
+     * Render Stappenplan / Implementatie Roadmap.
+     */
+    public function renderRoadmapSection(string $markdown, array $attrs = []): string {
+        $chunks = preg_split('/(?=^#{2,3}\s+)/m', $markdown, -1, PREG_SPLIT_NO_EMPTY);
+        $stepsHtml = [];
+
+        foreach ($chunks as $chunk) {
+            $chunk = trim($chunk);
+            if (empty($chunk)) continue;
+
+            $title = '';
+            if (preg_match('/^#{2,3}\s+(?:(\d+)\.\s*)?(.+)$/m', $chunk, $tm)) {
+                $title = trim($tm[2]);
+                $chunk = preg_replace('/^#{2,3}\s+.+$/m', '', $chunk, 1);
+            }
+
+            $output = '';
+            if (preg_match('/^\*(?:Output|Resultaat):\s*(.*?)\*/m', $chunk, $om)) {
+                $output = trim($om[1]);
+                $chunk = preg_replace('/^\*(?:Output|Resultaat):\s*.*?\*/m', '', $chunk, 1);
+            }
+
+            $desc = trim($chunk);
+
+            $stepsHtml[] = '
+            <article class="step reveal">
+                <div>
+                    <h3>' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</h3>
+                    <p>' . htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') . '</p>
+                </div>
+                ' . (!empty($output) ? '<div class="output">Output: ' . htmlspecialchars($output, ENT_QUOTES, 'UTF-8') . '</div>' : '') . '
+            </article>';
+        }
+
+        return '<div class="roadmap reveal">' . implode("\n", $stepsHtml) . '</div>';
+    }
+
+    /**
      * Render standaard prose tekst volgens noppa-website-content en noppa-website-table.
      */
     public function renderProse(string $markdown, array $attrs = []): string {
@@ -1281,6 +1423,9 @@ class MarkdownEngine {
             $iconName = !empty($m[1]) ? $m[1] : $m[2];
             return $this->renderIconSvg($iconName, 24);
         }, $html);
+
+        // Shortcodes voor pill badges in tabellen en prose: [pill:Tekst] of [badge:Tekst]
+        $html = preg_replace('/\[(?:pill|badge):([^\]]+)\]/i', '<span class="pill">$1</span>', $html);
 
         // Ondersteuning voor Noppa button classes in Markdown links: [Tekst](link){.btn-primary}
         $html = preg_replace_callback('/<a\s+href="([^"]+)">([^<]+)<\/a>\{(\.btn[^\}]+)\}/i', function($m) {

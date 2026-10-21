@@ -1,5 +1,0 @@
-# Blokkeer directe toegang tot .md bestanden
-<Files "*.md">
-    Order allow,deny
-    Deny from all
-</Files>

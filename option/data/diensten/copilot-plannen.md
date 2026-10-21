@@ -25,7 +25,7 @@ pricing:
       target: "Voor snelle start van nieuwe gebruikers die de basis willen beheersen."
       featured: false
       price_prefix: "Per trainingssessie"
-      price_amount: "€ 1.000"
+      price_amount: "€ 1.250"
       price_suffix: "excl. BTW · max. 12 deelnemers"
       price_permw: ""
       cta:
@@ -94,7 +94,7 @@ Daarom ontwerpen wij onze trajecten rond drie kernprincipes:
 | Onderdeel | Basis Workshop | Copilot Boost | Copilot Experience |
 | :--- | :---: | :---: | :---: |
 | **Duur** | Ca. 2,5 uur | 6 weken (6 × 2 uur) | 12 weken intensief |
-| **Investering** | **Vanaf € 1.000** | **Vanaf € 3.500** | **Vanaf € 25.000** (op maat) |
+| **Investering** | **Vanaf € 1.250** | **Vanaf € 3.500** | **Vanaf € 25.000** (op maat) |
 | **Groepsgrootte** | Max. 12 personen | Max. 12 personen | Representatieve kerngroep |
 | **Intensiteit** | Laag (kickstart) | Gemiddeld / hoog | Zeer hoog (transformatie) |
 | **Begeleiding** | Eén interactieve sessie | Wekelijkse workshops & coaching | Labs, wekelijkse sprints & metingen |

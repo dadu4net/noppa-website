@@ -135,6 +135,51 @@ Rendert automatisch de kennisbank zoekbalk, categorieknoppen en artikelkaarten:
 <!-- section: catalogus type="kennisbank" title="Actuele Kennis & Inzichten" subtitle="Kennisbank" -->
 ```
 
+#### H. Type `charts` (Kwalitatieve Grafieken & Besliskaders)
+Rendert geavanceerde gradient staafdiagrammen (met schaal 1–5) en donutgrafieken (met centrale tekstbadge en legenda) in 100% zuivere Markdown:
+```markdown
+<!-- section: grafieken type="charts" title="Waar zit het onderscheid?" subtitle="Visueel besliskader" -->
+
+## Relatieve aansluiting op een M365-organisatie
+*Note: Indicatieve adviesvisualisatie op een schaal van 1–5.*
+*Type: bars*
+
+- M365-integratie: 96% | 5
+- Purview: 96% | 5
+- In-app werken: 92% | 5
+
+## Aanbevolen oplossingsmix
+*Note: Centraal beheerd waar data en werkprocessen samenkomen.*
+*Type: donut*
+*Center: Beheerde basis*
+
+- Copilot voor M365-werk en organisatiegegevens: 72%
+- Aanvullende goedgekeurde specialistische AI: 28%
+```
+
+#### I. Type `roadmap` (Gefaseerd Stappenplan)
+Rendert genummerde roadmap-stappen met Noppa gradient cirkelbadges en output-labels:
+```markdown
+<!-- section: implementatie type="roadmap" title="Zeven stappen naar waarde" subtitle="Implementatieadvies" -->
+
+## Bepaal zakelijke doelen
+*Output: use-caseportfolio*
+Selecteer concrete use-cases, proceseigenaren, risico's en succescriteria.
+```
+
+---
+
+### 3. Tabellen & Status Badges (`[pill:...]`)
+
+Tabellen in Markdown (`| Kolom | Kolom |`) worden door de engine automatisch voorzien van:
+- Een `.table-responsive` shell met afgeronde hoeken (`18px`), schaduw en horizontale scroll op mobiel.
+- Een diepe **Noppa Navy** koprij (`#0F2A66`) met witte Kentledge 800 typografie en 2px **Royal Blauw** rand.
+- Een geaccentueerde **Noppa Cyaan** eerste kolomkop (`#00D0F0`).
+- Een vette, scanbare eerste datakolom (vaste breedte 18%, min. 150px).
+- Subtiele zebra-striping en dynamische rij-hover (`rgba(32, 96, 224, 0.04)`).
+- **Pill Badges**: Gebruik `[pill:Basiskeuze]` of `[badge:Actief]` om compacte statusbadges met een zachte blauwe gloed te renderen.
+- **Dark Mode**: Schakelt automatisch mee naar diep nachtblauw (`#091838`) met Cyaan accenten.
+
 ---
 
 ## 🔄 Conversiehandleiding per Brontype

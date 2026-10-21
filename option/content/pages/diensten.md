@@ -53,7 +53,7 @@ Vergroot direct de digitale vaardigheden en efficiëntie van je medewerkers met 
 ## 5. Copilot Pakketten & Prijzen
 *Icoon: rocket*
 Transparante opleidings- en adoptiepakketten voor elke organisatiegrootte. Van een snelle interactieve basissessie tot een 6-weken durend verdiepingstraject met intensieve interactie.
-- Basis Workshop (2,5 uur vanaf € 1.000)
+- Basis Workshop (2,5 uur vanaf € 1.250)
 - Copilot Boost (6 weken vanaf € 3.500)
 - Vergelijkingsmatrix en handige pakketkeuzehulp
 [Bekijk Pakketten & Prijzen](/diensten/copilot-plannen)

@@ -1,22 +1,9 @@
-﻿<?php
+<?php
 $pageTitle = "AI-integratie & Microsoft Copilot | Noppa";
 $pageDesc = "Noppa begeleidt organisaties bij de adoptie van Microsoft Copilot en AI binnen Microsoft 365. Pilots, governance, training en concrete use cases.";
 $base = "../";
 include $base . "partials/header.php";
 ?>
-
-<!-- ICON SPRITE (inline voor universele compatibiliteit) -->
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-<symbol id="ic-0c40c7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></symbol>
-<symbol id="ic-0d33a5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></symbol>
-<symbol id="ic-2ecd50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></symbol>
-<symbol id="ic-6142af" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.25 18L9 11.25l4.306 4.306a11.95 11.95 0 015.814-5.518l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></symbol>
-<symbol id="ic-a6c534" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></symbol>
-<symbol id="ic-dfe03d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></symbol>
-<symbol id="phone-old" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></symbol>
-<symbol id="users-group-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"/></symbol>
-<symbol id="wrench-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63"/></symbol>
-</svg>
 
 <!-- NAV (injected by assets/js/site.js) -->
 <?php include $base . "partials/nav.php"; ?>
@@ -42,11 +29,11 @@ include $base . "partials/header.php";
             bij elke stap van de AI-reis binnen Microsoft 365.
         </p>
         <div class="hero-actions">
-            <a href="../contact.php" class="btn btn-accent">
+            <a href="../contact.php" class="btn btn-primary">
                 <img src="../assets/icons/chat.svg" class="noppa-icon" alt="" style="width:20px;height:20px;display:inline-block;vertical-align:middle;">
                 Plan een Copilot-pilot
             </a>
-            <a href="#aanpak" class="btn btn-ghost-dark">Onze aanpak →</a>
+            <a href="#aanpak" class="btn btn-outline">Onze aanpak →</a>
         </div>
     </div>
 </section>
@@ -265,17 +252,11 @@ include $base . "partials/header.php";
             Plan een vrijblijvend kennismakingsgesprek van 30 minuten. Wij laten zien hoe een gerichte
             Copilot-pilot binnen 8 weken meetbaar resultaat oplevert voor uw organisatie.
         </p>
-        <a href="../contact.php" class="btn btn-dark">
+        <a href="../contact.php" class="btn btn-primary">
             Plan een kennismaking &rarr;→
         </a>
     </div>
 </section>
 
-<!-- FOOTER (injected by assets/js/site.js) -->
+<!-- FOOTER -->
 <?php include $base . "partials/footer.php"; ?>
-
-</body>
-</html>
-
-
-

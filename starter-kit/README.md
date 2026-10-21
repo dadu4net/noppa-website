@@ -539,6 +539,79 @@ Plan een vrijblijvende inspiratiesessie van 30 minuten met een van onze adviseur
 | `values` | Noppa kernwaarden | Rendert automatisch de 4 Noppa merkwaarden |
 | `cta` | Conversiebanner over de volle breedte | Noppa signature 4-staps gradient met donkerblauwe pill-button |
 | `kennisbank` | Dynamische catalogus | Rendert artikelkaarten, categorie-tabs en zoekfunctie |
+| `charts` | Kwalitatieve grafieken & besliskaders | Staafdiagrammen (1–5 schaal) en donutgrafieken met dynamic center badge en legenda |
+| `roadmap` | Gefaseerd implementatie stappenplan | Genummerde stappen (`.step`), hover-animaties en output badges (`*Output: ...*`) |
+
+### 📊 Tabellen & Dataweergave (Opmaak, Kleuren & Badges)
+
+Het Noppa platform compileert standaard Markdown-tabellen (`| Kolom 1 | Kolom 2 |`) automatisch naar een hoogwaardige, responsieve Noppa tabelcomponent (`.table-responsive > .noppa-table`) conform de skill `noppa-website-table` en WCAG 2.1 AAA richtlijnen:
+
+#### 1. Visuele Structuur & Huisstijlkleuren:
+- **Kaart-wrapper (`.table-responsive`)**: Elke tabel wordt automatisch verpakt in een horizontale scroll-container met afgeronde hoeken (`18px`), subtiele rand (`var(--border-color)`) en een zachte zwevende schaduw (`var(--shadow-sm)`). Dit voorkomt dat mobiele layouts breken.
+- **Koprij (`th`)**: Voorzien van een diepe **Noppa Navy** achtergrond (`#0F2A66` in Light Mode, `#091838` in Dark Mode) met witte tekst, vette Kentledge-typografie (800) en uppercase tracking.
+- **Eerste kolomkop (`th:first-child`)**: Geaccentueerd in **Noppa Cyaan** (`#00D0F0`) voor een herkenbaar merksignatuur en visueel ankerpunt.
+- **Koprij scheidingsrand**: Een krachtige 2px scheidingslijn in **Noppa Royal Blauw** (`#2060E0`).
+- **Eerste datakolom (`td:first-child`)**: Vaste breedte (18%, min. 150px) en extra vet (`font-weight: 800`) in Navy (`#0F2A66` in Light Mode, Cyaan in Dark Mode) zodat vergelijkingsonderwerpen direct scanbaar zijn.
+- **Zebra-striping & Hover**: Subtiel alternerende rijkleuren (`rgba(241, 245, 251, 0.5)`) met een zachte interactieve blauwe hover-gloed (`rgba(32, 96, 224, 0.04)`) over de actieve rij.
+
+#### 2. Status Pills & Badges (`[pill:...]`):
+In tabellen en lopende tekst kunnen compacte pill-badges worden geplaatst via de shortcode `[pill:Tekst]` of `[badge:Tekst]`. Deze worden automatisch gecompileerd naar een afgeronde pill-badge (`.pill`) in Royal Blauw (`rgba(32, 96, 224, 0.1)`) met border:
+
+```markdown
+| Onderwerp | Microsoft 365 Copilot | Andere zakelijke AI-tools | Betekenis voor de organisatie |
+| :--- | :--- | :--- | :--- |
+| **Positionering** | AI-assistent en platform binnen Microsoft 365. | Afzonderlijke assistent of modelplatform. | [pill:Basiskeuze] Copilot sluit direct aan op de werkplek. |
+```
+
+#### 3. Volledige Dark Mode Ondersteuning:
+Bij het wisselen naar Dark Mode via de Theme Switcher schakelt de tabel naadloos mee naar diepblauw (`#091838`), donkere kaarten met contrastrijke borders (`rgba(255, 255, 255, 0.08)`), cyaan gekleurde koppen en glowing cyaan pill-badges.
+
+---
+
+### 📈 Grafieken & Besliskaders (`type="charts"` & `type="roadmap"`)
+
+Voor kwalitatieve visualisaties en stappenplannen ondersteunt de engine speciale sectietypes in 100% zuivere Markdown zonder ruwe HTML:
+
+#### A. Type `charts` (Staaf- en Donutdiagrammen)
+```markdown
+<!-- section: grafieken type="charts" kicker="Visueel besliskader" title="Waar zit het onderscheid?" desc="Onderstaande grafieken zijn een kwalitatieve visualisatie van het Noppa-advies." -->
+
+## Relatieve aansluiting op een M365-organisatie
+*Note: Indicatieve adviesvisualisatie op een schaal van 1–5.*
+*Type: bars*
+
+- M365-integratie: 96% | 5
+- Purview: 96% | 5
+- In-app werken: 92% | 5
+- Specialisatie: 70% | 4
+- Modelkeuze: 72% | 4
+
+## Aanbevolen oplossingsmix
+*Note: Conceptueel: centraal beheerd waar data en werkprocessen samenkomen.*
+*Type: donut*
+*Center: Beheerde basis*
+
+- Copilot voor M365-werk en organisatiegegevens: 72%
+- Aanvullende goedgekeurde specialistische AI: 28%
+```
+- **Bars**: Rendert gradient tracks (Cyaan naar Royal Blauw) met percentages en rapportcijfers (1–5).
+- **Donut**: Rendert een CSS `conic-gradient` cirkeldiagram met centrale donut-tekstbadge (`*Center: ...*`) en gekleurde legenda.
+
+#### B. Type `roadmap` (Gefaseerd Stappenplan)
+```markdown
+<!-- section: implementatie type="roadmap" kicker="Implementatieadvies" title="Zeven stappen van beleid naar waarde" desc="Behandel de invoering als een integrale verandering." -->
+
+## Bepaal zakelijke doelen
+*Output: use-caseportfolio*
+Selecteer concrete use-cases, proceseigenaren, risico's en succescriteria.
+
+## Controleer data en toegang
+*Output: risicolijst en acties*
+Onderzoek brede deling, site-eigenaarschap en gevoelige omgevingen.
+```
+- Genummerde cirkel-badges (1, 2, 3...) met Noppa signature gradient, responsive grid en uitgelijnde `.output` badges.
+
+---
 
 ### Geavanceerde Pagina-Instellingen (Frontmatter)
 

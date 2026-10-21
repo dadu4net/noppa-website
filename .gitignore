@@ -16,3 +16,9 @@ desktop.ini
 *~
 .vscode/
 .idea/
+*.code-workspace
+
+# Backups and local copies
+WebsiteBackup/
+*- Copy*
+* - Copy*

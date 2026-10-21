@@ -5,12 +5,6 @@ $base = "../";
 include $base . "partials/header.php";
 ?>
 
-<!-- ICON SPRITE (inline voor universele compatibiliteit) -->
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
-<symbol id="phone-old" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></symbol>
-<symbol id="users-group-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"/></symbol>
-</svg>
-
 <!-- NAV (injected by assets/js/site.js) -->
 <?php include $base . "partials/nav.php"; ?>
 
@@ -35,10 +29,10 @@ include $base . "partials/header.php";
             met een bewezen 5-fasen aanpak en het ADKAR-model als fundament.
         </p>
         <div class="hero-actions">
-            <a href="../contact.php" class="btn btn-accent">
+            <a href="../contact.php" class="btn btn-primary">
                 <img src="../assets/icons/chat.svg" class="noppa-icon" alt="" style="width:20px;height:20px;display:inline-block;vertical-align:middle;">
                 Plan een kennismaking &rarr;</a>
-            <a href="#aanpak" class="btn btn-ghost-dark">Bekijk onze aanpak →</a>
+            <a href="#aanpak" class="btn btn-outline">Bekijk onze aanpak →</a>
         </div>
     </div>
 </section>
@@ -458,13 +452,13 @@ include $base . "partials/header.php";
     <div class="container">
         <h2>Klaar voor een adoptietraject dat blijft plakken?</h2>
         <p>Plan een vrijblijvend gesprek en ontdek hoe Noppa uw organisatie begeleidt — van eerste stap tot geborgd gebruik.</p>
-        <a href="../contact.php" class="btn btn-dark">Plan een kennismaking</a>
+        <a href="../contact.php" class="btn btn-primary">Plan een kennismaking</a>
     </div>
 </section>
 
-<!-- FOOTER (injected by assets/js/site.js) -->
-<?php include $base . "partials/footer.php"; ?>
-
+<!-- FOOTER -->
+<?php
+$extra_scripts = <<<EOT
 <script>
 const obs = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {
@@ -476,9 +470,6 @@ const obs = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 </script>
-<script src="../assets/js/site.js"></script>
-</body>
-</html>
-
-
-
+EOT;
+?>
+<?php include $base . "partials/footer.php"; ?>

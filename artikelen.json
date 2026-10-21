@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "checklist-admin-center-configuratie",
+    "title": "Checklist – Configuratie om Cowork te gebruiken",
+    "beschrijving": "Gebruik deze checklist stap voor stap om Microsoft 365 Copilot correct in te richten om Cowork te gebruiken.",
+    "datum": null,
+    "categorie": "How-to",
+    "auteur": null,
+    "leestijd": null
+  },
+  {
+    "slug": "copilot-adoptie-strategie",
+    "title": "Copilot adoptie: van licentie naar dagelijks gebruik",
+    "beschrijving": "Een Copilot-licentie kopen is stap één. Echte adoptie vraagt om een strategie. Hoe zorg je dat medewerkers Copilot omarmen?",
+    "datum": "2025-05-01",
+    "categorie": "Adoptie",
+    "auteur": "Rik Dobbelsteen",
+    "leestijd": "10 min"
+  },
+  {
+    "slug": "cowork-overzicht-instructie-Cowork-sessies",
+    "title": "Gestyled overzicht van al je Copilot Cowork sessies",
+    "beschrijving": "Een praktische handleiding van Noppa Solutions & Consultants",
+    "datum": "2026-06-02",
+    "categorie": "Adoptie",
+    "auteur": "Rik Dobbelsteen",
+    "leestijd": "10 min"
+  },
+  {
+    "slug": "eerste-stappen-met-sharepoint",
+    "title": "Eerste stappen met SharePoint Online",
+    "beschrijving": "Een praktische gids voor organisaties die net beginnen met SharePoint Online. Van sitecollecties tot documentbibliotheken.",
+    "datum": "2025-05-10",
+    "categorie": "Aan de slag",
+    "auteur": "Rik Dobbelsteen",
+    "leestijd": "6 min"
+  },
+  {
+    "slug": "m365-Copilot-Cowork-payg",
+    "title": "Copilot Cowork: Betaal voor gebruik, aanpassing voorwaarden",
+    "beschrijving": "Microsoft heeft haar voorwaarden voor Copilot Cowork aangepast en daardoor betaal je voor gebruik vanaf 01-07-2026. Referentie: MC1393471",
+    "datum": "2026-06-17",
+    "categorie": "M365",
+    "auteur": "Rik Dobbelsteen",
+    "leestijd": "15 min"
+  },
+  {
+    "slug": "power-automate-voor-beginners",
+    "title": "Power Automate voor beginners: je eerste flow bouwen",
+    "beschrijving": "In dit artikel bouwen we stap voor stap je eerste Power Automate flow — van trigger tot actie, zonder code.",
+    "datum": "2025-04-22",
+    "categorie": "How-to",
+    "auteur": "Rik",
+    "leestijd": "8 min"
+  },
+  {
+    "slug": "sharepoint-metadata-tips",
+    "title": "5 metadata-tips voor een betere SharePoint-structuur",
+    "beschrijving": "Goede metadata is de basis van vindbaarheid in SharePoint. Deze vijf tips helpen je direct op weg.",
+    "datum": "2025-03-15",
+    "categorie": "Tips",
+    "auteur": "Rik",
+    "leestijd": "5 min"
+  },
+  {
+    "slug": "welkom-bij-de-kennisbank",
+    "title": "Welkom bij de Noppa Solutions & Consultants Kennisbank",
+    "beschrijving": "Een eerste blik op de kennisbank — wat je hier vindt, hoe je een nieuw artikel toevoegt en waarom we deze plek bouwen.",
+    "datum": "2026-05-25",
+    "categorie": "Aankondiging",
+    "auteur": "Kees Koertshuis",
+    "leestijd": "3 min"
+  }
+]

@@ -1010,39 +1010,110 @@ html[data-theme="dark"] .logo-dark { display: block !important; }
     color: var(--color-cyan);
 }
 
-/* Tabellen (noppa-website-table) */
+/* Tabellen (noppa-website-table & noppa-ux-ui) */
 .table-responsive {
     overflow-x: auto;
-    margin: 2em 0;
-    border-radius: var(--radius-sm);
+    -webkit-overflow-scrolling: touch;
+    margin: 2.2em 0;
+    border-radius: var(--radius-lg, 18px);
     border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow-sm, 0 4px 14px rgba(15, 42, 102, 0.05));
 }
 .noppa-table {
     width: 100%;
+    min-width: 860px;
     border-collapse: collapse;
     text-align: left;
     background-color: var(--bg-card);
 }
 .noppa-table th {
-    background-color: var(--bg-surface);
-    color: var(--text-heading);
-    font-weight: 700;
-    padding: 14px 18px;
-    border-bottom: 2px solid var(--border-color);
-    font-size: 0.9375rem;
+    background-color: var(--color-navy, #0F2A66);
+    color: #FFFFFF;
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--color-royal, #2060E0);
+    vertical-align: middle;
+}
+.noppa-table th:first-child {
+    color: var(--color-cyan, #00D0F0);
 }
 .noppa-table td {
-    padding: 12px 18px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
     font-size: 0.9375rem;
-    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
+    vertical-align: top;
+    transition: background-color 0.15s ease;
+}
+.noppa-table td:first-child {
+    font-weight: 800;
+    width: 18%;
+    min-width: 150px;
+    color: var(--text-heading);
+}
+.noppa-table tbody tr:last-child td {
+    border-bottom: none;
 }
 .noppa-table tr:nth-child(even) td {
-    background-color: rgba(228, 233, 242, 0.25);
+    background-color: rgba(241, 245, 251, 0.5);
+}
+.noppa-table tbody tr:hover td {
+    background-color: rgba(32, 96, 224, 0.04);
+}
+.noppa-table tr:nth-child(even):hover td {
+    background-color: rgba(32, 96, 224, 0.06);
+}
+
+/* Pill / Badge styling in tabellen */
+.pill, .badge-pill {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    background: rgba(32, 96, 224, 0.1);
+    color: var(--color-royal, #2060E0);
+    border: 1px solid rgba(32, 96, 224, 0.22);
+    margin-right: 6px;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+
+/* Dark theme overrides voor tabellen */
+[data-theme="dark"] .noppa-table {
+    background-color: var(--bg-card);
+}
+[data-theme="dark"] .noppa-table th {
+    background-color: #091838;
+    color: #FFFFFF;
+    border-bottom-color: var(--color-royal);
+}
+[data-theme="dark"] .noppa-table th:first-child {
+    color: var(--color-cyan);
+}
+[data-theme="dark"] .noppa-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+[data-theme="dark"] .noppa-table td:first-child {
+    color: var(--color-cyan);
 }
 [data-theme="dark"] .noppa-table tr:nth-child(even) td {
     background-color: rgba(255, 255, 255, 0.02);
+}
+[data-theme="dark"] .noppa-table tbody tr:hover td {
+    background-color: rgba(0, 208, 240, 0.05);
+}
+[data-theme="dark"] .pill,
+[data-theme="dark"] .badge-pill {
+    background: rgba(0, 208, 240, 0.12);
+    color: var(--color-cyan);
+    border-color: rgba(0, 208, 240, 0.3);
 }
 
 /* --- 12. Footer (noppa-website-footer) --- */
@@ -5372,5 +5443,296 @@ details[open] .chevron {
     font-size: 0.82rem;
     color: var(--text-muted);
 }
+
+/* =========================================================================
+ * 17. Noppa Grafieken & Roadmap Besliskader Architecture
+ * Standardized according to noppa-ux-ui & noppa-website-content
+ * ========================================================================= */
+
+/* --- Chart Grid & Cards --- */
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin: 24px 0;
+}
+
+.chart {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg, 18px);
+    padding: 32px;
+    box-shadow: var(--shadow-sm, 0 4px 14px rgba(15, 42, 102, 0.05));
+    transition: transform 0.25s var(--ease-spring, ease), border-color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.chart:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-royal);
+    box-shadow: var(--shadow, 0 16px 40px rgba(15, 42, 102, 0.08));
+}
+
+.chart h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    letter-spacing: -0.015em;
+}
+
+.chart-note {
+    color: var(--text-secondary, #555C68);
+    font-size: 0.88rem;
+    margin: 6px 0 0;
+}
+
+/* --- Bar Charts --- */
+.bars {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bar-row {
+    display: grid;
+    grid-template-columns: 155px 1fr 38px;
+    gap: 14px;
+    align-items: center;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.bar-row span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar-row .track {
+    height: 14px;
+    background: var(--bg-surface, #F1F5FB);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-color, #E4E9F2);
+}
+
+.bar-row .fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--color-cyan, #00D0F0), var(--color-royal, #2060E0));
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bar-row .fill.alt {
+    background: linear-gradient(90deg, #94A3B8, #CBD5E1);
+}
+
+.bar-row b {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-heading);
+}
+
+/* --- Donut Chart --- */
+.donut-wrap {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    margin-top: 28px;
+}
+
+.donut {
+    width: 195px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(var(--color-royal, #2060E0) 0% 72%, #CBD5E1 72% 100%);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-sm, 0 4px 14px rgba(15, 42, 102, 0.05));
+    flex-shrink: 0;
+}
+
+.donut-center-text {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    width: 130px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--bg-card);
+    font-weight: 800;
+    font-size: 0.88rem;
+    color: var(--text-heading);
+    box-shadow: inset 0 2px 8px rgba(15, 42, 102, 0.08);
+    padding: 10px;
+    line-height: 1.25;
+}
+
+.legend {
+    display: grid;
+    gap: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.legend span {
+    display: flex;
+    align-items: center;
+}
+
+.legend span::before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    background: var(--color-royal, #2060E0);
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.legend span:last-child::before {
+    background: #CBD5E1;
+}
+
+/* --- Roadmap / Stappenplan (.roadmap, .step) --- */
+.roadmap {
+    display: grid;
+    gap: 16px;
+    counter-reset: steps;
+    margin: 24px 0;
+}
+
+.step {
+    counter-increment: steps;
+    display: grid;
+    grid-template-columns: 70px 1fr 220px;
+    gap: 22px;
+    align-items: center;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg, 18px);
+    padding: 22px 26px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm, 0 4px 14px rgba(15, 42, 102, 0.05));
+    transition: transform 0.25s var(--ease-spring, ease), border-color 0.2s ease, box-shadow 0.25s ease;
+}
+
+.step:hover {
+    border-color: var(--color-royal, #2060E0);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow, 0 16px 40px rgba(15, 42, 102, 0.08));
+}
+
+.step::before {
+    content: counter(steps);
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--grad, linear-gradient(90deg, #00D0F0 0%, #20B0F0 35%, #2060E0 70%, #3A4FD0 100%));
+    color: #FFFFFF;
+    font-weight: 900;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 14px rgba(0, 208, 240, 0.35);
+}
+
+.step h3 {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-heading);
+}
+
+.step p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.step .output {
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    background: var(--bg-surface, #F1F5FB);
+    border: 1px solid var(--border-color);
+    padding: 11px 15px;
+    border-radius: 12px;
+    text-align: right;
+}
+
+/* --- Dark Theme Overrides --- */
+[data-theme="dark"] .chart,
+[data-theme="dark"] .step {
+    background: var(--bg-card);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .chart h3,
+[data-theme="dark"] .step h3 {
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .chart-note,
+[data-theme="dark"] .step p {
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .bar-row {
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .bar-row .track {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .donut-center-text {
+    background: var(--bg-card);
+    color: #FFFFFF;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .legend {
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .legend span:last-child::before {
+    background: #64748B;
+}
+
+[data-theme="dark"] .step .output {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-cyan);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+    .bar-row {
+        grid-template-columns: 130px 1fr 30px;
+    }
+    .donut-wrap {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .step {
+        grid-template-columns: 55px 1fr;
+        gap: 16px;
+    }
+    .step .output {
+        grid-column: 2;
+        text-align: left;
+    }
+}
+
 
 
