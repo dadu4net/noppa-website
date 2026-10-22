@@ -130,7 +130,7 @@
                     e.stopPropagation();
                     var item = btn.closest('.mobile-nav-item');
                     if (!item) return;
-                    var sublist = item.querySelector('.mobile-subnav-list');
+                    var sublist = item.querySelector('.mobile-mega-group') || item.querySelector('.mobile-subnav-list');
                     var isExpanded = item.classList.toggle('is-expanded');
                     btn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
                     if (sublist) {
@@ -140,10 +140,16 @@
             });
 
             // 3-Laags Mobile Accordion Toggles (Laag 2 -> Laag 3)
-            mobileNav.querySelectorAll('.mobile-subnav-toggle').forEach(function (btn) {
+            mobileNav.querySelectorAll('.mobile-subcat-toggle, .mobile-subnav-toggle').forEach(function (btn) {
                 btn.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
+                    var card = btn.closest('.mobile-category-card');
+                    if (card) {
+                        var isCollapsed = card.classList.toggle('is-collapsed');
+                        btn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+                        return;
+                    }
                     var item = btn.closest('.mobile-subnav-item');
                     if (!item) return;
                     var subsublist = item.querySelector('.mobile-sub-subnav-list');
