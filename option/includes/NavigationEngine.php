@@ -190,82 +190,118 @@ class NavigationEngine {
             $ariaCurrent = $isDirectActive ? ' aria-current="page"' : '';
 
             if (!empty($item['children'])) {
-                $colsHtml = [];
-                $colCount = count($item['children']);
-
+                // Bepaal of dit item een Mega Menu moet zijn:
+                // Een Mega Menu wordt gebruikt wanneer een item ten minste 3 categorieën heeft EN er sublinks (Laag 3) zijn, of wanneer het specifiek 'Diensten' betreft.
+                $hasLevel3 = false;
                 foreach ($item['children'] as $child) {
-                    $childDirectActive = $this->isItemActive($child['url'], $currentPage);
-                    $childHasActive    = $this->hasActiveDescendant($child, $currentPage);
-                    $childActive       = $childDirectActive || $childHasActive;
-                    $childActiveClass  = $childActive ? ' active' : '';
-
-                    $subLinksHtml = [];
                     if (!empty($child['children'])) {
-                        foreach ($child['children'] as $grandChild) {
-                            $grandActive = $this->isItemActive($grandChild['url'], $currentPage);
-                            $grandClass  = $grandActive ? ' active' : '';
-                            $badgeHtml   = '';
-                            // Highlight specifieke belangrijke diensten zoals de Copilot Realiteitscheck
-                            if (str_contains(strtolower($grandChild['url']), 'copilot-realiteitscheck')) {
-                                $badgeHtml = ' <span class="mega-badge">Aanrader</span>';
-                            }
+                        $hasLevel3 = true;
+                        break;
+                    }
+                }
+                $isMegaMenu = ($item['title'] === 'Diensten') || (count($item['children']) >= 3 && $hasLevel3);
 
-                            $subLinksHtml[] = '<li class="mega-link-item">' .
-                                '<a href="' . htmlspecialchars($this->formatUrl($grandChild['url']), ENT_QUOTES, 'UTF-8') . '" class="mega-sub-link' . $grandClass . '">' .
-                                    htmlspecialchars($grandChild['title'], ENT_QUOTES, 'UTF-8') .
-                                    $badgeHtml .
-                                '</a></li>';
+                if ($isMegaMenu) {
+                    // 1. Render Full-Width CSS Mega Menu (conform W3Schools patroon)
+                    $colsHtml = [];
+                    $colCount = count($item['children']);
+
+                    foreach ($item['children'] as $child) {
+                        $childDirectActive = $this->isItemActive($child['url'], $currentPage);
+                        $childHasActive    = $this->hasActiveDescendant($child, $currentPage);
+                        $childActive       = $childDirectActive || $childHasActive;
+                        $childActiveClass  = $childActive ? ' active' : '';
+
+                        $subLinksHtml = [];
+                        if (!empty($child['children'])) {
+                            foreach ($child['children'] as $grandChild) {
+                                $grandActive = $this->isItemActive($grandChild['url'], $currentPage);
+                                $grandClass  = $grandActive ? ' active' : '';
+                                $badgeHtml   = '';
+                                // Highlight specifieke belangrijke diensten zoals de Copilot Realiteitscheck
+                                if (str_contains(strtolower($grandChild['url']), 'copilot-realiteitscheck')) {
+                                    $badgeHtml = ' <span class="mega-badge">Aanrader</span>';
+                                }
+
+                                $subLinksHtml[] = '<li class="mega-link-item">' .
+                                    '<a href="' . htmlspecialchars($this->formatUrl($grandChild['url']), ENT_QUOTES, 'UTF-8') . '" class="mega-sub-link' . $grandClass . '">' .
+                                        htmlspecialchars($grandChild['title'], ENT_QUOTES, 'UTF-8') .
+                                        $badgeHtml .
+                                    '</a></li>';
+                            }
                         }
+
+                        $colsHtml[] = '
+                        <div class="mega-col">
+                            <div class="mega-col-header">
+                                <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mega-col-title' . $childActiveClass . '">
+                                    <span class="mega-bullet" aria-hidden="true"></span>
+                                    ' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . '
+                                </a>
+                            </div>
+                            ' . (!empty($subLinksHtml) ? '<ul class="mega-col-list">' . implode("\n", $subLinksHtml) . '</ul>' : '') . '
+                        </div>';
                     }
 
-                    $colsHtml[] = '
-                    <div class="mega-col">
-                        <div class="mega-col-header">
-                            <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mega-col-title' . $childActiveClass . '">
-                                <span class="mega-bullet" aria-hidden="true"></span>
-                                ' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') . '
-                            </a>
-                        </div>
-                        ' . (!empty($subLinksHtml) ? '<ul class="mega-col-list">' . implode("\n", $subLinksHtml) . '</ul>' : '') . '
-                    </div>';
-                }
-
-                $footerNote = '';
-                if ($item['title'] === 'Diensten') {
-                    $footerNote = '<div class="mega-menu-footer">
-                        <div class="mega-footer-left">
-                            <span class="mega-footer-icon" aria-hidden="true">&#9733;</span>
-                            <span class="mega-footer-text">Hulp nodig bij M365 adoptie of Copilot implementatie? <strong>Onze consultants denken graag met je mee.</strong></span>
-                        </div>
-                        <a href="' . htmlspecialchars($this->formatUrl('/contact'), ENT_QUOTES, 'UTF-8') . '" class="mega-footer-btn">Plan direct een afspraak &rarr;</a>
-                    </div>';
-                } elseif ($item['title'] === 'Kennis') {
-                    $footerNote = '<div class="mega-menu-footer">
-                        <div class="mega-footer-left">
-                            <span class="mega-footer-icon" aria-hidden="true">&#128218;</span>
-                            <span class="mega-footer-text">Verdiep je kennis met onze artikelen, best practices en whitepapers.</span>
-                        </div>
-                        <a href="' . htmlspecialchars($this->formatUrl('/kennisbank'), ENT_QUOTES, 'UTF-8') . '" class="mega-footer-btn">Naar de Kennisbank &rarr;</a>
-                    </div>';
-                }
-
-                $gridColsClass = 'mega-grid-' . min(max($colCount, 1), 4);
-
-                $html[] = '
-                <li class="nav-item has-mega-menu">
-                    <a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="nav-link' . $activeClass . '"' . $ariaCurrent . ' aria-haspopup="true" aria-expanded="false">
-                        ' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . '
-                        <span class="dropdown-caret" aria-hidden="true">&dtrif;</span>
-                    </a>
-                    <div class="mega-menu" role="region" aria-label="' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . ' submenu">
-                        <div class="mega-menu-container">
-                            <div class="mega-menu-grid ' . $gridColsClass . '">
-                                ' . implode("\n", $colsHtml) . '
+                    $footerNote = '';
+                    if ($item['title'] === 'Diensten') {
+                        $footerNote = '<div class="mega-menu-footer">
+                            <div class="mega-footer-left">
+                                <span class="mega-footer-icon" aria-hidden="true">&#9733;</span>
+                                <span class="mega-footer-text">Hulp nodig bij M365 adoptie of Copilot implementatie? <strong>Onze consultants denken graag met je mee.</strong></span>
                             </div>
-                            ' . $footerNote . '
+                            <a href="' . htmlspecialchars($this->formatUrl('/contact'), ENT_QUOTES, 'UTF-8') . '" class="mega-footer-btn">Plan direct een afspraak &rarr;</a>
+                        </div>';
+                    } elseif ($item['title'] === 'Kennis' || $item['title'] === 'Kennisbank') {
+                        $footerNote = '<div class="mega-menu-footer">
+                            <div class="mega-footer-left">
+                                <span class="mega-footer-icon" aria-hidden="true">&#128218;</span>
+                                <span class="mega-footer-text">Verdiep je kennis met onze artikelen, best practices en whitepapers.</span>
+                            </div>
+                            <a href="' . htmlspecialchars($this->formatUrl('/kennisbank'), ENT_QUOTES, 'UTF-8') . '" class="mega-footer-btn">Naar de Kennisbank &rarr;</a>
+                        </div>';
+                    }
+
+                    $gridColsClass = 'mega-grid-' . min(max($colCount, 1), 4);
+
+                    $html[] = '
+                    <li class="nav-item has-mega-menu">
+                        <a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="nav-link' . $activeClass . '"' . $ariaCurrent . ' aria-haspopup="true" aria-expanded="false">
+                            ' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . '
+                            <span class="dropdown-caret" aria-hidden="true">&dtrif;</span>
+                        </a>
+                        <div class="mega-menu" role="region" aria-label="' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . ' submenu">
+                            <div class="mega-menu-container">
+                                <div class="mega-menu-grid ' . $gridColsClass . '">
+                                    ' . implode("\n", $colsHtml) . '
+                                </div>
+                                ' . $footerNote . '
+                            </div>
                         </div>
-                    </div>
-                </li>';
+                    </li>';
+                } else {
+                    // 2. Render Standaard Dropdown Menu (voor bijv. Over Ons, Visie, Kennisbank)
+                    $dropLinksHtml = [];
+                    foreach ($item['children'] as $child) {
+                        $childDirectActive = $this->isItemActive($child['url'], $currentPage);
+                        $childActiveClass  = $childDirectActive ? ' active' : '';
+                        $dropLinksHtml[] = '<li class="dropdown-item">' .
+                            '<a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="dropdown-link' . $childActiveClass . '">' .
+                                htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8') .
+                            '</a></li>';
+                    }
+
+                    $html[] = '
+                    <li class="nav-item has-dropdown">
+                        <a href="' . htmlspecialchars($this->formatUrl($item['url']), ENT_QUOTES, 'UTF-8') . '" class="nav-link' . $activeClass . '"' . $ariaCurrent . ' aria-haspopup="true" aria-expanded="false">
+                            ' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . '
+                            <span class="dropdown-caret" aria-hidden="true">&dtrif;</span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-label="' . htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') . ' submenu">
+                            ' . implode("\n", $dropLinksHtml) . '
+                        </ul>
+                    </li>';
+                }
             } else {
                 $html[] = '
                 <li class="nav-item">
@@ -300,48 +336,74 @@ class NavigationEngine {
                 $html[] = '    </button>';
                 $html[] = '  </div>';
 
-                // Mobiele container met visuele category cards
+                // Mobiele container
                 $subDisplay = $isExpanded ? '' : ' style="display:none;"';
                 $html[] = '  <div class="mobile-mega-group"' . $subDisplay . '>';
 
-                foreach ($item['children'] as $child) {
-                    $childDirectActive = $this->isItemActive($child['url'], $currentPage);
-                    $childHasActive    = $this->hasActiveDescendant($child, $currentPage);
-                    $childActive       = $childDirectActive || $childHasActive;
-                    $childActiveClass  = $childActive ? ' active' : '';
-
-                    $html[] = '    <div class="mobile-category-card' . ($childActive ? ' is-active-cat' : '') . '">';
-                    $html[] = '      <div class="mobile-category-header">';
-                    $html[] = '        <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-category-title' . $childActiveClass . '">';
-                    $html[] = '          <span class="mobile-cat-bullet" aria-hidden="true"></span>';
-                    $html[] = '          ' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8');
-                    $html[] = '        </a>';
-                    if (!empty($child['children'])) {
-                        $html[] = '        <button type="button" class="mobile-subcat-toggle" aria-expanded="true" aria-label="Sublinks in- of uitklappen">';
-                        $html[] = '          <span class="mobile-subcat-caret" aria-hidden="true">&rsaquo;</span>';
-                        $html[] = '        </button>';
+                // Controleer of dit item Laag 3 (sublinks) bevat
+                $hasGrandchildren = false;
+                foreach ($item['children'] as $c) {
+                    if (!empty($c['children'])) {
+                        $hasGrandchildren = true;
+                        break;
                     }
-                    $html[] = '      </div>';
+                }
 
-                    if (!empty($child['children'])) {
-                        $html[] = '      <ul class="mobile-subcat-list">';
-                        foreach ($child['children'] as $grandChild) {
-                            $grandActive = $this->isItemActive($grandChild['url'], $currentPage);
-                            $grandClass  = $grandActive ? ' active' : '';
-                            $badgeHtml   = '';
-                            if (str_contains(strtolower($grandChild['url']), 'copilot-realiteitscheck')) {
-                                $badgeHtml = ' <span class="mobile-mini-badge">Aanrader</span>';
-                            }
-                            $html[] = '        <li>';
-                            $html[] = '          <a href="' . htmlspecialchars($this->formatUrl($grandChild['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-subcat-link' . $grandClass . '">';
-                            $html[] = '            ' . htmlspecialchars($grandChild['title'], ENT_QUOTES, 'UTF-8') . $badgeHtml;
-                            $html[] = '          </a>';
-                            $html[] = '        </li>';
+                if ($hasGrandchildren) {
+                    // Category cards voor 3-laags structuren (zoals Diensten)
+                    foreach ($item['children'] as $child) {
+                        $childDirectActive = $this->isItemActive($child['url'], $currentPage);
+                        $childHasActive    = $this->hasActiveDescendant($child, $currentPage);
+                        $childActive       = $childDirectActive || $childHasActive;
+                        $childActiveClass  = $childActive ? ' active' : '';
+
+                        $html[] = '    <div class="mobile-category-card' . ($childActive ? ' is-active-cat' : '') . '">';
+                        $html[] = '      <div class="mobile-category-header">';
+                        $html[] = '        <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-category-title' . $childActiveClass . '">';
+                        $html[] = '          <span class="mobile-cat-bullet" aria-hidden="true"></span>';
+                        $html[] = '          ' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8');
+                        $html[] = '        </a>';
+                        if (!empty($child['children'])) {
+                            $html[] = '        <button type="button" class="mobile-subcat-toggle" aria-expanded="true" aria-label="Sublinks in- of uitklappen">';
+                            $html[] = '          <span class="mobile-subcat-caret" aria-hidden="true">&rsaquo;</span>';
+                            $html[] = '        </button>';
                         }
-                        $html[] = '      </ul>';
-                    }
+                        $html[] = '      </div>';
 
-                    $html[] = '    </div>';
+                        if (!empty($child['children'])) {
+                            $html[] = '      <ul class="mobile-subcat-list">';
+                            foreach ($child['children'] as $grandChild) {
+                                $grandActive = $this->isItemActive($grandChild['url'], $currentPage);
+                                $grandClass  = $grandActive ? ' active' : '';
+                                $badgeHtml   = '';
+                                if (str_contains(strtolower($grandChild['url']), 'copilot-realiteitscheck')) {
+                                    $badgeHtml = ' <span class="mobile-mini-badge">Aanrader</span>';
+                                }
+                                $html[] = '        <li>';
+                                $html[] = '          <a href="' . htmlspecialchars($this->formatUrl($grandChild['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-subcat-link' . $grandClass . '">';
+                                $html[] = '            ' . htmlspecialchars($grandChild['title'], ENT_QUOTES, 'UTF-8') . $badgeHtml;
+                                $html[] = '          </a>';
+                                $html[] = '        </li>';
+                            }
+                            $html[] = '      </ul>';
+                        }
+
+                        $html[] = '    </div>';
+                    }
+                } else {
+                    // Standaard 2-laags lijst voor items zonder Laag 3 (bijv. Visie, Over Ons)
+                    $html[] = '    <ul class="mobile-simple-list">';
+                    foreach ($item['children'] as $child) {
+                        $childDirectActive = $this->isItemActive($child['url'], $currentPage);
+                        $childActiveClass  = $childDirectActive ? ' active' : '';
+                        $html[] = '      <li>';
+                        $html[] = '        <a href="' . htmlspecialchars($this->formatUrl($child['url']), ENT_QUOTES, 'UTF-8') . '" class="mobile-simple-link' . $childActiveClass . '">';
+                        $html[] = '          <span class="mobile-cat-bullet" aria-hidden="true"></span>';
+                        $html[] = '          ' . htmlspecialchars($child['title'], ENT_QUOTES, 'UTF-8');
+                        $html[] = '        </a>';
+                        $html[] = '      </li>';
+                    }
+                    $html[] = '    </ul>';
                 }
 
                 $html[] = '  </div>';

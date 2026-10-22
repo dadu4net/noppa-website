@@ -162,20 +162,36 @@
             });
         }
 
-        // Desktop Dropdown Sub-toggles (Laag 2 -> Laag 3 verticaal inklappen/uitklappen)
-        document.querySelectorAll('.dropdown-sub-toggle').forEach(function (btn) {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var group = btn.closest('.dropdown-group');
-                if (!group) return;
-                var isCollapsed = group.classList.toggle('is-collapsed');
-                btn.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+        // Desktop Mega Menu & Dropdown Touch / Click Support
+        var desktopNavItems = document.querySelectorAll('.desktop-nav .nav-item.has-mega-menu, .desktop-nav .nav-item.has-dropdown');
+        desktopNavItems.forEach(function (item) {
+            var link = item.querySelector('.nav-link');
+            if (!link) return;
+
+            link.addEventListener('click', function (e) {
+                if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                    if (!item.classList.contains('is-open')) {
+                        e.preventDefault();
+                        desktopNavItems.forEach(function (other) { if (other !== item) other.classList.remove('is-open'); });
+                        item.classList.add('is-open');
+                    }
+                }
             });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.desktop-nav')) {
+                desktopNavItems.forEach(function (item) {
+                    item.classList.remove('is-open');
+                });
+            }
         });
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
+                desktopNavItems.forEach(function (item) {
+                    item.classList.remove('is-open');
+                });
                 setOpen(false);
                 closeCookieModal();
             }
