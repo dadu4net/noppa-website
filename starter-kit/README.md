@@ -467,6 +467,11 @@ Het profiel is direct bereikbaar via:
 
 Algemene pagina's (zoals `home.md`, `over-ons.md`, `contact.md` of een nieuwe landingspagina) staan in `content/pages/{slug}.md`.
 
+> [!TIP]
+> **🚀 Visueel Pagina's en Artikelen Bouwen via de Noppa Content Builder:**  
+> Wil je niet handmatig Markdown typen? Open simpelweg [`tools/content-builder.html`](tools/content-builder.html) in je browser!  
+> Deze standalone tool biedt een interactieve wizard met realtime tooltips, keuze uit alle sectietypes en Noppa achtergronden, live preview en een **Download .md** knop.
+
 ### Stap 1: Bestand aanmaken
 Maak een bestand aan in `content/pages/{slug}.md`, bijvoorbeeld:
 `content/pages/visie.md`

@@ -24,6 +24,7 @@ Hierin vind je gedetailleerde instructies voor:
 - **Juridische pagina's beheren** (Algemene Voorwaarden, Privacy Policy via `LegalEngine`)
 - **Officiële 24 Noppa Vector Gradient Iconen**
 - **Noppa UX/UI Design System** (60-30-10 regel, Kentledge webfont, signature gradient, WCAG 2.1 AAA)
+- **Noppa Content Builder** (Lokale visuele generator met interactieve tooltips & `.md` download in [`tools/content-builder.html`](tools/content-builder.html))
 - **SEO & XML Sitemap beheer** (dynamische en statische sitemap.xml met 45 geïndexeerde URL's)
 - **Troubleshooting & Veelvoorkomende valkuilen**
 

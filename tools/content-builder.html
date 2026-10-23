@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noppa Content Builder — Visual Markdown Generator</title>
+    <style>
+        :root {
+            --navy: #0F2A66;
+            --navy-deep: #070D1B;
+            --navy-surface: #101E3D;
+            --royal: #2060E0;
+            --cyan: #00D0F0;
+            --sky: #20B0F0;
+            --purple: #3A4FD0;
+            --bg-page: #0A1224;
+            --bg-panel: #111B33;
+            --bg-card: #162444;
+            --bg-input: #0D1629;
+            --border: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(0, 208, 240, 0.4);
+            --text-heading: #FFFFFF;
+            --text-body: #E2E8F0;
+            --text-muted: #94A3B8;
+            --gradient-sig: linear-gradient(90deg, #00D0F0 0%, #20B0F0 35%, #2060E0 70%, #3A4FD0 100%);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
+            --shadow-glow: 0 0 20px rgba(0, 208, 240, 0.2);
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header Bar --- */
+        .app-header {
+            background-color: rgba(7, 13, 27, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--gradient-sig);
+            display: grid;
+            place-items: center;
+            color: #FFFFFF;
+            font-weight: 900;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 208, 240, 0.35);
+        }
+
+        .header-titles h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-heading);
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-titles p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .badge-pill {
+            background: rgba(0, 208, 240, 0.15);
+            color: var(--cyan);
+            border: 1px solid rgba(0, 208, 240, 0.3);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* --- Knoppen --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--gradient-sig);
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(0, 208, 240, 0.35);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(0, 208, 240, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border-color: var(--border);
+            color: var(--text-heading);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-hover);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #F87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-sm {
+            padding: 6px 11px;
+            font-size: 0.78rem;
+        }
+
+        /* --- Hoofdlayout --- */
+        .app-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            flex-grow: 1;
+            height: calc(100vh - 65px);
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .app-workspace {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow: visible;
+            }
+        }
+
+        /* --- Linker Paneel: Formulier --- */
+        .pane-form {
+            background-color: var(--bg-page);
+            padding: 24px 32px 80px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+
+        /* --- Rechter Paneel: Preview --- */
+        .pane-preview {
+            background-color: var(--bg-panel);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .preview-header {
+            padding: 14px 24px;
+            background: var(--navy-deep);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .preview-fileinfo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--cyan);
+        }
+
+        .preview-stats {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .preview-body {
+            flex-grow: 1;
+            overflow: auto;
+            padding: 20px 24px;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #CBD5E1;
+            white-space: pre-wrap;
+            word-break: break-word;
+            tab-size: 2;
+            background: #060B17;
+            user-select: text;
+        }
+
+        /* --- Formulier Blokken & Accordeon --- */
+        .form-section {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-section:focus-within {
+            border-color: var(--border-hover);
+        }
+
+        .section-bar {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-bar-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-heading);
+        }
+
+        .section-bar-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(32, 96, 224, 0.2);
+            color: var(--cyan);
+            border: 1px solid rgba(0, 208, 240, 0.3);
+            display: grid;
+            place-items: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        /* --- Veld & Grid Structuur --- */
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-control {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            color: var(--text-heading);
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 208, 240, 0.15);
+            background-color: #0E1A33;
+        }
+
+        textarea.form-control {
+            min-height: 90px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        textarea.form-control.code {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            min-height: 120px;
+        }
+
+        /* --- Radio Pill Tabs (Contenttype selector) --- */
+        .radio-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: var(--bg-input);
+            padding: 5px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .radio-tab {
+            position: relative;
+        }
+
+        .radio-tab input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .radio-tab label {
+            display: block;
+            text-align: center;
+            padding: 9px 8px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+        }
+
+        .radio-tab input:checked + label {
+            background: var(--gradient-sig);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(0, 208, 240, 0.25);
+        }
+
+        /* --- Interactive Tooltip System --- */
+        .tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: help;
+        }
+
+        .tooltip-icon {
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: rgba(0, 208, 240, 0.12);
+            border: 1px solid rgba(0, 208, 240, 0.35);
+            color: var(--cyan);
+            font-size: 0.68rem;
+            font-weight: 800;
+            display: grid;
+            place-items: center;
+            margin-left: 6px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .tooltip-wrap:hover .tooltip-icon,
+        .tooltip-wrap:focus .tooltip-icon {
+            background: var(--cyan);
+            color: #060B17;
+            transform: scale(1.1);
+        }
+
+        .tooltip-box {
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #070D1B;
+            border: 1px solid var(--cyan);
+            color: #E2E8F0;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 500;
+            line-height: 1.45;
+            width: 280px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 208, 240, 0.2);
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+        }
+
+        .tooltip-box::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: #070D1B transparent transparent transparent;
+        }
+
+        .tooltip-wrap:hover .tooltip-box,
+        .tooltip-wrap:focus-within .tooltip-box {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* --- Swatch Dropdown / Color Previews --- */
+        .color-badge {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        /* --- Dynamische Sectie Kaart --- */
+        .section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            margin-bottom: 16px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .section-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .section-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .section-card-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--cyan);
+        }
+
+        .section-card-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* --- Toast Melding --- */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #070D1B;
+            border: 1px solid var(--cyan);
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 208, 240, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+        }
+
+        .toast.is-active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Helper pill in editor */
+        .helper-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Bar -->
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="header-logo">N</div>
+            <div class="header-titles">
+                <h1>Noppa Content Builder <span class="badge-pill">MD v2.0</span></h1>
+                <p>Interactieve Markdown Generator conform Noppa Platform & Starter Kit specificaties</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <!-- Preset selector -->
+            <select id="presetSelector" class="form-control" style="width: auto; padding: 7px 12px; font-size: 0.84rem;" onchange="loadPreset(this.value)">
+                <option value="">📑 Kies Voorbeeld Preset...</option>
+                <option value="pagina_m365">Themapagina (Microsoft 365 / Copilot)</option>
+                <option value="dienst_copilot">Dienstenpagina (Copilot AI & Adoptie)</option>
+                <option value="kennisbank_artikel">Kennisbank Artikel (Gids / Best Practice)</option>
+                <option value="leeg">Nieuw / Leeg Beginnen</option>
+            </select>
+
+            <button class="btn btn-secondary" onclick="copyMarkdown()">
+                📋 Kopieer MD
+            </button>
+
+            <button class="btn btn-primary" onclick="downloadMarkdown()">
+                📥 Download .md
+            </button>
+        </div>
+    </header>
+
+    <!-- Hoofd Workspace -->
+    <main class="app-workspace">
+        
+        <!-- Linker Paneel: Formulier Controls -->
+        <div class="pane-form">
+            
+            <!-- 1. Contenttype Kiezen -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span>1. Kies Contenttype</span>
+                    <span class="tooltip-wrap">
+                        <span class="tooltip-icon">ℹ️</span>
+                        <span class="tooltip-box">
+                            <strong>Contenttype Bepaling:</strong><br>
+                            • <strong>Pagina:</strong> Vrije layout in <code>content/pages/</code><br>
+                            • <strong>Dienst:</strong> Dienstverlening in <code>data/diensten/</code><br>
+                            • <strong>Kennisbank:</strong> Artikelen in <code>content/kennisbank/artikelen/</code><br>
+                            • <strong>Team:</strong> Consultant profielen in <code>data/team/</code>
+                        </span>
+                    </span>
+                </label>
+                <div class="radio-tabs">
+                    <div class="radio-tab">
+                        <input type="radio" id="type_pagina" name="content_type" value="pagina" checked onchange="onTypeChange()">
+                        <label for="type_pagina">Pagina</label>
+                    </div>
+                    <div class="radio-tab">
+                        <input type="radio" id="type_dienst" name="content_type" value="dienst" onchange="onTypeChange()">
+                        <label for="type_dienst">Dienst</label>
+                    </div>
+                    <div class="radio-tab">
+                        <input type="radio" id="type_kennisbank" name="content_type" value="kennisbank" onchange="onTypeChange()">
+                        <label for="type_kennisbank">Kennisbank</label>
+                    </div>
+                    <div class="radio-tab">
+                        <input type="radio" id="type_team" name="content_type" value="team" onchange="onTypeChange()">
+                        <label for="type_team">Teamlid</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Frontmatter & SEO -->
+            <div class="form-section">
+                <div class="section-bar" onclick="toggleSection('sec_seo')">
+                    <div class="section-bar-title">
+                        <span class="section-bar-num">2</span>
+                        <span>Frontmatter & SEO Metadata</span>
+                    </div>
+                    <span class="tooltip-wrap" onclick="event.stopPropagation()">
+                        <span class="tooltip-icon">ℹ️</span>
+                        <span class="tooltip-box">
+                            <strong>YAML Frontmatter:</strong><br>
+                            Metadata tussen <code>---</code> blokken voor zoekmachine-optimalisatie (SEO), OpenGraph social cards en canonical routing.
+                        </span>
+                    </span>
+                </div>
+                <div class="section-content" id="sec_seo">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label" for="meta_title">
+                                <span>Paginatitel (`title`)</span>
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">ℹ️</span>
+                                    <span class="tooltip-box">Wordt getoond in het browsertabblad en als blauwe link in Google. Richtlijn: 50-60 tekens.</span>
+                                </span>
+                            </label>
+                            <input type="text" id="meta_title" class="form-control" value="Microsoft Copilot Gids 2026 | Noppa" oninput="onTitleInput(this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="meta_slug">
+                                <span>Bestandsnaam / Slug (`slug`)</span>
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">ℹ️</span>
+                                    <span class="tooltip-box">De URL-route en bestandsnaam zonder spaties (bv. <code>copilot-gids</code> leidt naar <code>/copilot-gids</code>).</span>
+                                </span>
+                            </label>
+                            <input type="text" id="meta_slug" class="form-control" value="copilot-gids" oninput="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="meta_desc">
+                            <span>SEO Omschrijving (`description`)</span>
+                            <span class="tooltip-wrap">
+                                <span class="tooltip-icon">ℹ️</span>
+                                <span class="tooltip-box">Korte samenvatting voor zoekresultaten en sociale media (richtlijn: 140–160 tekens).</span>
+                            </span>
+                        </label>
+                        <textarea id="meta_desc" class="form-control" rows="2" oninput="updatePreview()">Praktische gids over Microsoft 365 Copilot: kansen, grenzen, governance en concrete adoptiestappen voor organisaties.</textarea>
+                    </div>
+
+                    <!-- Kennisbank Specifieke Velden -->
+                    <div id="fields_kennisbank" style="display: none;">
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label class="form-label" for="kb_cat">Categorie</label>
+                                <select id="kb_cat" class="form-control" onchange="updatePreview()">
+                                    <option value="Microsoft Copilot">Microsoft Copilot</option>
+                                    <option value="Microsoft 365">Microsoft 365</option>
+                                    <option value="SharePoint Online">SharePoint Online</option>
+                                    <option value="Adoptie & Cultuur">Adoptie & Cultuur</option>
+                                    <option value="Governance & Security">Governance & Security</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="kb_author">Auteur</label>
+                                <input type="text" id="kb_author" class="form-control" value="Rik Dobbelsteen" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="kb_readtime">Leestijd</label>
+                                <input type="text" id="kb_readtime" class="form-control" value="5 min" oninput="updatePreview()">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. Hero Sectie Configurator -->
+            <div class="form-section">
+                <div class="section-bar" onclick="toggleSection('sec_hero')">
+                    <div class="section-bar-title">
+                        <span class="section-bar-num">3</span>
+                        <span>Hero Sectie & Achtergrond</span>
+                    </div>
+                    <span class="tooltip-wrap" onclick="event.stopPropagation()">
+                        <span class="tooltip-icon">ℹ️</span>
+                        <span class="tooltip-box">
+                            <strong>Hero Introductie:</strong><br>
+                            De visuele blikvanger bovenaan de pagina. Ondersteunt nu optionele <strong>achtergrondafbeeldingen</strong> met automatische behoud van hoogte/breedte-verhouding (aspect ratio) en WCAG 2.1 AAA contrastoverlays.
+                        </span>
+                    </span>
+                </div>
+                <div class="section-content" id="sec_hero">
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="hero_enabled" checked onchange="updatePreview()">
+                            <span style="font-weight: 700; color: #FFFFFF;">Hero sectie inschakelen op deze pagina</span>
+                        </label>
+                    </div>
+
+                    <div id="hero_fields">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="hero_badge">Badge Tekst</label>
+                                <input type="text" id="hero_badge" class="form-control" value="Microsoft Copilot Specialisten" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="hero_badge_icon">
+                                    <span>Badge Icoon</span>
+                                    <span class="tooltip-wrap">
+                                        <span class="tooltip-icon">ℹ️</span>
+                                        <span class="tooltip-box">Kies uit de 24 officiële Noppa iconen: sparkles, idea, shield, check, rocket, document, dashboard, cloud, team, etc.</span>
+                                    </span>
+                                </label>
+                                <select id="hero_badge_icon" class="form-control" onchange="updatePreview()">
+                                    <option value="sparkles">sparkles (AI / Innovatie)</option>
+                                    <option value="idea">idea (Inzicht / Kennis)</option>
+                                    <option value="shield">shield (Security / Purview)</option>
+                                    <option value="check">check (Kwaliteit / Succes)</option>
+                                    <option value="rocket">rocket (Versnelling / Groei)</option>
+                                    <option value="document">document (Whitepaper / Gids)</option>
+                                    <option value="dashboard">dashboard (Portalen / Overzicht)</option>
+                                    <option value="team">team (Adoptie / Mens)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="helper-bar">
+                                <label class="form-label" for="hero_title" style="margin-bottom: 0;">Hero Titel</label>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="wrapSelectedText('hero_title', '<span class=\'gradient-text\'>', '</span>')">
+                                    ✨ Maak Gradient Accent
+                                </button>
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">ℹ️</span>
+                                    <span class="tooltip-box">Selecteer een woord en klik op "Maak Gradient Accent" om de Noppa 4-kleuren signature gradient toe te passen.</span>
+                                </span>
+                            </div>
+                            <input type="text" id="hero_title" class="form-control" value="Slimmer werken met <span class='gradient-text'>Copilot</span>" oninput="updatePreview()">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="hero_subtitle">Hero Subtitel</label>
+                            <textarea id="hero_subtitle" class="form-control" rows="2" oninput="updatePreview()">Wij verhogen de bedrijfsproductiviteit met Microsoft 365, Copilot en procesautomatisering met een nuchtere aanpak.</textarea>
+                        </div>
+
+                        <!-- Hero Achtergrondafbeelding & Aspect Ratio Settings -->
+                        <div class="form-grid-2" style="background: rgba(0, 208, 240, 0.04); border: 1px dashed rgba(0, 208, 240, 0.25); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" for="hero_bg_image">
+                                    <span>Achtergrondafbeelding (`bg_image`)</span>
+                                    <span class="tooltip-wrap">
+                                        <span class="tooltip-icon">ℹ️</span>
+                                        <span class="tooltip-box">
+                                            <strong>Behoud van Verhouding:</strong><br>
+                                            De afbeelding wordt via <code>object-fit: cover</code> in een absolute achtergrondlaag geplaatst. De hero-hoogte en breedte worden <strong>nooit</strong> vervormd!
+                                        </span>
+                                    </span>
+                                </label>
+                                <input type="text" id="hero_bg_image" class="form-control" placeholder="assets/images/header-bg.jpg" oninput="updatePreview()">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" for="hero_bg_overlay">
+                                    <span>Overlay Variant (`bg_overlay`)</span>
+                                    <span class="tooltip-wrap">
+                                        <span class="tooltip-icon">ℹ️</span>
+                                        <span class="tooltip-box">
+                                            Kies het contrastfilter over de foto:<br>
+                                            • <strong>dark:</strong> Donker contrastblauw (Standaard)<br>
+                                            • <strong>navy:</strong> Diepe Noppa Navy tint<br>
+                                            • <strong>gradient:</strong> Dynamisch gradient verloop<br>
+                                            • <strong>glass:</strong> Blur matglas effect<br>
+                                            • <strong>light:</strong> Lichte transparante overlay
+                                        </span>
+                                    </span>
+                                </label>
+                                <select id="hero_bg_overlay" class="form-control" onchange="updatePreview()">
+                                    <option value="dark">dark (Donker contrast - Aanbevolen)</option>
+                                    <option value="navy">navy (Noppa Navy diepblauw)</option>
+                                    <option value="gradient">gradient (Verloop van donker naar navy)</option>
+                                    <option value="glass">glass (Matglas met backdrop blur)</option>
+                                    <option value="light">light (Lichte overlay)</option>
+                                    <option value="subtle">subtle (Zachte verduistering)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="hero_cta1_text">Primaire Knop (Tekst / Link)</label>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="hero_cta1_text" class="form-control" value="Boek adviesgesprek" placeholder="Tekst" oninput="updatePreview()">
+                                    <input type="text" id="hero_cta1_url" class="form-control" value="/contact" placeholder="URL" oninput="updatePreview()">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="hero_cta2_text">Secundaire Knop (Tekst / Link)</label>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="hero_cta2_text" class="form-control" value="Bekijk diensten" placeholder="Tekst" oninput="updatePreview()">
+                                    <input type="text" id="hero_cta2_url" class="form-control" value="#diensten" placeholder="URL" oninput="updatePreview()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Modulaire Sectie Composer -->
+            <div class="form-section">
+                <div class="section-bar">
+                    <div class="section-bar-title">
+                        <span class="section-bar-num">4</span>
+                        <span>Paginasecties Samenstellen</span>
+                    </div>
+                    <span class="tooltip-wrap">
+                        <span class="tooltip-icon">ℹ️</span>
+                        <span class="tooltip-box">
+                            <strong>Sectie-architectuur:</strong><br>
+                            Elke sectie wordt in Markdown gemarkeerd met <code>&lt;!-- section: [id] type="[type]" bg="[waarde]" ... --&gt;</code>. U kunt onbeperkt secties toevoegen en combineren!
+                        </span>
+                    </span>
+                </div>
+                <div class="section-content">
+                    <div id="sections_container">
+                        <!-- Dynamische secties worden hier ingevoegd -->
+                    </div>
+
+                    <!-- Knop om sectie toe te voegen -->
+                    <div style="display: flex; gap: 10px; align-items: center; margin-top: 14px;">
+                        <select id="new_section_type" class="form-control" style="max-width: 280px;">
+                            <option value="content">📄 Tekst & Tabellen (type="content")</option>
+                            <option value="cards">🗂️ Kaarten Grid (type="cards")</option>
+                            <option value="stats">📊 Cijfers & Tellers (type="stats")</option>
+                            <option value="formula">📐 Rendementsformule (type="formula")</option>
+                            <option value="roadmap">🚀 Stappenplan (type="roadmap")</option>
+                            <option value="scorecard">🚦 Stoplicht Readiness (type="scorecard")</option>
+                            <option value="checklist">✅ Management Checklist (type="checklist")</option>
+                            <option value="split">🖼️ Media/Tekst Split (type="split")</option>
+                            <option value="values">💎 Noppa Kernwaarden (type="values")</option>
+                            <option value="cta">🎯 Conversiebanner (type="cta")</option>
+                            <option value="sources">📚 Bronnen & Verantwoording (type="sources")</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary" onclick="addSection()">
+                            ＋ Voeg Sectie Toe
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Rechter Paneel: Realtime Markdown Output -->
+        <div class="pane-preview">
+            <div class="preview-header">
+                <div class="preview-fileinfo">
+                    <span id="preview_folder">content/pages/</span><strong id="preview_filename">copilot-gids.md</strong>
+                </div>
+                <div class="preview-stats">
+                    <span id="stat_lines">0 regels</span> • <span id="stat_chars">0 tekens</span>
+                </div>
+            </div>
+            <pre class="preview-body" id="markdown_output"></pre>
+        </div>
+
+    </main>
+
+    <!-- Toast Melding -->
+    <div id="toast" class="toast">
+        <span style="color: var(--cyan); font-size: 1.2rem;">✓</span>
+        <span id="toast_msg">Markdown gekopieerd naar klembord!</span>
+    </div>
+
+    <!-- JavaScript Applicatielogica -->
+    <script>
+        // Data State
+        let sections = [];
+
+        // Standaard Initialisatie
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPreset('pagina_m365');
+        });
+
+        function toggleSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+            }
+        }
+
+        function onTypeChange() {
+            const selectedType = document.querySelector('input[name="content_type"]:checked').value;
+            const kbFields = document.getElementById('fields_kennisbank');
+            const previewFolder = document.getElementById('preview_folder');
+
+            if (selectedType === 'kennisbank') {
+                kbFields.style.display = 'block';
+                previewFolder.textContent = 'content/kennisbank/artikelen/';
+            } else if (selectedType === 'dienst') {
+                kbFields.style.display = 'none';
+                previewFolder.textContent = 'data/diensten/';
+            } else if (selectedType === 'team') {
+                kbFields.style.display = 'none';
+                previewFolder.textContent = 'data/team/';
+            } else {
+                kbFields.style.display = 'none';
+                previewFolder.textContent = 'content/pages/';
+            }
+            updatePreview();
+        }
+
+        function onTitleInput(val) {
+            // Auto generate slug if slug is not heavily modified
+            const slugInput = document.getElementById('meta_slug');
+            const cleanSlug = val.toLowerCase()
+                .replace(/<[^>]*>/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .substring(0, 50);
+            if (cleanSlug) {
+                slugInput.value = cleanSlug;
+            }
+            updatePreview();
+        }
+
+        function wrapSelectedText(inputId, before, after) {
+            const input = document.getElementById(inputId);
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            if (start !== end) {
+                const selected = text.substring(start, end);
+                input.value = text.substring(0, start) + before + selected + after + text.substring(end);
+                updatePreview();
+            } else {
+                alert('Selecteer eerst een woord of zinsdeel in het invoerveld om het te accentueren.');
+            }
+        }
+
+        // Sectie Beheer
+        function addSection(presetData = null) {
+            const typeSelect = document.getElementById('new_section_type');
+            const type = presetData ? presetData.type : typeSelect.value;
+            
+            const newSec = presetData || {
+                id: 'sectie-' + (sections.length + 1),
+                type: type,
+                title: 'Nieuwe Sectie',
+                kicker: '',
+                desc: '',
+                bg: 'surface',
+                cols: '3',
+                content: getDefaultSectionContent(type)
+            };
+
+            sections.push(newSec);
+            renderSections();
+            updatePreview();
+        }
+
+        function removeSection(index) {
+            sections.splice(index, 1);
+            renderSections();
+            updatePreview();
+        }
+
+        function moveSection(index, dir) {
+            const target = index + dir;
+            if (target >= 0 && target < sections.length) {
+                const temp = sections[index];
+                sections[index] = sections[target];
+                sections[target] = temp;
+                renderSections();
+                updatePreview();
+            }
+        }
+
+        function updateSectionProp(index, prop, value) {
+            sections[index][prop] = value;
+            updatePreview();
+        }
+
+        function getDefaultSectionContent(type) {
+            switch (type) {
+                case 'content':
+                    return 'Hier komt de inhoudelijke toelichting in **Markdown**. U kunt paragrafen, lijsten en tabellen gebruiken.\n\n| Kolom 1 | Kolom 2 | Betekenis |\n| :--- | :--- | :--- |\n| **Onderwerp A** | Waarde | [pill:Gereed] In productie |\n| **Onderwerp B** | Waarde | [pill:In analyse] In review |';
+                case 'cards':
+                    return '## 1. Adoptie & Begeleiding\n*Icoon: team*\nTechnologie werkt pas als mensen ermee willen werken. Wij trainen teams op de werkvloer.\n[Ontdek Adoptie](/diensten#adoptie)\n\n## 2. Copilot AI Inrichting\n*Icoon: sparkles*\nVan licentiecheck tot effectieve prompting en veilige enterprise data-afscherming.\n[Ontdek Copilot](/diensten#copilot)\n\n## 3. Veiligheid & Purview\n*Icoon: shield*\nVoorkom datalekkages en stel automatische sensitivity labels in voor Teams en SharePoint.\n[Bekijk Security](/diensten#security)';
+                case 'stats':
+                    return '- **35%** Tijdsbesparing op routinematige administratieve taken\n- **85%+** Actieve adoptiegraad bij Microsoft Copilot implementaties\n- **100%** Voldoen aan WCAG 2.1 AAA en AVG/GDPR richtlijnen\n- **4.9/5** Gemiddelde evaluatiescore van onze workshopdeelnemers';
+                case 'formula':
+                    return '> Rendement ontstaat pas als drie operationele factoren tegelijk kloppen.\n\n- **Factor 1: Data**: Schone SharePoint sites en actuele metadata.\n- **Factor 2: Governance**: Beperkte rechten en automatische retentie.\n- **Factor 3: Mens**: Praktische vaardigheden en herkenbare routines.';
+                case 'roadmap':
+                    return '## Intake & Verkenning\n*Output: Readiness rapportage*\nWe brengen doelen, knelpunten en de huidige licentie- en technische situatie scherp in kaart.\n\n## Klaarmaken & Beveiligen\n*Output: Purview rechtenmatrix*\nRechten, datastructuren en governance worden strak en veilig ingericht.\n\n## Trainen & Ervaren\n*Output: Meetbare tijdwinst*\nIn interactieve werksessies testen medewerkers de tools en ervaren direct concrete productiviteitswinst.';
+                case 'scorecard':
+                    return '| Pijler | Toetsingscriterium | Status | Aanbeveling |\n| :--- | :--- | :--- | :--- |\n| **1. Datahygiëne** | Zijn overbodige bestanden gearchiveerd? | [pill:Groen] Op orde | Handhaven via kwartaalreview |\n| **2. Rechtenstructuur** | Zijn "Iedereen"-rechten geëlimineerd? | [pill:Oranje] Aandacht | Voer rechtenaudit uit in Purview |\n| **3. Adoptie & Beleid** | Hebben medewerkers een prompttraining gehad? | [pill:Rood] Actie vereist | Plan Noppa Kickstart Workshop |';
+                case 'checklist':
+                    return '- [ ] Zijn de doelen en doelgroep van het project helder gedefinieerd?\n- [ ] Is gecontroleerd of er al een bestaand Team of SharePoint site is?\n- [ ] Zijn er minimaal twee actieve eigenaren aangewezen?\n- [ ] Is de gasttoegang en container-classificatie bewust ingesteld?\n- [ ] Hebben documenten en besluiten een vaste afgesproken landingsplek?';
+                case 'split':
+                    return 'Onze werkwijze combineert strategisch advies met hands-on implementatie achter uw eigen laptop.\n\n- Direct meetbare resultaten vanaf week 1\n- Volledig geborgd binnen uw eigen Microsoft 365 tenant\n- Geen theoretische handboeken, maar concrete routines';
+                case 'cta':
+                    return '## Wil je ontdekken wat dit voor jouw team betekent?\nPlan een vrijblijvend adviesgesprek van 30 minuten met een van onze specialisten.\n\n[Plan een adviesgesprek](/contact)';
+                case 'sources':
+                    return '1. [Microsoft Learn Copilot Documentatie](https://learn.microsoft.com/copilot/) — Technische specificaties en tenant vereisten.\n2. [Microsoft Purview Compliance Richtlijnen](https://learn.microsoft.com/purview/) — Sensitivity labels en auditing.\n3. [Noppa Kennisbank Artikelen](https://noppa.nl/kennisbank) — Praktijkgidsen en adoptiemodellen.';
+                case 'values':
+                    return '';
+                default:
+                    return '';
+            }
+        }
+
+        function renderSections() {
+            const container = document.getElementById('sections_container');
+            container.innerHTML = '';
+
+            sections.forEach((sec, idx) => {
+                const card = document.createElement('div');
+                card.className = 'section-card';
+
+                card.innerHTML = `
+                    <div class="section-card-header">
+                        <div class="section-card-tag">
+                            <span>#${idx + 1}</span>
+                            <span class="badge-pill">${sec.type}</span>
+                            <span style="color: #FFFFFF;">${sec.id || 'sectie'}</span>
+                        </div>
+                        <div class="section-card-actions">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="moveSection(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>▲</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="moveSection(${idx}, 1)" ${idx === sections.length - 1 ? 'disabled' : ''}>▼</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeSection(${idx})">✖</button>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Sectie ID (Anker)</label>
+                            <input type="text" class="form-control" value="${sec.id}" oninput="updateSectionProp(${idx}, 'id', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span>Achtergrond (\`bg\`)</span>
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">ℹ️</span>
+                                    <span class="tooltip-box">
+                                        <strong>Noppa CSS Achtergronden:</strong><br>
+                                        • <strong>surface:</strong> Helder wit/kaart<br>
+                                        • <strong>alt:</strong> Alternerend zachtgrijs/blauw<br>
+                                        • <strong>tint:</strong> Zachte Noppa blauwe waas<br>
+                                        • <strong>navy:</strong> Diep Noppa Navy (wit contrast)<br>
+                                        • <strong>ink:</strong> Diepste nachtblauw (wit contrast)<br>
+                                        • <strong>hero:</strong> Hero gradient (wit contrast)<br>
+                                        • <strong>royal:</strong> Massief Royal blauw<br>
+                                        • <strong>gradient:</strong> Noppa 4-staps signature gradient
+                                    </span>
+                                </span>
+                            </label>
+                            <select class="form-control" onchange="updateSectionProp(${idx}, 'bg', this.value)">
+                                <option value="surface" ${sec.bg === 'surface' ? 'selected' : ''}>surface (Helder Kaart-wit)</option>
+                                <option value="alt" ${sec.bg === 'alt' ? 'selected' : ''}>alt (Zachtgrijs alternerend)</option>
+                                <option value="tint" ${sec.bg === 'tint' ? 'selected' : ''}>tint (Subtiele Noppa blauwe waas)</option>
+                                <option value="navy" ${sec.bg === 'navy' ? 'selected' : ''}>navy (Diep Noppa Navy — WCAG Wit)</option>
+                                <option value="ink" ${sec.bg === 'ink' ? 'selected' : ''}>ink (Diepst Nachtblauw — WCAG Wit)</option>
+                                <option value="hero" ${sec.bg === 'hero' ? 'selected' : ''}>hero (Hero Gradient)</option>
+                                <option value="royal" ${sec.bg === 'royal' ? 'selected' : ''}>royal (Noppa Royal Blauw)</option>
+                                <option value="gradient" ${sec.bg === 'gradient' ? 'selected' : ''}>gradient (Signature Gradient)</option>
+                                <option value="none" ${sec.bg === 'none' ? 'selected' : ''}>none (Standaard pagina)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kicker (Subkop Tag)</label>
+                            <input type="text" class="form-control" value="${sec.kicker || ''}" placeholder="bv. In de praktijk" oninput="updateSectionProp(${idx}, 'kicker', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Sectietitel (\`title\`)</label>
+                            <input type="text" class="form-control" value="${sec.title || ''}" placeholder="Hoofdtitel van de sectie" oninput="updateSectionProp(${idx}, 'title', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sectie Omschrijving (\`desc\`)</label>
+                            <input type="text" class="form-control" value="${sec.desc || ''}" placeholder="Korte toelichtende introductie" oninput="updateSectionProp(${idx}, 'desc', this.value)">
+                        </div>
+                    </div>
+
+                    ${sec.type !== 'values' ? `
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Inhoud (Markdown)</label>
+                        <textarea class="form-control code" rows="5" oninput="updateSectionProp(${idx}, 'content', this.value)">${sec.content || ''}</textarea>
+                    </div>` : '<p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;"><em>Rendert automatisch de 4 Noppa Kernwaarden.</em></p>'}
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Markdown Generatie & Preview
+        function generateMarkdown() {
+            const title = document.getElementById('meta_title').value.trim();
+            const slug = document.getElementById('meta_slug').value.trim() || 'pagina';
+            const desc = document.getElementById('meta_desc').value.trim();
+            const type = document.querySelector('input[name="content_type"]:checked').value;
+            const heroEnabled = document.getElementById('hero_enabled').checked;
+
+            let md = '---\n';
+            md += `title: "${title}"\n`;
+            md += `description: "${desc}"\n`;
+            md += `canonical: "https://noppa.nl/${slug}"\n`;
+
+            // Kennisbank specifieke metadata
+            if (type === 'kennisbank') {
+                const cat = document.getElementById('kb_cat').value;
+                const author = document.getElementById('kb_author').value;
+                const readtime = document.getElementById('kb_readtime').value;
+                const today = new Date().toISOString().split('T')[0];
+                md += `datum: ${today}\n`;
+                md += `categorie: "${cat}"\n`;
+                md += `auteur: "${author}"\n`;
+                md += `leestijd: "${readtime}"\n`;
+            }
+
+            // Hero metadata
+            if (heroEnabled) {
+                const hBadge = document.getElementById('hero_badge').value.trim();
+                const hIcon = document.getElementById('hero_badge_icon').value;
+                const hTitle = document.getElementById('hero_title').value.trim();
+                const hSub = document.getElementById('hero_subtitle').value.trim();
+                const hBgImg = document.getElementById('hero_bg_image').value.trim();
+                const hBgOverlay = document.getElementById('hero_bg_overlay').value;
+                const cta1T = document.getElementById('hero_cta1_text').value.trim();
+                const cta1U = document.getElementById('hero_cta1_url').value.trim();
+                const cta2T = document.getElementById('hero_cta2_text').value.trim();
+                const cta2U = document.getElementById('hero_cta2_url').value.trim();
+
+                md += '\nhero:\n';
+                if (hBadge) md += `  badge: "${hBadge}"\n`;
+                if (hIcon) md += `  badge_icon: "${hIcon}"\n`;
+                if (hTitle) md += `  title: "${hTitle}"\n`;
+                if (hSub) md += `  subtitle: "${hSub}"\n`;
+                if (hBgImg) md += `  bg_image: "${hBgImg}"\n`;
+                if (hBgOverlay) md += `  bg_overlay: "${hBgOverlay}"\n`;
+
+                if (cta1T) {
+                    md += `  cta_primary:\n    text: "${cta1T}"\n    url: "${cta1U || '/contact'}"\n`;
+                }
+                if (cta2T) {
+                    md += `  cta_secondary:\n    text: "${cta2T}"\n    url: "${cta2U || '#diensten'}"\n`;
+                }
+            }
+
+            md += '---\n\n';
+
+            // Secties samenstellen
+            sections.forEach(sec => {
+                let secComment = `<!-- section: ${sec.id || 'sectie'} type="${sec.type}"`;
+                if (sec.bg && sec.bg !== 'none') secComment += ` bg="${sec.bg}"`;
+                if (sec.kicker) secComment += ` kicker="${sec.kicker}"`;
+                if (sec.title) secComment += ` title="${sec.title}"`;
+                if (sec.desc) secComment += ` desc="${sec.desc}"`;
+                if (sec.cols && sec.type === 'cards') secComment += ` cols="${sec.cols}"`;
+                secComment += ` -->\n\n`;
+
+                md += secComment;
+                if (sec.content && sec.content.trim()) {
+                    md += sec.content.trim() + '\n\n';
+                }
+            });
+
+            return md.trim() + '\n';
+        }
+
+        function updatePreview() {
+            const md = generateMarkdown();
+            const outputEl = document.getElementById('markdown_output');
+            outputEl.textContent = md;
+
+            const slug = document.getElementById('meta_slug').value.trim() || 'pagina';
+            document.getElementById('preview_filename').textContent = slug + '.md';
+
+            // Statistieken
+            const lines = md.split('\n').length;
+            const chars = md.length;
+            document.getElementById('stat_lines').textContent = lines + ' regels';
+            document.getElementById('stat_chars').textContent = chars + ' tekens';
+        }
+
+        // Download & Copy
+        function downloadMarkdown() {
+            const md = generateMarkdown();
+            const slug = document.getElementById('meta_slug').value.trim() || 'pagina';
+            const filename = slug + '.md';
+
+            const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast(`Bestand "${filename}" gedownload!`);
+        }
+
+        function copyMarkdown() {
+            const md = generateMarkdown();
+            navigator.clipboard.writeText(md).then(() => {
+                showToast('Markdown gekopieerd naar klembord!');
+            }).catch(() => {
+                showToast('Kopiëren mislukt. Selecteer de tekst handmatig.');
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast_msg').textContent = msg;
+            toast.classList.add('is-active');
+            setTimeout(() => {
+                toast.classList.remove('is-active');
+            }, 3000);
+        }
+
+        // Voorbeeld Presets Laden
+        function loadPreset(presetKey) {
+            if (!presetKey) return;
+
+            if (presetKey === 'leeg') {
+                document.getElementById('meta_title').value = 'Nieuwe Pagina';
+                document.getElementById('meta_slug').value = 'nieuwe-pagina';
+                document.getElementById('meta_desc').value = '';
+                document.getElementById('hero_title').value = 'Titel van de <span class=\'gradient-text\'>Pagina</span>';
+                document.getElementById('hero_subtitle').value = '';
+                document.getElementById('hero_bg_image').value = '';
+                sections = [];
+                renderSections();
+                updatePreview();
+                return;
+            }
+
+            if (presetKey === 'pagina_m365') {
+                document.querySelector('input[name="content_type"][value="pagina"]').checked = true;
+                onTypeChange();
+                document.getElementById('meta_title').value = 'Microsoft Copilot binnen Microsoft 365 | Kansen, Grenzen & Readiness — Noppa';
+                document.getElementById('meta_slug').value = 'copilot-readiness';
+                document.getElementById('meta_desc').value = 'Praktische gids over Microsoft 365 Copilot: mogelijkheden per app, grounding en rechten, security & Purview, en het Noppa readiness-kader.';
+                document.getElementById('hero_enabled').checked = true;
+                document.getElementById('hero_badge').value = 'Microsoft Copilot Gids 2026';
+                document.getElementById('hero_badge_icon').value = 'sparkles';
+                document.getElementById('hero_title').value = 'Microsoft Copilot binnen <span class=\'gradient-text\'>Microsoft 365</span>';
+                document.getElementById('hero_subtitle').value = 'Mogelijkheden, grenzen, governance en concrete readiness. Een praktische gids voor eindgebruikers, management en IT-beheerders.';
+                document.getElementById('hero_bg_image').value = 'assets/images/header-bg.jpg';
+                document.getElementById('hero_bg_overlay').value = 'dark';
+                document.getElementById('hero_cta1_text').value = 'Plan Readiness Scan';
+                document.getElementById('hero_cta1_url').value = '/contact';
+                document.getElementById('hero_cta2_text').value = 'Bekijk mogelijkheden';
+                document.getElementById('hero_cta2_url').value = '#mogelijkheden';
+
+                sections = [
+                    {
+                        id: 'intro',
+                        type: 'content',
+                        kicker: 'Overzicht & Actualiteit',
+                        title: 'AI binnen de Digitale Werkplek',
+                        desc: 'Wat organisaties moeten weten over kansen, grenzen en randvoorwaarden van Microsoft Copilot.',
+                        bg: 'surface',
+                        content: 'Microsoft 365 Copilot kan medewerkers ondersteunen bij zoeken, samenvatten, schrijven, voorbereiden en analyseren in de vertrouwde werkomgeving.\n\n| Ervaring | Eenvoudige uitleg | Positionering |\n| :--- | :--- | :--- |\n| **Microsoft 365 Copilot Chat** | Zakelijke chatervaring met enterprisegegevensbescherming. | [pill:Chatbasis] |\n| **Microsoft 365 Copilot** | Gelicentieerde assistent met actieve Graph-integratie. | [pill:Gelicentieerd] |\n| **Copilot in Apps** | Directe assistentie in Word, Excel, PowerPoint en Teams. | [pill:In-App] |'
+                    },
+                    {
+                        id: 'mogelijkheden',
+                        type: 'cards',
+                        cols: '3',
+                        kicker: 'In de praktijk',
+                        title: 'Wat Copilot kan ondersteunen',
+                        desc: 'Concrete productiviteitsverhoging binnen uw dagelijkse Microsoft 365 applicaties.',
+                        bg: 'tint',
+                        content: '## Word Documenten\n*Icoon: document*\nEen eerste concept maken, samenvatten, herschrijven en inhoudelijke vragen beantwoorden over uw dossiers.\n[Bekijk Word mogelijkheden](/diensten/ai-copilot)\n\n## Excel Data-analyse\n*Icoon: growth*\nGegevens verkennen, trends signaleren, formules voorstellen en visualisaties opstellen in overzichtelijke tabellen.\n[Bekijk Excel mogelijkheden](/diensten/ai-copilot)\n\n## Teams Vergaderingen\n*Icoon: team*\nReal-time meeluisteren, actiepunten registreren, discussies samenvatten en openstaande vragen signaleren.\n[Bekijk Teams mogelijkheden](/diensten/ai-copilot)'
+                    },
+                    {
+                        id: 'formule',
+                        type: 'formula',
+                        kicker: 'De Copilot-rendementsformule',
+                        title: 'Rendement ontstaat pas als drie factoren tegelijk kloppen',
+                        desc: 'Rendement = (Betrouwbare data × Veilige governance) × Gerichte adoptie − Licentiekosten',
+                        bg: 'navy',
+                        content: '> Ontbreekt of ontspoort één van deze operationele factoren, dan is het totale zakelijke rendement onherroepelijk nul.\n\n- **1. Betrouwbare Data**: Relevante bestanden met actuele metadata.\n- **2. Veilige Governance**: Voorkom oversharing met Purview labels.\n- **3. Gerichte Adoptie**: Medewerkers die effectieve routines beheersen.'
+                    },
+                    {
+                        id: 'actie',
+                        type: 'cta',
+                        kicker: 'Direct aan de slag',
+                        title: 'Klaar voor een verantwoorde Copilot implementatie?',
+                        desc: 'Boek een vrijblijvend adviesgesprek van 30 minuten en ontdek binnen één week waar uw grootste productiviteitskansen liggen.',
+                        bg: 'gradient',
+                        content: 'Plan een online kennismaking of kom langs op ons kantoor in Berlicum.\n\n[Plan een adviesgesprek](/contact)'
+                    }
+                ];
+
+                renderSections();
+                updatePreview();
+            }
+
+            if (presetKey === 'dienst_copilot') {
+                document.querySelector('input[name="content_type"][value="dienst"]').checked = true;
+                onTypeChange();
+                document.getElementById('meta_title').value = 'AI & Microsoft Copilot Dienstverlening | Noppa Solutions & Consultants';
+                document.getElementById('meta_slug').value = 'ai-copilot';
+                document.getElementById('meta_desc').value = 'Haal het maximale uit AI-assistenten zoals Microsoft 365 Copilot. Van readiness-scan en governance tot hands-on workshops.';
+                document.getElementById('hero_badge').value = 'Noppa Dienstverlening';
+                document.getElementById('hero_badge_icon').value = 'sparkles';
+                document.getElementById('hero_title').value = 'AI & Microsoft Copilot in de <span class=\'gradient-text\'>Praktijk</span>';
+                document.getElementById('hero_subtitle').value = 'Van voorbereiding en security tot continue gebruikersadoptie en meetbare tijdwinst.';
+                document.getElementById('hero_bg_image').value = 'assets/images/header-bg.jpg';
+                document.getElementById('hero_bg_overlay').value = 'navy';
+
+                sections = [
+                    {
+                        id: 'pijlers',
+                        type: 'cards',
+                        cols: '3',
+                        kicker: 'Onze Aanpak',
+                        title: 'Drie Stappen naar Waarde',
+                        desc: 'Hoe Noppa organisaties begeleidt naar een verantwoorde uitrol.',
+                        bg: 'surface',
+                        content: '## 1. Readiness Scan\n*Icoon: checklist*\nVolledige doorlichting van uw tenant, datastructuur en rechten.\n[Bekijk Scan](/contact)\n\n## 2. Inrichting & Purview\n*Icoon: shield*\nVeilig inrichten van gevoelige gegevens en automatische labels.\n[Meer over Security](/contact)\n\n## 3. Hands-on Training\n*Icoon: idea*\nInteractieve workshops achter de eigen laptop met herkenbare cases.\n[Bekijk Trainingen](/contact)'
+                    },
+                    {
+                        id: 'stappen',
+                        type: 'roadmap',
+                        kicker: 'Stappenplan',
+                        title: 'Van Intake naar Blijvende Borging',
+                        desc: 'Een helder en beproefd 4-stappen proces.',
+                        bg: 'tint',
+                        content: '## Intake & Verkenning\n*Output: Doelen en licentiecheck*\nWe inventariseren wensen, use-cases en mogelijke compliancerisico\'s.\n\n## Data & Security Fundament\n*Output: Opgeschoonde rechtenmatrix*\nVerouderde rechten worden hersteld en gevoelige data gelabeld.\n\n## Interactieve Pilotsessies\n*Output: Getrainde kerngebruikers*\nMedewerkers oefenen direct met eigen documenten en prompts.\n\n## Borging & Doorontwikkeling\n*Output: Blijvende productiviteitswinst*\nPeriodieke evaluaties en uitbreiding met geavanceerde Copilot Studio agents.'
+                    },
+                    {
+                        id: 'actie',
+                        type: 'cta',
+                        bg: 'gradient',
+                        title: 'Wilt u uw organisatie laten versnellen?',
+                        desc: '',
+                        content: 'Neem contact op voor een vrijblijvend adviesgesprek van 30 minuten.\n\n[Plan een adviesgesprek](/contact)'
+                    }
+                ];
+
+                renderSections();
+                updatePreview();
+            }
+
+            if (presetKey === 'kennisbank_artikel') {
+                document.querySelector('input[name="content_type"][value="kennisbank"]').checked = true;
+                onTypeChange();
+                document.getElementById('meta_title').value = 'De Ultieme Gids voor Microsoft Copilot Prompting';
+                document.getElementById('meta_slug').value = 'copilot-prompting-gids';
+                document.getElementById('meta_desc').value = 'Leer hoe u krachtige prompts formuleert in Word, Teams en Outlook om direct tijd te besparen met Copilot.';
+                document.getElementById('hero_enabled').checked = false;
+
+                sections = [
+                    {
+                        id: 'intro',
+                        type: 'content',
+                        kicker: 'Praktijkgids',
+                        title: 'Waarom de meeste prompts teleurstellen',
+                        desc: '',
+                        bg: 'surface',
+                        content: 'Veel gebruikers starten met eenvoudige opdrachten zoals *"Vat dit document samen"* of *"Schrijf een e-mail"*. Het resultaat is vaak generiek en mist de juiste context.\n\n### De 4 Pijlers van een Krachtige Prompt\n1. **Doel**: Wat moet Copilot precies opleveren?\n2. **Context**: Wie is de doelgroep en wat is de aanleiding?\n3. **Bron**: Welke bestanden, e-mails of notities moeten worden gebruikt?\n4. **Toon & Vorm**: Wat is de gewenste schrijfstijl en indeling (bv. bullet points)?'
+                    },
+                    {
+                        id: 'voorbeelden',
+                        type: 'content',
+                        kicker: 'Voorbeelden',
+                        title: 'Voorbeelden per Applicatie',
+                        desc: '',
+                        bg: 'alt',
+                        content: '| Applicatie | Matige Prompt | Sterke Noppa Prompt |\n| :--- | :--- | :--- |\n| **Teams** | *"Wat is er besproken?"* | *"Maak een actielijst met verantwoordelijken en deadlines op basis van de laatste 20 minuten."* |\n| **Word** | *"Herschrijf deze tekst."* | *"Herschrijf de inleiding voor een directielid: bondig, zakelijk en maximaal 150 woorden."* |\n| **Outlook** | *"Beantwoord deze e-mail."* | *"Bedank voor het voorstel, vraag om verduidelijking van punt 2 en stel een overleg voor op donderdag."* |'
+                    },
+                    {
+                        id: 'actie',
+                        type: 'cta',
+                        bg: 'gradient',
+                        title: 'Hulp nodig bij het trainen van uw medewerkers?',
+                        desc: '',
+                        content: 'Volg onze praktijkgerichte Copilot Kickstart Workshop en behaal direct tijdwinst.\n\n[Bekijk Workshops](/contact)'
+                    }
+                ];
+
+                renderSections();
+                updatePreview();
+            }
+        }
+    </script>
+</body>
+</html>
