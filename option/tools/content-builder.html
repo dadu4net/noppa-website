@@ -253,7 +253,7 @@
             border-radius: var(--radius-md);
             margin-bottom: 20px;
             box-shadow: var(--shadow-card);
-            overflow: hidden;
+            overflow: visible;
             transition: border-color 0.2s ease;
         }
 
@@ -402,75 +402,272 @@
             box-shadow: 0 4px 12px rgba(0, 208, 240, 0.25);
         }
 
-        /* --- Interactive Tooltip System --- */
+        /* --- Interactive Tooltip System (Global Fixed Positioning) --- */
         .tooltip-wrap {
-            position: relative;
             display: inline-flex;
             align-items: center;
-            cursor: help;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        /* Oude inline boxes verbergen om clipping of horizontale layout shifts te voorkomen */
+        .tooltip-wrap .tooltip-box {
+            display: none !important;
         }
 
         .tooltip-icon {
-            width: 17px;
-            height: 17px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: rgba(0, 208, 240, 0.12);
-            border: 1px solid rgba(0, 208, 240, 0.35);
+            background: rgba(0, 208, 240, 0.14);
+            border: 1px solid rgba(0, 208, 240, 0.45);
             color: var(--cyan);
-            font-size: 0.68rem;
+            font-size: 0.72rem;
             font-weight: 800;
-            display: grid;
-            place-items: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             margin-left: 6px;
-            transition: all 0.2s ease;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+            padding: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
             flex-shrink: 0;
         }
 
-        .tooltip-wrap:hover .tooltip-icon,
-        .tooltip-wrap:focus .tooltip-icon {
+        .tooltip-icon:hover,
+        .tooltip-icon:focus-visible,
+        .tooltip-icon.is-active {
             background: var(--cyan);
-            color: #060B17;
-            transform: scale(1.1);
+            color: #070D1B;
+            transform: scale(1.15);
+            box-shadow: 0 0 14px rgba(0, 208, 240, 0.7);
         }
 
-        .tooltip-box {
-            position: absolute;
-            bottom: calc(100% + 10px);
-            left: 50%;
-            transform: translateX(-50%) translateY(4px);
+        /* Global Fixed Floating Tooltip Capsule (Direct aan <body> gekoppeld) */
+        #global_tooltip {
+            position: fixed;
+            z-index: 9999999;
             background: #070D1B;
             border: 1px solid var(--cyan);
             color: #E2E8F0;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-radius: var(--radius-sm);
-            font-size: 0.78rem;
+            font-size: 0.82rem;
             font-weight: 500;
-            line-height: 1.45;
-            width: 280px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 208, 240, 0.2);
-            pointer-events: none;
+            line-height: 1.5;
+            max-width: 320px;
+            min-width: 220px;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(0, 208, 240, 0.3);
+            pointer-events: auto;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1000;
+            transition: opacity 0.16s ease, transform 0.16s ease;
+            transform: translateY(4px);
         }
 
-        .tooltip-box::after {
+        #global_tooltip.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #global_tooltip strong {
+            color: #FFFFFF;
+            font-weight: 800;
+        }
+
+        #global_tooltip code {
+            font-family: var(--font-mono);
+            background: rgba(0, 208, 240, 0.15);
+            color: var(--cyan);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+        }
+
+        .tooltip-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            line-height: 1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: color 0.15s ease;
+        }
+
+        .tooltip-close-btn:hover {
+            color: #FFFFFF;
+        }
+
+        /* Tooltip Arrow */
+        #global_tooltip::after {
             content: "";
             position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
             border-width: 6px;
             border-style: solid;
+            pointer-events: none;
+        }
+
+        #global_tooltip[data-placement="top"]::after {
+            top: 100%;
+            left: var(--arrow-left, 50%);
+            transform: translateX(-50%);
             border-color: #070D1B transparent transparent transparent;
         }
 
-        .tooltip-wrap:hover .tooltip-box,
-        .tooltip-wrap:focus-within .tooltip-box {
+        #global_tooltip[data-placement="bottom"]::after {
+            bottom: 100%;
+            left: var(--arrow-left, 50%);
+            transform: translateX(-50%);
+            border-color: transparent transparent #070D1B transparent;
+        }
+
+        /* --- Modal Styling --- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 13, 27, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .modal-backdrop.is-open {
             opacity: 1;
             visibility: visible;
-            transform: translateX(-50%) translateY(0);
+        }
+
+        .modal-card {
+            background: #0C1733;
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 920px;
+            max-height: 86vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 208, 240, 0.2);
+            overflow: hidden;
+            animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.96) translateY(12px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 18px 24px;
+            background: #070D1B;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-size: 1.15rem;
+            color: #FFFFFF;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-nav {
+            display: flex;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .modal-tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 7px 15px;
+            border-radius: var(--radius-sm);
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .modal-tab-btn:hover {
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-tab-btn.is-active {
+            background: var(--gradient-sig);
+            color: #FFFFFF;
+            box-shadow: 0 2px 10px rgba(0, 208, 240, 0.3);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex-grow: 1;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-body);
+        }
+
+        .modal-footer {
+            padding: 14px 24px;
+            background: #070D1B;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Help Table */
+        .help-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .help-table th, .help-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .help-table th {
+            background: rgba(15, 42, 102, 0.5);
+            color: var(--cyan);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.76rem;
+            letter-spacing: 0.05em;
+        }
+
+        .help-table code {
+            font-family: var(--font-mono);
+            background: rgba(0, 208, 240, 0.1);
+            color: var(--cyan);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
         /* --- Swatch Dropdown / Color Previews --- */
@@ -581,6 +778,10 @@
                 <option value="kennisbank_artikel">Kennisbank Artikel (Gids / Best Practice)</option>
                 <option value="leeg">Nieuw / Leeg Beginnen</option>
             </select>
+
+            <button class="btn btn-secondary" onclick="openDocsModal()" title="Bekijk alle 17 sectietypes, 8 achtergrondkleuren en specificaties">
+                💡 Mogelijkheden Gids
+            </button>
 
             <button class="btn btn-secondary" onclick="copyMarkdown()">
                 📋 Kopieer MD
@@ -905,6 +1106,270 @@
         <span id="toast_msg">Markdown gekopieerd naar klembord!</span>
     </div>
 
+    <!-- Global Floating Tooltip Capsule (Direct op <body>, nooit geclipt door overflow) -->
+    <div id="global_tooltip" role="tooltip" aria-hidden="true"></div>
+
+    <!-- Mogelijkheden Gids Modal (Volledig naslagwerk) -->
+    <div id="docs_modal" class="modal-backdrop" onclick="handleModalBackdropClick(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>
+                    <span style="font-size: 1.3rem;">💡</span>
+                    <span>Noppa Platform & Starter Kit — Mogelijkheden Gids</span>
+                </h2>
+                <button type="button" class="tooltip-close-btn" onclick="closeDocsModal()" style="font-size: 1.4rem;">×</button>
+            </div>
+            <div class="modal-nav">
+                <button type="button" class="modal-tab-btn is-active" onclick="switchDocsTab('tab_bg', this)">🎨 8 Achtergronden (bg)</button>
+                <button type="button" class="modal-tab-btn" onclick="switchDocsTab('tab_types', this)">🗂️ 17 Sectietypes (type)</button>
+                <button type="button" class="modal-tab-btn" onclick="switchDocsTab('tab_hero', this)">🖼️ Hero & Beeldverhouding</button>
+                <button type="button" class="modal-tab-btn" onclick="switchDocsTab('tab_syntax', this)">⚡ Snelcodes, Pills & Tabellen</button>
+            </div>
+            <div class="modal-body">
+                <!-- Tab 1: Achtergronden -->
+                <div id="tab_bg" class="modal-tab-pane">
+                    <p style="margin-bottom: 12px; color: var(--text-muted);">
+                        Elke sectie kan via <code>bg="..."</code> een achtergrond meekrijgen. Deze waarden mappen direct naar de officiële Noppa design tokens en forceren automatisch hoogcontrast typografie:
+                    </p>
+                    <table class="help-table">
+                        <thead>
+                            <tr>
+                                <th>Waarde (\`bg\`)</th>
+                                <th>CSS Klasse</th>
+                                <th>Kleur & Uitstraling</th>
+                                <th>Contrast & Doel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>surface</code> / <code>white</code></td>
+                                <td><code>.page-section-surface</code></td>
+                                <td>Heldere kaart (Wit in light mode, nachtblauw in dark mode)</td>
+                                <td>Donkere titels en tekst met subtiele scheidingsranden.</td>
+                            </tr>
+                            <tr>
+                                <td><code>alt</code></td>
+                                <td><code>.page-section-alt</code></td>
+                                <td>Zachtgrijs / lichtblauw (<code>#F1F5FB</code> in light mode)</td>
+                                <td>Klassieke alternerende lichte achtergrond voor ritme.</td>
+                            </tr>
+                            <tr>
+                                <td><code>tint</code> / <code>subtle</code></td>
+                                <td><code>.page-section-tint</code></td>
+                                <td>Noppa blauwe waas (<code>rgba(32, 96, 224, 0.035)</code>)</td>
+                                <td>Zachte overgang tussen gerelateerde thema's.</td>
+                            </tr>
+                            <tr>
+                                <td><code>navy</code> / <code>dark</code></td>
+                                <td><code>.page-section-navy</code></td>
+                                <td>Diepe Noppa Navy (<code>#0F2A66</code>)</td>
+                                <td><strong>Automatisch Wit (#FFFFFF)</strong> — Krachtig zakelijk contrast.</td>
+                            </tr>
+                            <tr>
+                                <td><code>ink</code> / <code>night</code> / <code>deep</code></td>
+                                <td><code>.page-section-ink</code></td>
+                                <td>Diepst Nachtblauw (<code>#070D1B</code>)</td>
+                                <td><strong>Automatisch Wit (#FFFFFF)</strong> — Maximale diepte voor tech/security.</td>
+                            </tr>
+                            <tr>
+                                <td><code>hero</code> / <code>gradient-hero</code></td>
+                                <td><code>.page-section-hero</code></td>
+                                <td>Noppa Hero diepblauwe gradient</td>
+                                <td><strong>Automatisch Wit (#FFFFFF)</strong> — Statige overgangsblokken.</td>
+                            </tr>
+                            <tr>
+                                <td><code>royal</code> / <code>primary</code></td>
+                                <td><code>.page-section-royal</code></td>
+                                <td>Massief Noppa Royal Blauw (<code>#2060E0</code>)</td>
+                                <td><strong>Automatisch Wit (#FFFFFF)</strong> — Uitstekend voor focusblokken.</td>
+                            </tr>
+                            <tr>
+                                <td><code>gradient</code> / <code>accent</code> / <code>cta</code></td>
+                                <td><code>.page-section-gradient</code></td>
+                                <td>Noppa 4-staps signature gradient (Cyaan &rarr; Paars)</td>
+                                <td><strong>Automatisch Wit (#FFFFFF)</strong> — Conversie en blikvangers.</td>
+                            </tr>
+                            <tr>
+                                <td><code>none</code> / <code>default</code></td>
+                                <td><em>(geen klasse)</em></td>
+                                <td>Standaard paginakleur (<code>var(--bg-page)</code>)</td>
+                                <td>Natuurlijke flow van het document.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tab 2: 17 Sectietypes -->
+                <div id="tab_types" class="modal-tab-pane" style="display: none;">
+                    <p style="margin-bottom: 12px; color: var(--text-muted);">
+                        Het Noppa platform herkent 17 gespecialiseerde sectietypes in Markdown via <code>&lt;!-- section: [id] type="[type]" ... --&gt;</code>:
+                    </p>
+                    <table class="help-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Doel & Visuele Output</th>
+                                <th>Voorbeeld Inhoud / Structuur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>content</code></td>
+                                <td>Artikelen, paragrafen, lijstjes en tabellen. Verpakt in <code>.artikel-prose</code>.</td>
+                                <td>Standaard Markdown tekst en tabellen.</td>
+                            </tr>
+                            <tr>
+                                <td><code>cards</code></td>
+                                <td>Responsief kaarten-grid (2 of 3 kolommen via <code>cols="2|3"</code>) met iconen en knoppen.</td>
+                                <td><code>## Titel\n*Icoon: sparkles*\nTekst\n[Knop](/url)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>stats</code></td>
+                                <td>Cijferblokken met automatische telleranimatie (<code>data-counter</code>) en <code>tabular-nums</code>.</td>
+                                <td><code>- **35%** Tijdsbesparing\n- **85%+** Adoptie</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>formula</code></td>
+                                <td>Rendements- en rekenformulekaart met wiskundige operatoren (<code>eq="..."</code>) en condities.</td>
+                                <td><code>&gt; Quote\n- **Pijler 1**: Toelichting</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>roadmap</code></td>
+                                <td>Gefaseerd 1-2-3 stappenplan met genummerde gradient badges en <code>*Output: ...*</code> labels.</td>
+                                <td><code>## Stap 1\n*Output: Rapport*\nToelichting</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>scorecard</code></td>
+                                <td>Stoplicht Readiness matrix met statusindicatoren en actiegerichte aanbevelingen.</td>
+                                <td>Tabel met <code>[pill:Groen]</code>, <code>[pill:Oranje]</code>, <code>[pill:Rood]</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>checklist</code></td>
+                                <td>Interactieve management checklist met afvinkbare vakjes (toegankelijk via toetsenbord).</td>
+                                <td><code>- [ ] Controlepunt 1\n- [ ] Controlepunt 2</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>split</code></td>
+                                <td>Media/Tekst split sectie met flexibele positie (<code>image_pos="left|right"</code>) en ratio (<code>50-50</code> of <code>60-40</code>).</td>
+                                <td>Tekstblok naast een afbeelding of grafisch model.</td>
+                            </tr>
+                            <tr>
+                                <td><code>pinned-scroll</code></td>
+                                <td>Horizontale sticky pinned scroll track (350vh) voor meeslepende verhaallijnen (bv. 3 Pilaren).</td>
+                                <td>Behandelt 3 kolommen met progress bar en pill-navigatie.</td>
+                            </tr>
+                            <tr>
+                                <td><code>visual</code></td>
+                                <td>Visueel diagram of model (bv. Waarde-IJsberg) met afbeelding en toelichting.</td>
+                                <td><code>image="..."</code> met toelichtende blockquote.</td>
+                            </tr>
+                            <tr>
+                                <td><code>decisions</code></td>
+                                <td>Bestuurskeuzes met 2-koloms opbouw (<em>Waarom noodzakelijk</em> vs <em>Direct resultaat</em>).</td>
+                                <td>Genummerde kaarten voor besluitvorming.</td>
+                            </tr>
+                            <tr>
+                                <td><code>modules</code></td>
+                                <td>Dienstenmodules & accordions met interactieve uitklapsecties (<code>&lt;details class="module"&gt;</code>).</td>
+                                <td>5-koloms overzichtskaarten gekoppeld aan details.</td>
+                            </tr>
+                            <tr>
+                                <td><code>charts</code></td>
+                                <td>Kwalitatieve staafdiagrammen (1-5 schaal) en donutgrafieken met dynamic center badge.</td>
+                                <td>Staaf- of ringdiagrammen met legenda.</td>
+                            </tr>
+                            <tr>
+                                <td><code>values</code></td>
+                                <td>Rendert automatisch de 4 officiële Noppa merk- en kernwaarden.</td>
+                                <td>Geen handmatige inhoud vereist.</td>
+                            </tr>
+                            <tr>
+                                <td><code>contact</code></td>
+                                <td>Conclusie en 4-koloms interactief contact grid (adviesgesprek, telefoon, e-mail, locatie).</td>
+                                <td>Tekstconclusie met gekoppeld contactblok.</td>
+                            </tr>
+                            <tr>
+                                <td><code>cta</code></td>
+                                <td>Conversiebanner over de volle breedte met Noppa signature gradient en knop.</td>
+                                <td><code>## Titel\nToelichting\n\n[Knoptekst](/contact)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>sources</code></td>
+                                <td>Voetnoten, literatuurverantwoording en officiële Microsoft documentatie links.</td>
+                                <td>Genummerde lijst met externe bronlinks.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tab 3: Hero & Beeldverhouding -->
+                <div id="tab_hero" class="modal-tab-pane" style="display: none;">
+                    <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 8px;">Hero Achtergrondafbeelding & Aspect Ratio Behoud</h3>
+                    <p style="margin-bottom: 12px; color: var(--text-muted);">
+                        In de YAML frontmatter van een pagina kan een achtergrondafbeelding worden ingesteld via <code>bg_image</code> (of <code>image</code> / <code>background_image</code>):
+                    </p>
+                    <pre style="background: #060B17; padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.84rem; color: #CBD5E1; margin-bottom: 16px;">
+hero:
+  badge: "Microsoft Copilot Gids 2026"
+  badge_icon: "sparkles"
+  title: "Slimmer werken met &lt;span class='gradient-text'&gt;Copilot&lt;/span&gt;"
+  subtitle: "Concrete productiviteitswinst in uw dagelijkse werkpraktijk."
+  bg_image: "assets/images/header-bg.jpg" # Relatief of absoluut pad
+  bg_overlay: "dark"                     # 'dark', 'navy', 'gradient', 'glass', 'light', 'subtle'
+  cta_primary:
+    text: "Boek een adviesgesprek"
+    url: "/contact"</pre>
+
+                    <h4 style="color: var(--cyan); font-size: 0.92rem; margin-bottom: 6px;">Waarom vervormt de hero nooit?</h4>
+                    <ul style="padding-left: 20px; color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">
+                        <li>De afbeelding wordt geplaatst in een absolute media-laag: <code>position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; z-index: 0;</code></li>
+                        <li>De containerhoogte, breedte en paddings (<code>100px 0 80px</code>) worden 100% bepaald door de Noppa grid-container en inhoud, <strong>nooit</strong> door de pixelafmetingen van de afbeelding.</li>
+                        <li>De gekozen <code>bg_overlay</code> garandeert te allen tijde vlekkeloze WCAG 2.1 AAA leesbaarheid voor alle witte titels en knoppen.</li>
+                    </ul>
+                </div>
+
+                <!-- Tab 4: Snelcodes & Pills -->
+                <div id="tab_syntax" class="modal-tab-pane" style="display: none;">
+                    <h3 style="color: #FFFFFF; font-size: 1.05rem; margin-bottom: 8px;">Shortcodes & Typografische Accenten</h3>
+                    <table class="help-table">
+                        <thead>
+                            <tr>
+                                <th>Shortcode / Syntax</th>
+                                <th>Resultaat</th>
+                                <th>Toepassing</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>[pill:Tekst]</code> of <code>[badge:Tekst]</code></td>
+                                <td>Afgeronde statusbadge in Noppa Royal Blauw (glow in dark mode).</td>
+                                <td>Ideaal in vergelijkingstabellen en overzichten.</td>
+                            </tr>
+                            <tr>
+                                <td><code>&lt;span class='gradient-text'&gt;Woord&lt;/span&gt;</code></td>
+                                <td>Kleurverloop over de letters (Cyaan &rarr; Royal Blauw).</td>
+                                <td>In titels van heroes en secties (gebruik spaarzaam, 1-2 woorden per titel).</td>
+                            </tr>
+                            <tr>
+                                <td><code>*Icoon: sparkles*</code></td>
+                                <td>Rendert een van de 24 officiële Noppa SVG gradient iconen.</td>
+                                <td>Bovenaan kaarten in <code>type="cards"</code> of <code>type="decisions"</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><code>| Tabel | Kolom |</code></td>
+                                <td>Volledig gestileerde Noppa tabel met donkere Navy kop, cyaan accent en zebra-hover.</td>
+                                <td>In <code>type="content"</code> en <code>type="scorecard"</code>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="closeDocsModal()">Begrepen, Sluiten</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Applicatielogica -->
     <script>
         // Data State
@@ -912,6 +1377,7 @@
 
         // Standaard Initialisatie
         window.addEventListener('DOMContentLoaded', () => {
+            initTooltips();
             loadPreset('pagina_m365');
         });
 
@@ -1421,6 +1887,227 @@
                 renderSections();
                 updatePreview();
             }
+        }
+
+        // --- Tooltip & Modal Systeem ---
+        let activeTooltipTarget = null;
+        let isTooltipPinned = false;
+        let tooltipHideTimeout = null;
+
+        function initTooltips() {
+            const globalTooltip = document.getElementById('global_tooltip');
+            if (!globalTooltip) return;
+
+            // Luister naar hover en click op body (werkt ook voor dynamisch toegevoegde secties!)
+            document.body.addEventListener('mouseenter', handleTooltipTrigger, true);
+            document.body.addEventListener('mouseleave', handleTooltipLeave, true);
+            document.body.addEventListener('click', handleTooltipClick, true);
+
+            // Blijf open als gebruiker met muis over de tooltip zelf beweegt
+            globalTooltip.addEventListener('mouseenter', () => {
+                clearTimeout(tooltipHideTimeout);
+            });
+            globalTooltip.addEventListener('mouseleave', () => {
+                if (!isTooltipPinned) {
+                    hideGlobalTooltip();
+                }
+            });
+
+            // Sluit bij klik buiten tooltip of Esc
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.tooltip-wrap') && !e.target.closest('#global_tooltip')) {
+                    hideGlobalTooltip();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    hideGlobalTooltip();
+                    closeDocsModal();
+                }
+            });
+
+            // Repositioneer bij scroll of resize
+            window.addEventListener('scroll', () => {
+                if (activeTooltipTarget && !isTooltipPinned) {
+                    hideGlobalTooltip();
+                } else if (activeTooltipTarget && isTooltipPinned) {
+                    repositionTooltip();
+                }
+            }, { passive: true });
+
+            window.addEventListener('resize', () => {
+                if (activeTooltipTarget) {
+                    repositionTooltip();
+                }
+            }, { passive: true });
+        }
+
+        function handleTooltipTrigger(e) {
+            const trigger = e.target.closest('.tooltip-wrap, .tooltip-icon');
+            if (!trigger) return;
+            clearTimeout(tooltipHideTimeout);
+            if (!isTooltipPinned) {
+                showTooltipForElement(trigger, false);
+            }
+        }
+
+        function handleTooltipLeave(e) {
+            const trigger = e.target.closest('.tooltip-wrap, .tooltip-icon');
+            if (!trigger) return;
+            if (!isTooltipPinned) {
+                tooltipHideTimeout = setTimeout(() => {
+                    hideGlobalTooltip();
+                }, 150);
+            }
+        }
+
+        function handleTooltipClick(e) {
+            const trigger = e.target.closest('.tooltip-wrap, .tooltip-icon');
+            if (!trigger) return;
+            e.stopPropagation();
+            e.preventDefault();
+
+            if (activeTooltipTarget === trigger && isTooltipPinned) {
+                hideGlobalTooltip();
+            } else {
+                showTooltipForElement(trigger, true);
+            }
+        }
+
+        function showTooltipForElement(trigger, pin) {
+            const wrap = trigger.closest('.tooltip-wrap') || trigger;
+            const box = wrap.querySelector('.tooltip-box');
+            const content = box ? box.innerHTML : (wrap.getAttribute('data-tooltip') || '');
+            if (!content) return;
+
+            const globalTooltip = document.getElementById('global_tooltip');
+            globalTooltip.innerHTML = `
+                <button type="button" class="tooltip-close-btn" onclick="hideGlobalTooltip()" title="Sluiten">×</button>
+                ${content}
+            `;
+
+            globalTooltip.style.display = 'block';
+            globalTooltip.style.visibility = 'hidden';
+
+            // Positioneren
+            const icon = wrap.querySelector('.tooltip-icon') || wrap;
+            const rect = icon.getBoundingClientRect();
+            const tooltipRect = globalTooltip.getBoundingClientRect();
+
+            let top = rect.top - tooltipRect.height - 12;
+            let placement = 'top';
+
+            // Voldoende ruimte boven? Zo niet, onder plaatsen
+            if (top < 15) {
+                top = rect.bottom + 12;
+                placement = 'bottom';
+            }
+
+            // Horizontaal centreren op het icoontje
+            const iconCenter = rect.left + (rect.width / 2);
+            let left = iconCenter - (tooltipRect.width / 2);
+
+            // Binnen viewport klemmen
+            const margin = 14;
+            if (left < margin) {
+                left = margin;
+            } else if (left + tooltipRect.width > window.innerWidth - margin) {
+                left = window.innerWidth - tooltipRect.width - margin;
+            }
+
+            // Pijltje uitlijnen op het icoontje
+            const arrowLeft = Math.max(16, Math.min(tooltipRect.width - 16, iconCenter - left));
+            globalTooltip.style.setProperty('--arrow-left', `${arrowLeft}px`);
+
+            globalTooltip.style.top = `${top}px`;
+            globalTooltip.style.left = `${left}px`;
+            globalTooltip.dataset.placement = placement;
+            globalTooltip.style.visibility = 'visible';
+            globalTooltip.classList.add('is-visible');
+
+            if (activeTooltipTarget) {
+                const prevIcon = activeTooltipTarget.querySelector('.tooltip-icon') || activeTooltipTarget;
+                prevIcon.classList.remove('is-active');
+            }
+            icon.classList.add('is-active');
+
+            activeTooltipTarget = wrap;
+            isTooltipPinned = pin;
+        }
+
+        function repositionTooltip() {
+            if (!activeTooltipTarget) return;
+            const icon = activeTooltipTarget.querySelector('.tooltip-icon') || activeTooltipTarget;
+            const rect = icon.getBoundingClientRect();
+            const globalTooltip = document.getElementById('global_tooltip');
+            const tooltipRect = globalTooltip.getBoundingClientRect();
+
+            let top = rect.top - tooltipRect.height - 12;
+            let placement = 'top';
+            if (top < 15) {
+                top = rect.bottom + 12;
+                placement = 'bottom';
+            }
+
+            const iconCenter = rect.left + (rect.width / 2);
+            let left = iconCenter - (tooltipRect.width / 2);
+            const margin = 14;
+            if (left < margin) left = margin;
+            else if (left + tooltipRect.width > window.innerWidth - margin) left = window.innerWidth - tooltipRect.width - margin;
+
+            const arrowLeft = Math.max(16, Math.min(tooltipRect.width - 16, iconCenter - left));
+            globalTooltip.style.setProperty('--arrow-left', `${arrowLeft}px`);
+            globalTooltip.style.top = `${top}px`;
+            globalTooltip.style.left = `${left}px`;
+            globalTooltip.dataset.placement = placement;
+        }
+
+        function hideGlobalTooltip() {
+            const globalTooltip = document.getElementById('global_tooltip');
+            if (!globalTooltip) return;
+            globalTooltip.classList.remove('is-visible');
+            globalTooltip.style.visibility = 'hidden';
+            globalTooltip.style.display = 'none';
+
+            if (activeTooltipTarget) {
+                const icon = activeTooltipTarget.querySelector('.tooltip-icon') || activeTooltipTarget;
+                icon.classList.remove('is-active');
+            }
+            activeTooltipTarget = null;
+            isTooltipPinned = false;
+        }
+
+        // Modal Besturing
+        function openDocsModal() {
+            const modal = document.getElementById('docs_modal');
+            if (modal) {
+                modal.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeDocsModal() {
+            const modal = document.getElementById('docs_modal');
+            if (modal) {
+                modal.classList.remove('is-open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleModalBackdropClick(e) {
+            if (e.target.id === 'docs_modal') {
+                closeDocsModal();
+            }
+        }
+
+        function switchDocsTab(tabId, btn) {
+            document.querySelectorAll('.modal-tab-pane').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.modal-tab-btn').forEach(el => el.classList.remove('is-active'));
+
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) activeTab.style.display = 'block';
+            if (btn) btn.classList.add('is-active');
         }
     </script>
 </body>
