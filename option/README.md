@@ -111,13 +111,24 @@ option/
 ├── content/                       # Content & Kennisbank in Markdown
 │   ├── navigation.md              # Header navigatiestructuur & CTA
 │   ├── footer.md                  # Footer kolommen, contactinfo & links
-│   ├── pages/                     # Algemene pagina's (home, over-ons, contact, diensten)
-│   │   ├── home.md
-│   │   ├── diensten.md
-│   │   ├── over-ons.md
-│   │   ├── contact.md
-│   │   ├── kennisbank.md
-│   │   └── 404.md
+│   ├── pages/                     # Algemene & themapagina's (100% Markdown)
+│   │   ├── home.md                # Homepage
+│   │   ├── diensten.md            # Dienstenoverzicht
+│   │   ├── over-ons.md            # Over Noppa & team
+│   │   ├── contact.md             # Contact & vestiging
+│   │   ├── kennisbank.md          # Kennisbank catalogus & filters
+│   │   ├── copilot.md             # Microsoft Copilot gids & readiness
+│   │   ├── microsoft-365.md       # Microsoft 365 fundament & 7 lagen
+│   │   ├── onedrive.md            # OneDrive voor Bedrijven & synchronisatie
+│   │   ├── planner.md             # Microsoft Planner taak- & werkbeheer
+│   │   ├── productiviteit.md      # Onze visie op productiviteit
+│   │   ├── visie.md               # Visie op mens, proces en technologie
+│   │   ├── sharepoint.md          # SharePoint Online intranet & metadata
+│   │   ├── teams.md               # Microsoft Teams communicatie & governance
+│   │   ├── referentie.md          # Referentiekader & verantwoording
+│   │   ├── copilot-realiteitscheck.md # M365 & Copilot Realiteitscheck
+│   │   ├── verschillen-overeenkomsten-ai-tools-2026.md # AI-tools vergelijken
+│   │   └── 404.md                 # 404 Foutpagina
 │   └── kennisbank/
 │       └── artikelen/             # Kennisbank artikelen (.md)
 │           ├── checklist-admin-center-configuratie.md
@@ -156,21 +167,30 @@ Het platform ondersteunt twee URL-structuren tegelijkertijd zonder dat er code a
 
 1. **Clean URLs (Aanbevolen op productie via `.htaccess`):**
    - Homepage: `/`
-   - Algemene pagina: `/over-ons`, `/contact`, `/diensten`
-   - Specifieke dienst: `/diensten/ai-copilot`, `/diensten/processen-portalen`
-   - Consultant profiel: `/team/rik-dobbelsteen`, `/team/deborah-stahlecker`
-   - Kennisbank artikel: `/kennisbank/copilot-adoptie-strategie`
-   - Kennisbank categorie filter: `/kennisbank?cat=Microsoft+Copilot`
+   - Algemene pagina's: `/over-ons`, `/contact`, `/diensten`, `/kennisbank`
+   - M365 Thema- & Gidsenpagina's:
+     - `/microsoft-365` — Integraal platformoverzicht en de 7 lagen
+     - `/copilot` — Copilot mogelijkheden, grounding, security en readiness
+     - `/sharepoint` — Intranet, documentbibliotheken met metadata en Lists
+     - `/teams` — Kanalenstructuur, vergaderetiquette en externe samenwerking
+     - `/onedrive` — Persoonlijk bestandsbeheer, Files On-Demand en delen
+     - `/planner` — Visueel taak- en werkbeheer en werkafspraken
+     - `/productiviteit` of `/visie` — Noppa's visie op mens, proces en technologie
+     - `/referentie` — Methodologisch referentiekader en kwaliteitsnormen
+   - Specifieke diensten: `/diensten/ai-copilot`, `/diensten/processen-portalen`, etc.
+   - Consultant profielen: `/team/rik-dobbelsteen`, `/team/deborah-stahlecker`, etc.
+   - Kennisbank artikelen: `/kennisbank/copilot-adoptie-strategie`, etc.
+   - Kennisbank categorie filters: `/kennisbank?cat=Microsoft+Copilot`
 
 2. **Query Parameter URLs (Werkt altijd direct in lokale dev-omgevingen):**
-   - Algemene pagina: `index.php?page=over-ons`
-   - Specifieke dienst: `index.php?page=diensten&id=ai-copilot`
-   - Consultant profiel: `index.php?page=team&id=rik-dobbelsteen`
-   - Kennisbank artikel: `index.php?page=kennisbank&slug=copilot-adoptie-strategie`
+   - Algemene & themapagina's: `index.php?page=microsoft-365`, `index.php?page=copilot`, etc.
+   - Specifieke diensten: `index.php?page=diensten&id=ai-copilot`
+   - Consultant profielen: `index.php?page=team&id=rik-dobbelsteen`
+   - Kennisbank artikelen: `index.php?page=kennisbank&slug=copilot-adoptie-strategie`
 
 > [!TIP]
 > **Interne links schrijven in Markdown:**  
-> Schrijf interne links altijd als absolute paden vanaf de root, bijvoorbeeld `[Bekijk onze aanpak](/diensten/ai-copilot)` of `[Neem contact op](/contact)`. De router (`formatUrl()`) herkent dit automatisch en vertaalt de URL naar het juiste formaat, ongeacht of de website in een submap of root draait.
+> Schrijf interne links altijd als absolute paden vanaf de root, bijvoorbeeld `[Bekijk Microsoft 365](/microsoft-365)` of `[Neem contact op](/contact)`. De router (`formatUrl()`) herkent dit automatisch en vertaalt de URL naar het juiste formaat, ongeacht of de website in een submap of root draait.
 
 ---
 
@@ -542,6 +562,45 @@ Plan een vrijblijvende inspiratiesessie van 30 minuten met een van onze adviseur
 | `charts` | Kwalitatieve grafieken & besliskaders | Staafdiagrammen (1–5 schaal) en donutgrafieken met dynamic center badge en legenda |
 | `roadmap` | Gefaseerd implementatie stappenplan | Genummerde stappen (`.step`), hover-animaties en output badges (`*Output: ...*`) |
 
+### 🎨 Sectie-Achtergronden (`bg="..."`) & Hero Background Image
+
+Elke sectie kan een achtergrond meekrijgen via het `bg="..."` attribuut in het `<!-- section: ... -->` commentaar. Deze waarden mappen direct naar de Noppa CSS design tokens met gegarandeerd WCAG 2.1 AAA contrast:
+
+| Waarde | CSS Klasse | Uitstraling & Doel | Tekstkleur |
+| :--- | :--- | :--- | :--- |
+| `surface` / `white` | `.page-section-surface` | Heldere kaart-achtergrond (`#FFFFFF` in light mode, `#0B1730` in dark mode) met subtiele scheidingsranden. | Donker / Heading |
+| `alt` | `.page-section-alt` | Standaard alternerende lichte achtergrond (`#F1F5FB` in light mode). | Donker / Heading |
+| `tint` / `subtle` / `mist` | `.page-section-tint` | Subtiele Noppa blauwe waas (`rgba(32, 96, 224, 0.035)`) voor zachte scheiding tussen onderwerpen. | Donker / Heading |
+| `navy` / `dark` | `.page-section-navy` | Diepe Noppa Navy achtergrond (`#0F2A66`). Geeft krachtig zakelijk contrast. | Automatisch Wit (`#FFFFFF`) |
+| `ink` / `night` | `.page-section-ink` | Diepste nachtblauw (`#070D1B`). Maximale diepte voor tech/security secties. | Automatisch Wit (`#FFFFFF`) |
+| `hero` / `gradient-hero` | `.page-section-hero` | Noppa Hero diepblauwe gradient achtergrond. | Automatisch Wit (`#FFFFFF`) |
+| `royal` / `primary` | `.page-section-royal` | Massief Noppa Royal Blauw (`#2060E0`). Uitstekend voor focusblokken. | Automatisch Wit (`#FFFFFF`) |
+| `gradient` / `accent` | `.page-section-gradient` | De Noppa 4-kleuren signature gradient (Cyaan -> Hemelsblauw -> Royal -> Paarsblauw). | Automatisch Wit (`#FFFFFF`) |
+| `none` / `page` / `default` | *(geen)* | Neemt de natuurlijke pagina-achtergrond over (`var(--bg-page)`). | Standaard |
+
+```markdown
+<!-- section: introductie type="content" bg="surface" title="..." -->
+<!-- section: statistieken type="stats" bg="navy" title="..." -->
+<!-- section: actie type="cta" bg="gradient" -->
+```
+
+#### Hero Achtergrondafbeelding (Aspect Ratio Behoud)
+In de frontmatter van een pagina (`content/pages/{slug}.md`) kan een achtergrondafbeelding worden ingesteld via `bg_image` (of `image` / `background_image`):
+
+```yaml
+hero:
+  badge: "Microsoft Copilot Gids"
+  title: "Slimmer werken met <span class='gradient-text'>Copilot</span>"
+  subtitle: "Concrete productiviteitswinst in uw dagelijkse praktijk."
+  bg_image: "assets/images/hero-bg.webp" # Relatief of absoluut pad
+  bg_overlay: "dark"                     # 'dark', 'navy', 'gradient', 'glass', 'light', 'subtle'
+```
+
+- **Aspect Ratio behoud**: De containerbreedte, paddings en typografische layout van de Hero worden nooit beïnvloed of vervormd door de afbeelding. De achtergrondafbeelding is gepositioneerd via `position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none;`.
+- **Contrast & Leesbaarheid**: De overlayklasse zorgt ervoor dat de witte Hero-tekst en interactieve knoppen altijd 100% leesbaar blijven (WCAG 2.1 AAA).
+- **URL Resolutie**: Zowel absolute (`/assets/...`) als relatieve (`assets/...` of `./assets/...`) paden worden door de PHP runtime automatisch geprefixt met het juiste base-pad.
+
+
 ### 📊 Tabellen & Dataweergave (Opmaak, Kleuren & Badges)
 
 Het Noppa platform compileert standaard Markdown-tabellen (`| Kolom 1 | Kolom 2 |`) automatisch naar een hoogwaardige, responsieve Noppa tabelcomponent (`.table-responsive > .noppa-table`) conform de skill `noppa-website-table` en WCAG 2.1 AAA richtlijnen:
@@ -840,8 +899,10 @@ Elke pagina genereert via [`SeoHelper.php`](file:///c:/NOPPA/OneDrive%20-%20Nopp
 - Gestructureerde data via **Schema.org JSON-LD** (Organization, WebPage, Article of Person)
 
 ### Sitemap Generatie
-- `sitemap.php` genereert real-time een XML sitemap van alle pagina's, diensten en artikelen.
-- Zoekmachines worden via `robots.txt` automatisch naar `https://noppa.nl/sitemap.xml` verwezen.
+- `sitemap.php` genereert real-time een XML sitemap (protocol 0.9) van alle pagina's, diensten, teamleden, kennisbankartikelen en juridische documenten (momenteel 45 geïndexeerde URL's).
+- **Statische sitemap updaten**: Roep `php sitemap.php --save` aan via CLI of open `https://noppa.nl/sitemap.php?save=1` in de browser om [`sitemap.xml`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/option/sitemap.xml) direct synchroon bij te werken.
+- **Automatische filtering**: Pagina's met `robots: noindex`, de 404-pagina en interne drafts worden automatisch uitgesloten.
+- Zoekmachines worden via [`robots.txt`](file:///c:/NOPPA/OneDrive%20-%20Noppa%20Solutions%20&%20Consultants/FRESH/option/robots.txt) automatisch naar `https://noppa.nl/sitemap.xml` verwezen.
 
 ### Apache Webserver (`.htaccess`)
 Het meegeleverde `.htaccess` bestand regelt automatische rewrites:

@@ -340,8 +340,37 @@ if ($isTeamPage && !empty($teamProfileHtml)): ?>
             continue;
         }
 
-        // Styling en layout modifiers
-        $bgClass = !empty($sectionAttrs['bg']) ? 'page-section-' . htmlspecialchars($sectionAttrs['bg'], ENT_QUOTES, 'UTF-8') : ($index % 2 === 1 ? 'page-section-alt' : '');
+        // Styling en layout modifiers (Noppa CSS Achtergrond Standaarden)
+        $bgAttr = strtolower(trim((string)($sectionAttrs['bg'] ?? '')));
+        if (!empty($bgAttr)) {
+            $bgMap = [
+                'white'         => 'surface',
+                'alt'           => 'alt',
+                'surface'       => 'surface',
+                'subtle'        => 'subtle',
+                'tint'          => 'tint',
+                'mist'          => 'mist',
+                'navy'          => 'navy',
+                'dark'          => 'dark',
+                'ink'           => 'ink',
+                'night'         => 'night',
+                'deep'          => 'ink',
+                'hero'          => 'hero',
+                'gradient-hero' => 'gradient-hero',
+                'royal'         => 'royal',
+                'primary'       => 'primary',
+                'gradient'      => 'gradient',
+                'accent'        => 'accent',
+                'cta'           => 'gradient',
+                'default'       => '',
+                'page'          => '',
+                'none'          => ''
+            ];
+            $resolvedBg = $bgMap[$bgAttr] ?? preg_replace('/[^a-zA-Z0-9_-]/', '', $bgAttr);
+            $bgClass = !empty($resolvedBg) ? 'page-section-' . $resolvedBg : '';
+        } else {
+            $bgClass = ($index % 2 === 1) ? 'page-section-alt' : '';
+        }
         $isContainerNone = ($sectionAttrs['container'] ?? '') === 'none' || ($sectionAttrs['container'] ?? '') === 'full';
         $containerClass = ($sectionAttrs['container'] ?? '') === 'narrow' ? 'container-narrow' : 'container';
 

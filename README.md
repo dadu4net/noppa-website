@@ -19,11 +19,12 @@ Hierin vind je gedetailleerde instructies voor:
 - **URL Routing & .htaccess configuratie**
 - **Nieuwe dienst aanmaken** (met Hero, Pillars, Aanpak, Meerkoloms Pricing Grid en FAQ)
 - **Nieuw teamlid toevoegen** (met bio, quick facts, vCard download en contact)
-- **Nieuwe pagina aanmaken** (home, over-ons, contact, etc.)
+- **Nieuwe pagina's & themagidsen aanmaken** (home, over-ons, contact, microsoft-365, copilot, sharepoint, teams, onedrive, planner, visie, etc.)
 - **Kennisbank artikelen toevoegen** (met automatische TOC, leestijdberekening en categorieën)
 - **Juridische pagina's beheren** (Algemene Voorwaarden, Privacy Policy via `LegalEngine`)
 - **Officiële 24 Noppa Vector Gradient Iconen**
 - **Noppa UX/UI Design System** (60-30-10 regel, Kentledge webfont, signature gradient, WCAG 2.1 AAA)
+- **SEO & XML Sitemap beheer** (dynamische en statische sitemap.xml met 45 geïndexeerde URL's)
 - **Troubleshooting & Veelvoorkomende valkuilen**
 
 ---

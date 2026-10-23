@@ -542,6 +542,45 @@ Plan een vrijblijvende inspiratiesessie van 30 minuten met een van onze adviseur
 | `charts` | Kwalitatieve grafieken & besliskaders | Staafdiagrammen (1–5 schaal) en donutgrafieken met dynamic center badge en legenda |
 | `roadmap` | Gefaseerd implementatie stappenplan | Genummerde stappen (`.step`), hover-animaties en output badges (`*Output: ...*`) |
 
+### 🎨 Sectie-Achtergronden (`bg="..."`) & Hero Background Image
+
+Elke sectie kan een achtergrond meekrijgen via het `bg="..."` attribuut in het `<!-- section: ... -->` commentaar. Deze waarden mappen direct naar de Noppa CSS design tokens met gegarandeerd WCAG 2.1 AAA contrast:
+
+| Waarde | CSS Klasse | Uitstraling & Doel | Tekstkleur |
+| :--- | :--- | :--- | :--- |
+| `surface` / `white` | `.page-section-surface` | Heldere kaart-achtergrond (`#FFFFFF` in light mode, `#0B1730` in dark mode) met subtiele scheidingsranden. | Donker / Heading |
+| `alt` | `.page-section-alt` | Standaard alternerende lichte achtergrond (`#F1F5FB` in light mode). | Donker / Heading |
+| `tint` / `subtle` / `mist` | `.page-section-tint` | Subtiele Noppa blauwe waas (`rgba(32, 96, 224, 0.035)`) voor zachte scheiding tussen onderwerpen. | Donker / Heading |
+| `navy` / `dark` | `.page-section-navy` | Diepe Noppa Navy achtergrond (`#0F2A66`). Geeft krachtig zakelijk contrast. | Automatisch Wit (`#FFFFFF`) |
+| `ink` / `night` | `.page-section-ink` | Diepste nachtblauw (`#070D1B`). Maximale diepte voor tech/security secties. | Automatisch Wit (`#FFFFFF`) |
+| `hero` / `gradient-hero` | `.page-section-hero` | Noppa Hero diepblauwe gradient achtergrond. | Automatisch Wit (`#FFFFFF`) |
+| `royal` / `primary` | `.page-section-royal` | Massief Noppa Royal Blauw (`#2060E0`). Uitstekend voor focusblokken. | Automatisch Wit (`#FFFFFF`) |
+| `gradient` / `accent` | `.page-section-gradient` | De Noppa 4-kleuren signature gradient (Cyaan -> Hemelsblauw -> Royal -> Paarsblauw). | Automatisch Wit (`#FFFFFF`) |
+| `none` / `page` / `default` | *(geen)* | Neemt de natuurlijke pagina-achtergrond over (`var(--bg-page)`). | Standaard |
+
+```markdown
+<!-- section: introductie type="content" bg="surface" title="..." -->
+<!-- section: statistieken type="stats" bg="navy" title="..." -->
+<!-- section: actie type="cta" bg="gradient" -->
+```
+
+#### Hero Achtergrondafbeelding (Aspect Ratio Behoud)
+In de frontmatter van een pagina (`content/pages/{slug}.md`) kan een achtergrondafbeelding worden ingesteld via `bg_image` (of `image` / `background_image`):
+
+```yaml
+hero:
+  badge: "Microsoft Copilot Gids"
+  title: "Slimmer werken met <span class='gradient-text'>Copilot</span>"
+  subtitle: "Concrete productiviteitswinst in uw dagelijkse praktijk."
+  bg_image: "assets/images/hero-bg.webp" # Relatief of absoluut pad
+  bg_overlay: "dark"                     # 'dark', 'navy', 'gradient', 'glass', 'light', 'subtle'
+```
+
+- **Aspect Ratio behoud**: De containerbreedte, paddings en typografische layout van de Hero worden nooit beïnvloed of vervormd door de afbeelding. De achtergrondafbeelding is gepositioneerd via `position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none;`.
+- **Contrast & Leesbaarheid**: De overlayklasse zorgt ervoor dat de witte Hero-tekst en interactieve knoppen altijd 100% leesbaar blijven (WCAG 2.1 AAA).
+- **URL Resolutie**: Zowel absolute (`/assets/...`) als relatieve (`assets/...` of `./assets/...`) paden worden door de PHP runtime automatisch geprefixt met het juiste base-pad.
+
+
 ### 📊 Tabellen & Dataweergave (Opmaak, Kleuren & Badges)
 
 Het Noppa platform compileert standaard Markdown-tabellen (`| Kolom 1 | Kolom 2 |`) automatisch naar een hoogwaardige, responsieve Noppa tabelcomponent (`.table-responsive > .noppa-table`) conform de skill `noppa-website-table` en WCAG 2.1 AAA richtlijnen:

@@ -20,6 +20,15 @@ telefoon: "+31 (0)6 13 35 77 23"
 - [AI Act Quickscan](/assessments/ai-act)
 - [Tijdwinst Calculator](/calculator)
 
+### Over Microsoft 365
+- [Microsoft](/microsoft-365)
+- [Copilot](/copilot)
+- [SharePoint](/sharepoint)
+- [Teams](/teams)
+- [OneDrive](/onedrive)
+- [Planner](/planner)
+- [M365 Referentie](/referentie)
+
 ### Organisatie
 - [Over Noppa](/over-ons)
 - [Onze 4 Kernwaarden](/over-ons#kernwaarden)

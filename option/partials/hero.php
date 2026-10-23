@@ -20,12 +20,18 @@ $badge       = $hero['badge'] ?? 'Microsoft 365 & Copilot Specialisten';
 $badgeIcon   = $hero['badge_icon'] ?? 'sparkles';
 $ctaPrimary  = $hero['cta_primary'] ?? ['text' => 'Boek een adviesgesprek', 'url' => '/contact', 'icon' => 'calendar'];
 $ctaSecondary= $hero['cta_secondary'] ?? ['text' => 'Ontdek onze diensten', 'url' => '#diensten', 'icon' => 'arrow-right'];
-$bgImage     = $hero['bg_image'] ?? '';
-$bgOverlay   = $hero['bg_overlay'] ?? 'dark';
+$bgImage     = $hero['bg_image'] ?? $hero['image'] ?? $hero['background_image'] ?? '';
+$bgOverlay   = $hero['bg_overlay'] ?? $hero['overlay'] ?? 'dark';
 $stats       = $hero['stats'] ?? ($pageData['meta']['stats'] ?? []);
 
 $hasBgClass  = !empty($bgImage) ? 'hero-has-bg' : '';
 $overlayClass= 'hero-overlay-' . htmlspecialchars($bgOverlay, ENT_QUOTES, 'UTF-8');
+
+$bgImageSrc  = $bgImage;
+if (!empty($bgImageSrc) && !str_starts_with($bgImageSrc, 'http://') && !str_starts_with($bgImageSrc, 'https://') && !str_starts_with($bgImageSrc, 'data:')) {
+    $assetPrefix = $GLOBALS['assetPrefix'] ?? './';
+    $bgImageSrc  = $assetPrefix . ltrim($bgImageSrc, '/.');
+}
 
 // Toestaan van veilige span tags met class gradient-text in hero titel
 $titleFormatted = preg_replace('/<span class=([\'"])gradient-text\1>(.*?)<\/span>/i', '<span class="gradient-text">$2</span>', $title);
@@ -34,10 +40,10 @@ if ($titleFormatted === $title && !str_contains($title, '<span')) {
 }
 ?>
 <section class="hero-section <?= $hasBgClass; ?>" aria-label="Introductie">
-    <?php if (!empty($bgImage)): ?>
-    <!-- Background Image Media Layer -->
+    <?php if (!empty($bgImageSrc)): ?>
+    <!-- Background Image Media Layer (beveiligd tegen verhoudingswijzigingen via object-fit: cover) -->
     <div class="hero-bg-media" aria-hidden="true">
-        <img src="<?= htmlspecialchars($bgImage, ENT_QUOTES, 'UTF-8'); ?>" alt="" loading="eager">
+        <img src="<?= htmlspecialchars($bgImageSrc, ENT_QUOTES, 'UTF-8'); ?>" alt="" loading="eager">
     </div>
     <div class="hero-overlay <?= $overlayClass; ?>" aria-hidden="true"></div>
     <?php endif; ?>

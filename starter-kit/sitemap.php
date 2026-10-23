@@ -81,9 +81,9 @@ foreach ($corePages as $slug => $defaults) {
     }
 }
 
-// Overige content/pages/ (exclusief 404, teams, home, en al verwerkte core pages)
+// Overige content/pages/ (exclusief 404, home, interne drafts, en al verwerkte core pages)
 $allPageFiles = glob($pagesDir . '/*.md') ?: [];
-$skipPages = array_merge(['home', '404', 'teams'], array_keys($corePages));
+$skipPages = array_merge(['home', '404', 'Copilot-Realiteitscheck-Noppa'], array_keys($corePages));
 
 foreach ($allPageFiles as $pFile) {
     $slug = basename($pFile, '.md');
