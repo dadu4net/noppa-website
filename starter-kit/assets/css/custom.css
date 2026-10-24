@@ -393,10 +393,12 @@ html[data-theme="dark"] .logo-dark { display: block !important; }
     display: flex;
     flex-direction: column;
     gap: 12px;
+    text-align: left;
 }
 .mega-col-header {
     border-bottom: 1px solid rgba(228, 233, 242, 0.8);
     padding-bottom: 10px;
+    text-align: left;
 }
 [data-theme="dark"] .mega-col-header {
     border-bottom-color: rgba(22, 34, 63, 0.8);
@@ -404,20 +406,19 @@ html[data-theme="dark"] .logo-dark { display: block !important; }
 .mega-col-title {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
     color: var(--text-heading);
     font-weight: 700;
     font-size: 0.9375rem;
     text-decoration: none;
+    text-align: left;
+    padding: 0;
+    margin: 0;
     transition: color 0.15s ease;
 }
 .mega-bullet {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--gradient-signature);
-    flex-shrink: 0;
+    display: none; /* Verborgen zodat Laag 2 strak op de linkeras (0px) uitlijnt met Laag 3 */
 }
 .mega-col-title:hover,
 .mega-col-title.active {
@@ -433,30 +434,34 @@ html[data-theme="dark"] .logo-dark { display: block !important; }
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
+    text-align: left;
 }
 .mega-link-item {
     margin: 0;
     padding: 0;
+    text-align: left;
 }
 .mega-sub-link {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start; /* Strak links uitgelijnd */
     gap: 8px;
     color: var(--text-muted);
     text-decoration: none;
     font-size: 0.875rem;
     font-weight: 500;
     padding: 6px 10px;
+    margin: 0 -10px; /* Heft horizontale padding op: tekst staat exact op x = 0px gelijk met Laag 2 */
     border-radius: var(--radius-sm);
-    transition: all 0.15s ease;
+    text-align: left;
+    transition: color 0.15s ease, background-color 0.15s ease;
 }
 .mega-sub-link:hover,
 .mega-sub-link.active {
     color: var(--color-royal);
     background-color: rgba(32, 96, 224, 0.08);
-    transform: translateX(4px);
+    transform: none; /* Geen verschuiving, behoudt strakke linkse uitlijning */
 }
 [data-theme="dark"] .mega-sub-link:hover,
 [data-theme="dark"] .mega-sub-link.active {
