@@ -190,6 +190,61 @@ Een scan is binnen 1 week afgerond. Een volledige inrichting van labels en polic
 
 ---
 
+### 3. Flexibele Pricing & Plans Positionering in de Body
+
+Standaard rendert de `DienstenEngine.php` het pricing grid direct na de introductiesectie. Wanneer de redacteur de tarieven liever **op een specifieke plek** in de flow van de pagina wil tonen (bijvoorbeeld na "Onze werkwijze", na een praktijkcase, of direct voor de FAQ), kan dit eenvoudig via Markdown sectie-tags of koppen:
+
+#### A. Directe sectieplaatsing (`<!-- section: pricing -->` of `<!-- pricing -->`)
+Plaats de tag op de gewenste regel tussen de overige secties:
+```markdown
+## Wat wij voor u doen
+...
+
+<!-- section: pricing -->
+
+## Onze aanpak
+...
+```
+*Zodra een expliciete pricing-tag aanwezig is, schakelt de engine automatische weergave na de intro of aan het einde uit.*
+
+#### B. Sectie met achtergrond, custom titels en toelichting
+U kunt direct stijlen en teksten meegeven die de YAML frontmatter overschrijven:
+```markdown
+<!-- section: tarieven type="pricing" bg="tint" title="Onze Continuïteitspakketten" subtitle="Transparante Maandtarieven" desc="Kies het serviceniveau dat past bij uw team." -->
+
+Hier kunt u optioneel een extra toelichting of paragraaf schrijven die boven de tariefkaarten verschijnt.
+```
+Beschikbare achtergronden (`bg`): `surface` (wit), `tint` (lichtblauw), `navy` (diepblauw), `ink` (donker), `hero` (hero-gradient), `royal` (koninklijk blauw), `gradient` (signature gradient), of `alt` (standaard zachtgrijs).
+
+#### C. Plannen filteren (`plans="..."` of `plan="..."`)
+Toon een deelverzameling van de in de YAML opgenomen plannen, gefilterd op `tier` of `name` (hoofdletterongevoelig):
+```markdown
+<!-- section: instap type="pricing" plans="Basis,Compleet" title="Laagdrempelig Starten" bg="surface" -->
+...
+<!-- section: maatwerk type="pricing" plan="Maatwerk" title="Volledige Ontzorging" bg="navy" -->
+```
+
+#### D. Kop-gebaseerde plaatsing (zonder HTML-commentaren)
+U kunt ook een reguliere Markdown H2-kop gebruiken. De engine herkent titels zoals *Tarieven*, *Prijzen*, *Pakketten*, *Pricing* of *Investering*:
+```markdown
+## Onze Tarieven & Pakketten
+Hieronder vindt u een overzicht van onze vaste maandelijkse pakketten.
+```
+
+#### E. Inline individuele plan embeds in lopende tekst
+Wilt u binnen een tekstparagraaf of case één specifiek plan als kaartje tonen? Gebruik:
+```markdown
+Wilt u alleen starten met een nulmeting? Kies dan voor onze Quickscan:
+
+<!-- plan: Quickscan -->
+
+Of gebruik de shortcode variant:
+
+[plan: "Quickscan"]
+```
+
+---
+
 ## 🎨 Officiële Noppa Vector Iconen (24 Beschikbare Iconen)
 
 Kies voor `badge_icon` en knopiconen altijd één van de 24 officiële iconen uit `assets/icons/`:

@@ -91,6 +91,8 @@ We gaan gezamenlijk aan de slag. Korte sprints en frequente afstemming zorgen vo
 ### 4. Oplevering & Evaluatie
 Na afronding borgen we de resultaten, trainen we de gebruikers en evalueren we de behaalde doelstellingen.
 
+<!-- section: pricing bg="tint" -->
+
 <!-- section: faq type="faq" title="Veelgestelde Vragen" subtitle="FAQ" -->
 
 ### Hoe snel kunnen we starten?

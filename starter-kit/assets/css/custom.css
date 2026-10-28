@@ -3269,6 +3269,35 @@ html[data-theme="dark"] .logo-dark { display: block !important; }
     margin-right: auto;
 }
 
+.pricing-grid.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.pricing-grid.grid-1,
+.plan-embed-single {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.plan-embed-single {
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
+.pricing-custom-prose {
+    max-width: 760px;
+    margin: 0 auto 32px;
+    color: var(--text-body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+}
+
+.pricing-custom-prose p {
+    margin-bottom: 12px;
+}
+
 .pcard {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
@@ -3670,8 +3699,21 @@ html[data-theme="dark"] .logo-dark { display: block !important; }
     gap: 10px;
 }
 
+@media (max-width: 1200px) {
+    .pricing-grid.grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 992px) {
     .pricing-grid.grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .pricing-grid.grid-4,
+    .pricing-grid.grid-2 {
         grid-template-columns: 1fr;
     }
 }

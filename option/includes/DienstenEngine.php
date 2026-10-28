@@ -97,37 +97,111 @@ class DienstenEngine {
         $badgeIcon   = $frontmatter['badge_icon'] ?? 'sparkles';
         $description = $frontmatter['description'] ?? ($frontmatter['hero_subtitle'] ?? '');
 
-        // Splits Markdown secties op basis van ## koppen
-        $rawSections = explode("\n## ", "\n" . $markdownText);
+        // Universele Markdown sectie-parser:
+        // Ondersteunt zowel <!-- section: [id] (attrs) --> als <!-- pricing (attrs) --> en ## Koppen (en hybride mengvormen)
+        $pattern = '/(?:<!--\s*(?:section:\s*([a-zA-Z0-9_-]+)|(pricing))(.*?)\s*-->|(?:\r?\n|^)##\s+([^\r\n]+))/i';
         $sections = [];
         $faqItems = [];
+        $hasExplicitPricing = false;
 
-        foreach ($rawSections as $idx => $sec) {
-            if ($idx === 0 && trim($sec) === '') continue;
-            $lines = explode("\n", $sec, 2);
-            $secTitle = trim($lines[0]);
-            $secContent = isset($lines[1]) ? trim($lines[1]) : '';
-            if (empty($secTitle)) continue;
+        if (preg_match_all($pattern, $markdownText, $matches, PREG_OFFSET_CAPTURE)) {
+            $totalMatches = count($matches[0]);
 
-            // Controleer of dit een FAQ sectie is
-            if (preg_match('/^(Veelgestelde vragen|FAQ|Wat u nog wil weten)/i', $secTitle)) {
-                $rawFaqs = explode("\n### ", "\n" . $secContent);
-                foreach ($rawFaqs as $f) {
-                    if (trim($f) === '') continue;
-                    $flines = explode("\n", $f, 2);
-                    $q = trim($flines[0]);
-                    $a = isset($flines[1]) ? trim($flines[1]) : '';
-                    if (!empty($q)) {
-                        $faqItems[] = [
-                            'question' => $q,
-                            'answer'   => $this->parsedown->text($a)
-                        ];
+            // Controleer of er pre-content (intro tekst) staat vóór de eerste sectietag
+            $firstOffset = $matches[0][0][1];
+            if ($firstOffset > 0) {
+                $preContent = trim(substr($markdownText, 0, $firstOffset));
+                if ($preContent !== '') {
+                    $sections[] = [
+                        'id'      => 'intro',
+                        'type'    => 'intro',
+                        'attrs'   => [],
+                        'title'   => 'Introductie',
+                        'content' => $preContent
+                    ];
+                }
+            }
+
+            for ($i = 0; $i < $totalMatches; $i++) {
+                $rawMatch    = $matches[0][$i][0];
+                $matchOffset = $matches[0][$i][1];
+                $matchLen    = strlen($rawMatch);
+
+                $contentStart = $matchOffset + $matchLen;
+                $contentEnd   = ($i + 1 < $totalMatches) ? $matches[0][$i + 1][1] : strlen($markdownText);
+                $secContent   = trim(substr($markdownText, $contentStart, $contentEnd - $contentStart));
+
+                $secId    = '';
+                $secAttrs = [];
+                $secType  = 'auto';
+                $secTitle = '';
+
+                $explicitSectionId = trim($matches[1][$i][0] ?? '');
+                $isPricingTag      = trim($matches[2][$i][0] ?? '') === 'pricing';
+                $rawAttrs          = trim($matches[3][$i][0] ?? '');
+                $headingTitle      = trim($matches[4][$i][0] ?? '');
+
+                if ($explicitSectionId !== '' || $isPricingTag) {
+                    // Type A: <!-- section: id attrs --> of <!-- pricing attrs -->
+                    $secId    = $isPricingTag ? 'pricing' : strtolower($explicitSectionId);
+                    $secAttrs = $this->parseAttributes($rawAttrs);
+                    $secType  = $secAttrs['type'] ?? $secId;
+                    $secTitle = $secAttrs['title'] ?? '';
+
+                    if ($secId === 'pricing' || $secType === 'pricing' || $secType === 'plans' || $secType === 'plan') {
+                        $secType = 'pricing';
+                        $hasExplicitPricing = true;
+                    }
+                } else {
+                    // Type B: ## Koptekst
+                    // Controleer op inline comment-attributen: ## Tarieven <!-- type="pricing" bg="tint" -->
+                    if (preg_match('/<!--(.*?)-->/', $headingTitle, $cm)) {
+                        $secAttrs = $this->parseAttributes($cm[1]);
+                        $headingTitle = trim(str_replace($cm[0], '', $headingTitle));
+                    }
+                    $secTitle = $headingTitle;
+                    $secId    = strtolower(preg_replace('/[^a-zA-Z0-9_-]/', '-', $secTitle));
+
+                    if (preg_match('/^(Tarieven|Prijzen|Pakketten|Pricing|Investering)/i', $secTitle) || ($secAttrs['type'] ?? '') === 'pricing') {
+                        $secType = 'pricing';
+                        $hasExplicitPricing = true;
                     }
                 }
-            } else {
+
+                // Controleer of dit een FAQ sectie is
+                if ($secType === 'faq' || $secId === 'faq' || preg_match('/^(Veelgestelde vragen|FAQ|Wat u nog wil weten)/i', $secTitle)) {
+                    $rawFaqs = explode("\n### ", "\n" . $secContent);
+                    foreach ($rawFaqs as $f) {
+                        if (trim($f) === '') continue;
+                        $flines = explode("\n", $f, 2);
+                        $q = trim($flines[0]);
+                        $a = isset($flines[1]) ? trim($flines[1]) : '';
+                        if (!empty($q)) {
+                            $faqItems[] = [
+                                'question' => $q,
+                                'answer'   => $this->parsedown->text($a)
+                            ];
+                        }
+                    }
+                } else {
+                    $sections[] = [
+                        'id'      => $secId,
+                        'type'    => $secType,
+                        'attrs'   => $secAttrs,
+                        'title'   => $secTitle,
+                        'content' => $secContent
+                    ];
+                }
+            }
+        } else {
+            // Geen sectietags of ## koppen gevonden, behandel als 1 content sectie
+            if (trim($markdownText) !== '') {
                 $sections[] = [
-                    'title'   => $secTitle,
-                    'content' => $secContent
+                    'id'      => 'content',
+                    'type'    => 'content',
+                    'attrs'   => [],
+                    'title'   => '',
+                    'content' => trim($markdownText)
                 ];
             }
         }
@@ -151,8 +225,9 @@ class DienstenEngine {
             'badge'         => $badge,
             'badgeIcon'     => $badgeIcon,
             'description'   => $description,
-            'pricing'       => $frontmatter['pricing'] ?? null,
-            'stats'         => $frontmatter['stats'] ?? null,
+            'pricing'              => $frontmatter['pricing'] ?? null,
+            'has_explicit_pricing' => $hasExplicitPricing,
+            'stats'                => $frontmatter['stats'] ?? null,
             'intro_pillars' => $frontmatter['intro_pillars'] ?? null,
             'features'      => $frontmatter['features'] ?? null,
             'cta'           => $frontmatter['cta'] ?? null,
@@ -226,11 +301,23 @@ class DienstenEngine {
             <!-- 2. Dynamisch samengestelde secties -->
             <?php
             $hasPricingRendered = false;
+            $hasExplicitPricing = !empty($service['has_explicit_pricing']);
             $hasComparisonRendered = false;
 
             foreach ($service['sections'] as $sIdx => $sec):
                 $secTitle   = $sec['title'];
                 $secContent = $sec['content'];
+                $secType    = $sec['type'] ?? 'auto';
+                $secAttrs   = $sec['attrs'] ?? [];
+
+                // 1. Expliciete Pricing Sectie (via <!-- section: pricing -->, type="pricing", of herkende kop)
+                if ($secType === 'pricing' || ($sec['id'] ?? '') === 'pricing') {
+                    if (!empty($service['pricing'])) {
+                        echo $this->renderPricingSection($service['pricing'], $secAttrs, $secContent);
+                        $hasPricingRendered = true;
+                    }
+                    continue;
+                }
 
                 // Backwards compatibility: als de sectie al ruwe HTML bevat
                 if (preg_match('/^\s*<(section|div)\b/i', $secContent)) {
@@ -239,11 +326,11 @@ class DienstenEngine {
                 }
 
                 // A. Intro / Uitdaging Sectie
-                if (preg_match('/^(De uitdaging|Waarom|Over|Introductie|Technologie verandert)/i', $secTitle)) {
-                    echo $this->renderIntroSection($secTitle, $secContent, $service);
+                if ($secType === 'intro' || preg_match('/^(De uitdaging|Waarom|Over|Introductie|Technologie verandert)/i', $secTitle)) {
+                    echo $this->renderIntroSection($secTitle, $secContent, $service, $secAttrs);
 
-                    // Toon Pricing na Intro indien pricing aanwezig is en dit geen AI-Copilot is (AI-Copilot heeft geen vaste pricing plans)
-                    if (!empty($service['pricing']) && !$hasPricingRendered && in_array($id, ['processen-portalen', 'adoptie-begeleiding', 'copilot-plannen', 'workshops-trainingen', 'copilot-ai-experience'], true)) {
+                    // Automatische weergave na Intro ALLEEN als er GEEN expliciete pricing sectie in het document staat
+                    if (!$hasExplicitPricing && !empty($service['pricing']) && !$hasPricingRendered && in_array($id, ['processen-portalen', 'adoptie-begeleiding', 'copilot-plannen', 'workshops-trainingen', 'copilot-ai-experience', 'm365-continuiteit-productiviteit', 'noppa-5-propositie'], true)) {
                         echo $this->renderPricingSection($service['pricing']);
                         $hasPricingRendered = true;
                     }
@@ -251,43 +338,43 @@ class DienstenEngine {
                 }
 
                 // B. Wat wij voor u doen / Pijlers / Features
-                if (preg_match('/^(Wat wij|Wat we|Pijlers|Features|Diensten|Bouwstenen|Zes modules|Zes vormen)/i', $secTitle)) {
-                    echo $this->renderPillarsSection($secTitle, $secContent, $service);
+                if ($secType === 'pillars' || preg_match('/^(Wat wij|Wat we|Pijlers|Features|Diensten|Bouwstenen|Zes modules|Zes vormen)/i', $secTitle)) {
+                    echo $this->renderPillarsSection($secTitle, $secContent, $service, $secAttrs);
                     continue;
                 }
 
                 // C. In de praktijk / Use Cases
-                if (preg_match('/^(In de praktijk|Use cases|Cases|Praktijkcases)/i', $secTitle)) {
-                    echo $this->renderCasesSection($secTitle, $secContent, $service);
+                if ($secType === 'cases' || preg_match('/^(In de praktijk|Use cases|Cases|Praktijkcases)/i', $secTitle)) {
+                    echo $this->renderCasesSection($secTitle, $secContent, $service, $secAttrs);
                     continue;
                 }
 
                 // D. Onze aanpak / Stappen / Proces
-                if (preg_match('/^(Onze aanpak|Aanpak|In \d+ stappen|Stappen|Proces|Werkwijze|Hoe werkt|Een bewezen aanpak)/i', $secTitle)) {
-                    echo $this->renderAanpakSection($secTitle, $secContent, $service);
+                if ($secType === 'aanpak' || $secType === 'process' || preg_match('/^(Onze aanpak|Aanpak|In \d+ stappen|Stappen|Proces|Werkwijze|Hoe werkt|Een bewezen aanpak)/i', $secTitle)) {
+                    echo $this->renderAanpakSection($secTitle, $secContent, $service, $secAttrs);
                     continue;
                 }
 
                 // E. Governance & Veiligheid
-                if (preg_match('/^(Veilig én verantwoord|Governance|Veiligheid|Compliance)/i', $secTitle)) {
-                    echo $this->renderGovernanceSection($secTitle, $secContent, $service);
+                if ($secType === 'governance' || preg_match('/^(Veilig én verantwoord|Governance|Veiligheid|Compliance)/i', $secTitle)) {
+                    echo $this->renderGovernanceSection($secTitle, $secContent, $service, $secAttrs);
                     continue;
                 }
 
                 // F. Vergelijking / Comparison Table
-                if (preg_match('/^(Wat zit er in welk pakket|Vergelijken|Vergelijking|De verschillen)/i', $secTitle) || strpos($secContent, '| ---') !== false) {
-                    echo $this->renderCompareSection($secTitle, $secContent, $service);
+                if ($secType === 'compare' || preg_match('/^(Wat zit er in welk pakket|Vergelijken|Vergelijking|De verschillen)/i', $secTitle) || strpos($secContent, '| ---') !== false) {
+                    echo $this->renderCompareSection($secTitle, $secContent, $service, $secAttrs);
                     $hasComparisonRendered = true;
                     continue;
                 }
 
                 // G. Standaard Prose Sectie (bijv. Randvoorwaarden, Ambassadeurs, Startpunten)
-                echo $this->renderProseSection($secTitle, $secContent, $service);
+                echo $this->renderProseSection($secTitle, $secContent, $service, $secAttrs);
             endforeach;
             ?>
 
-            <!-- 3. Meerkoloms Pricing Grid (indien nog niet getoond) -->
-            <?php if (!empty($service['pricing']) && !$hasPricingRendered): ?>
+            <!-- 3. Meerkoloms Pricing Grid (indien nog niet getoond EN geen expliciete pricing in het document) -->
+            <?php if (!empty($service['pricing']) && !$hasPricingRendered && !$hasExplicitPricing): ?>
                 <?= $this->renderPricingSection($service['pricing']); ?>
             <?php endif; ?>
 
@@ -637,16 +724,33 @@ class DienstenEngine {
     }
 
     /**
-     * Render Standaard Prose sectie (.artikel-prose).
+     * Render Standaard Prose sectie (.artikel-prose) met optionele achtergrond en shortcode support.
      */
-    private function renderProseSection(string $title, string $content, array $service): string {
+    private function renderProseSection(string $title, string $content, array $service, array $attrs = []): string {
+        $bgAttr = strtolower($attrs['bg'] ?? '');
+        $bgClass = !empty($bgAttr) ? match ($bgAttr) {
+            'surface', 'white'      => 'page-section-surface',
+            'tint', 'subtle', 'mist'=> 'page-section-tint',
+            'navy', 'dark'          => 'page-section-navy',
+            'ink', 'night'          => 'page-section-ink',
+            'hero', 'gradient-hero' => 'page-section-hero',
+            'royal', 'primary'      => 'page-section-royal',
+            'gradient', 'accent'    => 'page-section-gradient',
+            default                 => 'section'
+        } : 'section';
+
+        $parsedHtml = $this->parsedown->text($content);
+        $parsedHtml = $this->replacePlanShortcodes($parsedHtml, $service['pricing'] ?? null);
+
         ob_start();
         ?>
-        <section class="section">
+        <section class="<?= $bgClass; ?>">
             <div class="container">
                 <div class="artikel-prose">
+                    <?php if (!empty($title)): ?>
                     <h2><?= $this->formatEmTitle($title); ?></h2>
-                    <?= $this->parsedown->text($content); ?>
+                    <?php endif; ?>
+                    <?= $parsedHtml; ?>
                 </div>
             </div>
         </section>
@@ -656,26 +760,78 @@ class DienstenEngine {
 
     /**
      * Render Pricing Grid sectie (#pricing met .pcard en badges).
+     * Ondersteunt maatwerk attributen (bg, title, subtitle, desc, plans/plan filter).
      */
-    public function renderPricingSection(array $pricing): string {
+    public function renderPricingSection(array $pricing, array $attrs = [], string $customContent = ''): string {
         $plans = $pricing['plans'] ?? [];
         if (empty($plans)) {
             return '';
         }
 
+        // 1. Filter plans indien 'plans' of 'plan' attribuut aanwezig is
+        $requestedPlans = $attrs['plans'] ?? ($attrs['plan'] ?? '');
+        if (!empty($requestedPlans)) {
+            $planKeys = array_filter(array_map('trim', explode(',', strtolower($requestedPlans))));
+            $filteredPlans = [];
+            foreach ($plans as $p) {
+                $tier = strtolower($p['tier'] ?? '');
+                $name = strtolower($p['name'] ?? '');
+                foreach ($planKeys as $pk) {
+                    if ($pk !== '' && (str_contains($tier, $pk) || str_contains($name, $pk) || $tier === $pk)) {
+                        $filteredPlans[] = $p;
+                        break;
+                    }
+                }
+            }
+            if (!empty($filteredPlans)) {
+                $pricing['plans'] = $filteredPlans;
+            }
+        }
+
+        // 2. Bepaal titels en teksten (attributen overschrijven YAML frontmatter)
+        $title    = $attrs['title'] ?? ($pricing['title'] ?? 'Kies wat past bij uw organisatiegrootte');
+        $subtitle = $attrs['subtitle'] ?? ($pricing['subtitle'] ?? 'Tarieven & Mogelijkheden');
+        $desc     = $attrs['desc'] ?? ($pricing['desc'] ?? '');
+
+        // 3. Bepaal ID en Achtergrond class
+        $secId = !empty($attrs['id']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $attrs['id']) : 'pricing';
+        $bgAttr = strtolower($attrs['bg'] ?? 'alt');
+        $bgClass = match ($bgAttr) {
+            'surface', 'white'      => 'page-section-surface',
+            'tint', 'subtle', 'mist'=> 'page-section-tint',
+            'navy', 'dark'          => 'page-section-navy',
+            'ink', 'night'          => 'page-section-ink',
+            'hero', 'gradient-hero' => 'page-section-hero',
+            'royal', 'primary'      => 'page-section-royal',
+            'gradient', 'accent'    => 'page-section-gradient',
+            default                 => 'page-section-alt'
+        };
+
+        // 4. Optionele custom Markdown content boven het grid
+        $customHtml = '';
+        if (!empty(trim($customContent))) {
+            $parsedCustom = $this->parsedown->text($customContent);
+            $parsedCustom = $this->replacePlanShortcodes($parsedCustom, $pricing);
+            $customHtml = '<div class="pricing-custom-prose text-center">' . $parsedCustom . '</div>';
+        }
+
         ob_start();
         ?>
-        <section class="page-section section-pricing page-section-alt" id="pricing">
+        <section class="page-section section-pricing <?= $bgClass; ?>" id="<?= $secId; ?>">
             <div class="container">
                 <header class="section-header text-center">
-                    <?php if (!empty($pricing['subtitle'])): ?>
-                    <span class="section-subtitle-tag"><?= htmlspecialchars($pricing['subtitle'], ENT_QUOTES, 'UTF-8'); ?></span>
+                    <?php if (!empty($subtitle)): ?>
+                    <span class="section-subtitle-tag"><?= htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8'); ?></span>
                     <?php endif; ?>
-                    <h2 class="section-title"><?= htmlspecialchars($pricing['title'] ?? 'Kies wat past bij uw organisatiegrootte', ENT_QUOTES, 'UTF-8'); ?></h2>
-                    <?php if (!empty($pricing['desc'])): ?>
-                    <p class="section-desc"><?= htmlspecialchars($pricing['desc'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    <h2 class="section-title"><?= $this->formatEmTitle($title); ?></h2>
+                    <?php if (!empty($desc)): ?>
+                    <p class="section-desc"><?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8'); ?></p>
                     <?php endif; ?>
                 </header>
+
+                <?php if (!empty($customHtml)): ?>
+                    <?= $customHtml; ?>
+                <?php endif; ?>
 
                 <?= $this->renderPricingGrid($pricing); ?>
             </div>
@@ -694,78 +850,89 @@ class DienstenEngine {
         }
 
         $gridCols = count($plans);
-        $gridClass = ($gridCols === 3) ? 'pricing-grid grid-3' : ($gridCols === 2 ? 'pricing-grid grid-2' : 'pricing-grid');
+        $gridClass = ($gridCols >= 4) ? 'pricing-grid grid-4' : (($gridCols === 3) ? 'pricing-grid grid-3' : ($gridCols === 2 ? 'pricing-grid grid-2' : ($gridCols === 1 ? 'pricing-grid grid-1' : 'pricing-grid')));
 
         ob_start();
         ?>
         <div class="<?= $gridClass; ?>">
-            <?php foreach ($plans as $plan):
-                $isFeatured = !empty($plan['featured']);
-                $cardClasses = 'pcard' . ($isFeatured ? ' featured' : '');
-                $tier   = $plan['tier'] ?? '';
-                $name   = $plan['name'] ?? '';
-                $target = $plan['target'] ?? '';
-                $badge  = $plan['badge'] ?? ($isFeatured ? 'Meest gekozen' : '');
-                $prefix = $plan['price_prefix'] ?? '';
-                $amount = $plan['price_amount'] ?? '';
-                $suffix = $plan['price_suffix'] ?? '';
-                $permw  = $plan['price_permw'] ?? '';
-                $feats  = $plan['features'] ?? [];
-                $ctaText = $plan['cta']['text'] ?? 'Plan een afspraak →';
-                $ctaUrl  = $plan['cta']['url'] ?? '/contact';
-                $ctaVar  = $isFeatured ? 'btn-primary' : 'btn-dark';
-            ?>
-            <div class="<?= $cardClasses; ?>">
-                <?php if (!empty($badge)): ?>
-                <span class="badge-meest"><?= htmlspecialchars($badge, ENT_QUOTES, 'UTF-8'); ?></span>
-                <?php endif; ?>
-
-                <?php if (!empty($tier)): ?>
-                <span class="p-tier"><?= htmlspecialchars($tier, ENT_QUOTES, 'UTF-8'); ?></span>
-                <?php endif; ?>
-
-                <h3 class="p-name"><?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?></h3>
-
-                <?php if (!empty($target)): ?>
-                <p class="p-target"><?= htmlspecialchars($target, ENT_QUOTES, 'UTF-8'); ?></p>
-                <?php endif; ?>
-
-                <div class="p-price">
-                    <?php if (!empty($prefix)): ?>
-                    <span class="p-amount-prefix"><?= htmlspecialchars($prefix, ENT_QUOTES, 'UTF-8'); ?></span>
-                    <?php endif; ?>
-
-                    <span class="p-amount"><?= htmlspecialchars($amount, ENT_QUOTES, 'UTF-8'); ?></span>
-
-                    <?php if (!empty($suffix)): ?>
-                    <span class="p-amount-suffix"><?= htmlspecialchars($suffix, ENT_QUOTES, 'UTF-8'); ?></span>
-                    <?php endif; ?>
-
-                    <?php if (!empty($permw)): ?>
-                    <div class="p-permw"><?= htmlspecialchars($permw, ENT_QUOTES, 'UTF-8'); ?></div>
-                    <?php endif; ?>
-                </div>
-
-                <?php if (!empty($feats)): ?>
-                <ul class="p-features">
-                    <?php foreach ($feats as $feat):
-                        $featText = is_array($feat) ? ($feat['text'] ?? ($feat['title'] ?? json_encode($feat))) : (string)$feat;
-                    ?>
-                    <li>
-                        <span class="p-check" aria-hidden="true">
-                            <span class="p-check-tick">✓</span>
-                        </span>
-                        <span><?= htmlspecialchars($featText, ENT_QUOTES, 'UTF-8'); ?></span>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-                <?php endif; ?>
-
-                <a class="btn <?= $ctaVar; ?> p-cta" href="<?= htmlspecialchars($this->formatUrl($ctaUrl), ENT_QUOTES, 'UTF-8'); ?>">
-                    <?= htmlspecialchars($ctaText, ENT_QUOTES, 'UTF-8'); ?>
-                </a>
-            </div>
+            <?php foreach ($plans as $plan): ?>
+                <?= $this->renderSinglePlanCard($plan); ?>
             <?php endforeach; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Render een individuele .pcard (herbruikbaar voor meerkoloms grid en inline embeds).
+     */
+    public function renderSinglePlanCard(array $plan): string {
+        $isFeatured = !empty($plan['featured']);
+        $cardClasses = 'pcard' . ($isFeatured ? ' featured' : '');
+        $tier   = $plan['tier'] ?? '';
+        $name   = $plan['name'] ?? '';
+        $target = $plan['target'] ?? '';
+        $badge  = $plan['badge'] ?? ($isFeatured ? 'Meest gekozen' : '');
+        $prefix = $plan['price_prefix'] ?? '';
+        $amount = $plan['price_amount'] ?? '';
+        $suffix = $plan['price_suffix'] ?? '';
+        $permw  = $plan['price_permw'] ?? '';
+        $feats  = $plan['features'] ?? [];
+        $ctaText = $plan['cta']['text'] ?? 'Plan een afspraak →';
+        $ctaUrl  = $plan['cta']['url'] ?? '/contact';
+        $ctaVar  = $isFeatured ? 'btn-primary' : 'btn-dark';
+
+        ob_start();
+        ?>
+        <div class="<?= $cardClasses; ?>">
+            <?php if (!empty($badge)): ?>
+            <span class="badge-meest"><?= htmlspecialchars($badge, ENT_QUOTES, 'UTF-8'); ?></span>
+            <?php endif; ?>
+
+            <?php if (!empty($tier)): ?>
+            <span class="p-tier"><?= htmlspecialchars($tier, ENT_QUOTES, 'UTF-8'); ?></span>
+            <?php endif; ?>
+
+            <h3 class="p-name"><?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?></h3>
+
+            <?php if (!empty($target)): ?>
+            <p class="p-target"><?= htmlspecialchars($target, ENT_QUOTES, 'UTF-8'); ?></p>
+            <?php endif; ?>
+
+            <div class="p-price">
+                <?php if (!empty($prefix)): ?>
+                <span class="p-amount-prefix"><?= htmlspecialchars($prefix, ENT_QUOTES, 'UTF-8'); ?></span>
+                <?php endif; ?>
+
+                <span class="p-amount"><?= htmlspecialchars($amount, ENT_QUOTES, 'UTF-8'); ?></span>
+
+                <?php if (!empty($suffix)): ?>
+                <span class="p-amount-suffix"><?= htmlspecialchars($suffix, ENT_QUOTES, 'UTF-8'); ?></span>
+                <?php endif; ?>
+
+                <?php if (!empty($permw)): ?>
+                <div class="p-permw"><?= htmlspecialchars($permw, ENT_QUOTES, 'UTF-8'); ?></div>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($feats)): ?>
+            <ul class="p-features">
+                <?php foreach ($feats as $feat):
+                    $featText = is_array($feat) ? ($feat['text'] ?? ($feat['title'] ?? json_encode($feat))) : (string)$feat;
+                ?>
+                <li>
+                    <span class="p-check" aria-hidden="true">
+                        <span class="p-check-tick">✓</span>
+                    </span>
+                    <span><?= htmlspecialchars($featText, ENT_QUOTES, 'UTF-8'); ?></span>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+
+            <a class="btn <?= $ctaVar; ?> p-cta" href="<?= htmlspecialchars($this->formatUrl($ctaUrl), ENT_QUOTES, 'UTF-8'); ?>">
+                <?= htmlspecialchars($ctaText, ENT_QUOTES, 'UTF-8'); ?>
+            </a>
         </div>
         <?php
         return ob_get_clean();
@@ -1116,7 +1283,7 @@ class DienstenEngine {
         $path = trim($path, '/');
 
         // Normaliseer bekende standalone diensten-bestanden
-        if (in_array($path, ['ai-copilot', 'copilot-plannen', 'copilot-ai-experience', 'processen-portalen', 'adoptie-begeleiding', 'workshops-trainingen', 'noppa-ai-fit'], true)) {
+        if (in_array($path, ['ai-copilot', 'copilot-plannen', 'copilot-ai-experience', 'processen-portalen', 'adoptie-begeleiding', 'workshops-trainingen', 'noppa-ai-fit', 'm365-continuiteit-productiviteit', 'noppa-5-propositie'], true)) {
             $path = 'diensten/' . $path;
         }
 
@@ -1150,6 +1317,45 @@ class DienstenEngine {
         }
 
         return $assetPrefix . $path . $hash;
+    }
+
+    /**
+     * Parseer HTML/XML-achtige attributen uit een string (bijv. type="pricing" bg="tint" plans="Basic,Advanced").
+     */
+    private function parseAttributes(string $str): array {
+        $attrs = [];
+        if (preg_match_all('/([a-zA-Z0-9_-]+)=(?:"([^"]*)"|\'([^\']*)\'|([^\s>]+))/i', $str, $m, PREG_SET_ORDER)) {
+            foreach ($m as $match) {
+                $key = strtolower($match[1]);
+                $val = $match[2] !== '' ? $match[2] : ($match[3] !== '' ? $match[3] : $match[4]);
+                $attrs[$key] = $val;
+            }
+        }
+        return $attrs;
+    }
+
+    /**
+     * Vervang inline shortcodes voor plans zoals <!-- plan: Basic --> of [plan: "Basic"]
+     * door een fraaie standalone .pcard.
+     */
+    public function replacePlanShortcodes(string $html, ?array $pricing): string {
+        if (empty($pricing) || empty($pricing['plans'])) {
+            return $html;
+        }
+
+        $pattern = '/(?:<!--\s*plan:\s*([a-zA-Z0-9_-]+)\s*-->|\[plan:\s*["\']?([a-zA-Z0-9_-]+)["\']?\])/i';
+
+        return preg_replace_callback($pattern, function ($m) use ($pricing) {
+            $requestedTier = strtolower(trim(!empty($m[1]) ? $m[1] : $m[2]));
+            foreach ($pricing['plans'] as $p) {
+                $tier = strtolower($p['tier'] ?? '');
+                $name = strtolower($p['name'] ?? '');
+                if ($tier === $requestedTier || str_contains($tier, $requestedTier) || str_contains($name, $requestedTier)) {
+                    return '<div class="pricing-grid grid-1 plan-embed-single my-4">' . $this->renderSinglePlanCard($p) . '</div>';
+                }
+            }
+            return '';
+        }, $html);
     }
 
     /**
