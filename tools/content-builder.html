@@ -1127,6 +1127,7 @@
                             <option value="content">📄 Tekst & Tabellen (type="content")</option>
                             <option value="cards">🗂️ Kaarten Grid (type="cards")</option>
                             <option value="stats">📊 Cijfers & Tellers (type="stats")</option>
+                            <option value="pricing">💰 Tarieven & Pakketten (type="pricing")</option>
                             <option value="formula">📐 Rendementsformule (type="formula")</option>
                             <option value="roadmap">🚀 Stappenplan (type="roadmap")</option>
                             <option value="scorecard">🚦 Stoplicht Readiness (type="scorecard")</option>
@@ -1262,7 +1263,7 @@
                 <!-- Tab 2: 17 Sectietypes -->
                 <div id="tab_types" class="modal-tab-pane" style="display: none;">
                     <p style="margin-bottom: 12px; color: var(--text-muted);">
-                        Het Noppa platform herkent 17 gespecialiseerde sectietypes in Markdown via <code>&lt;!-- section: [id] type="[type]" ... --&gt;</code>:
+                        Het Noppa platform herkent 18 gespecialiseerde sectietypes in Markdown via <code>&lt;!-- section: [id] type="[type]" ... --&gt;</code>:
                     </p>
                     <table class="help-table">
                         <thead>
@@ -1282,6 +1283,11 @@
                                 <td><code>cards</code></td>
                                 <td>Responsief kaarten-grid (2 of 3 kolommen via <code>cols="2|3"</code>) met iconen en knoppen.</td>
                                 <td><code>## Titel\n*Icoon: sparkles*\nTekst\n[Knop](/url)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>pricing</code></td>
+                                <td>Tarieven &amp; pakketten grid uit YAML frontmatter. Ondersteunt <code>bg="..."</code> achtergrond, <code>plans="..."</code> filter en toelichting.</td>
+                                <td><code>&lt;!-- section: pricing bg="tint" plans="Basis,Compleet" --&gt;</code></td>
                             </tr>
                             <tr>
                                 <td><code>stats</code></td>
@@ -1617,6 +1623,8 @@ hero:
                     return 'Hier komt de inhoudelijke toelichting in **Markdown**. U kunt paragrafen, lijsten en tabellen gebruiken.\n\n| Kolom 1 | Kolom 2 | Betekenis |\n| :--- | :--- | :--- |\n| **Onderwerp A** | Waarde | [pill:Gereed] In productie |\n| **Onderwerp B** | Waarde | [pill:In analyse] In review |';
                 case 'cards':
                     return '## 1. Adoptie & Begeleiding\n*Icoon: team*\nTechnologie werkt pas als mensen ermee willen werken. Wij trainen teams op de werkvloer.\n[Ontdek Adoptie](/diensten#adoptie)\n\n## 2. Copilot AI Inrichting\n*Icoon: sparkles*\nVan licentiecheck tot effectieve prompting en veilige enterprise data-afscherming.\n[Ontdek Copilot](/diensten#copilot)\n\n## 3. Veiligheid & Purview\n*Icoon: shield*\nVoorkom datalekkages en stel automatische sensitivity labels in voor Teams en SharePoint.\n[Bekijk Security](/diensten#security)';
+                case 'pricing':
+                    return 'Kies het ondersteuningsniveau dat past bij de schaalgrootte, governance-eisen en adoptiebehoefte van uw organisatie.';
                 case 'stats':
                     return '- **35%** Tijdsbesparing op routinematige administratieve taken\n- **85%+** Actieve adoptiegraad bij Microsoft Copilot implementaties\n- **100%** Voldoen aan WCAG 2.1 AAA en AVG/GDPR richtlijnen\n- **4.9/5** Gemiddelde evaluatiescore van onze workshopdeelnemers';
                 case 'formula':

@@ -17,7 +17,7 @@ Hierin vind je gedetailleerde instructies voor:
 - **Architectuur & Kernfilosofie** (Zuivere Markdown zonder ruwe HTML-tags)
 - **Mappenstructuur & Bestandsbeheer**
 - **URL Routing & .htaccess configuratie**
-- **Nieuwe dienst aanmaken** (met Hero, Pillars, Aanpak, Meerkoloms Pricing Grid en FAQ)
+- **Nieuwe dienst aanmaken** (met Hero, Pillars, Aanpak, Flexibele Pricing & Plans positionering, filters en FAQ)
 - **Nieuw teamlid toevoegen** (met bio, quick facts, vCard download en contact)
 - **Nieuwe pagina's & themagidsen aanmaken** (home, over-ons, contact, microsoft-365, copilot, sharepoint, teams, onedrive, planner, visie, etc.)
 - **Kennisbank artikelen toevoegen** (met automatische TOC, leestijdberekening en categorieën)

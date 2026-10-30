@@ -251,6 +251,16 @@ pricing:
 - `## Stappenplan`: Genummerde fasen van de implementatie.
 - `## Veelgestelde vragen`: Accordion FAQ met antwoorden.
 
+### 2.4 Flexibele Pricing & Plans Positionering
+De redacteur kan het in YAML gedefinieerde tarievenoverzicht (`pricing`) flexibel op elke gewenste plek in de Markdown-body positioneren:
+- **Directe plaatsing**: `<!-- section: pricing -->` of `<!-- pricing -->`. Schakelt automatische plaatsing na de intro of aan het einde uit.
+- **Met achtergrond & titels**: `<!-- section: tarieven type="pricing" bg="tint" title="..." subtitle="..." desc="..." -->`.
+  *Beschikbare achtergronden (`bg`)*: `surface` (wit), `tint` (lichtblauw), `navy` (diepblauw), `ink` (donker), `hero` (hero-gradient), `royal` (royalblauw), `gradient` (signature gradient), `alt` (standaard zachtgrijs).
+- **Plannen filteren**: `plans="Basic,Advanced"` of `plan="Maatwerk"` om pakketten te splitsen over verschillende pagina-onderdelen.
+- **Inline plan embeds**: `<!-- plan: Basic -->` of `[plan: "Basic"]` binnen een lopende tekstparagraaf (rendert een gecentreerde `.pcard`).
+- **Kop-gebaseerd**: `## Onze Tarieven & Pakketten` (herkent automatisch de koppen *Tarieven*, *Prijzen*, *Pakketten*, *Pricing*, *Investering*).
+
+
 ---
 
 ## 📄 Instructie 3: Algemene Pagina Converteren (`md-converter-pagina`)

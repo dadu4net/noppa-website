@@ -755,6 +755,61 @@
             margin-bottom: 6px;
             flex-wrap: wrap;
         }
+
+        /* --- Dropzone & Import Styling --- */
+        .dropzone-box {
+            border: 2px dashed rgba(0, 208, 240, 0.4);
+            border-radius: var(--radius-md);
+            padding: 34px 20px;
+            text-align: center;
+            background: rgba(0, 208, 240, 0.03);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .dropzone-box:hover, .dropzone-box.is-dragover {
+            border-color: var(--cyan);
+            background: rgba(0, 208, 240, 0.08);
+            box-shadow: 0 0 24px rgba(0, 208, 240, 0.25);
+            transform: scale(1.01);
+        }
+
+        .dropzone-icon {
+            font-size: 2.6rem;
+            color: var(--cyan);
+            filter: drop-shadow(0 2px 8px rgba(0, 208, 240, 0.4));
+            line-height: 1;
+        }
+
+        .drop-window-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 13, 27, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 99999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 4px dashed var(--cyan);
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            font-weight: 800;
+            gap: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .drop-window-overlay.is-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body>
@@ -778,6 +833,11 @@
                 <option value="kennisbank_artikel">Kennisbank Artikel (Gids / Best Practice)</option>
                 <option value="leeg">Nieuw / Leeg Beginnen</option>
             </select>
+
+            <button class="btn btn-secondary" onclick="openImportModal()" title="Laad een bestaand .md bestand of plak Markdown broncode in">
+                📂 Laad MD In
+            </button>
+            <input type="file" id="md_file_input" accept=".md,.markdown,.txt" style="display: none;" onchange="handleFileSelect(event)">
 
             <button class="btn btn-secondary" onclick="openDocsModal()" title="Bekijk alle 17 sectietypes, 8 achtergrondkleuren en specificaties">
                 💡 Mogelijkheden Gids
@@ -1067,6 +1127,7 @@
                             <option value="content">📄 Tekst & Tabellen (type="content")</option>
                             <option value="cards">🗂️ Kaarten Grid (type="cards")</option>
                             <option value="stats">📊 Cijfers & Tellers (type="stats")</option>
+                            <option value="pricing">💰 Tarieven & Pakketten (type="pricing")</option>
                             <option value="formula">📐 Rendementsformule (type="formula")</option>
                             <option value="roadmap">🚀 Stappenplan (type="roadmap")</option>
                             <option value="scorecard">🚦 Stoplicht Readiness (type="scorecard")</option>
@@ -1202,7 +1263,7 @@
                 <!-- Tab 2: 17 Sectietypes -->
                 <div id="tab_types" class="modal-tab-pane" style="display: none;">
                     <p style="margin-bottom: 12px; color: var(--text-muted);">
-                        Het Noppa platform herkent 17 gespecialiseerde sectietypes in Markdown via <code>&lt;!-- section: [id] type="[type]" ... --&gt;</code>:
+                        Het Noppa platform herkent 18 gespecialiseerde sectietypes in Markdown via <code>&lt;!-- section: [id] type="[type]" ... --&gt;</code>:
                     </p>
                     <table class="help-table">
                         <thead>
@@ -1222,6 +1283,11 @@
                                 <td><code>cards</code></td>
                                 <td>Responsief kaarten-grid (2 of 3 kolommen via <code>cols="2|3"</code>) met iconen en knoppen.</td>
                                 <td><code>## Titel\n*Icoon: sparkles*\nTekst\n[Knop](/url)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>pricing</code></td>
+                                <td>Tarieven &amp; pakketten grid uit YAML frontmatter. Ondersteunt <code>bg="..."</code> achtergrond, <code>plans="..."</code> filter en toelichting.</td>
+                                <td><code>&lt;!-- section: pricing bg="tint" plans="Basis,Compleet" --&gt;</code></td>
                             </tr>
                             <tr>
                                 <td><code>stats</code></td>
@@ -1370,6 +1436,76 @@ hero:
         </div>
     </div>
 
+    <!-- Markdown Import Modal -->
+    <div id="import_modal" class="modal-backdrop" onclick="handleImportModalBackdrop(event)">
+        <div class="modal-card" style="max-width: 760px;" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>
+                    <span style="font-size: 1.3rem;">📂</span>
+                    <span>Markdown Document Inladen</span>
+                </h2>
+                <button type="button" class="tooltip-close-btn" onclick="closeImportModal()" style="font-size: 1.4rem;">×</button>
+            </div>
+            <div class="modal-nav">
+                <button type="button" id="tab_btn_upload" class="modal-tab-btn is-active" onclick="switchImportTab('upload')">📁 Bestand Kiezen / Dropzone</button>
+                <button type="button" id="tab_btn_paste" class="modal-tab-btn" onclick="switchImportTab('paste')">📝 Markdown Plakken</button>
+            </div>
+            <div class="modal-body">
+                <!-- Tab 1: Bestand Kiezen -->
+                <div id="import_tab_upload">
+                    <div class="dropzone-box" id="dropzone_box" onclick="triggerFileInput()">
+                        <div class="dropzone-icon">📥</div>
+                        <div>
+                            <strong style="color: #FFFFFF; font-size: 1.05rem;">Sleep een .md bestand hierheen</strong>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">of klik om een bestand te kiezen vanaf uw computer</p>
+                        </div>
+                        <span class="badge-pill">Ondersteunt .md, .markdown, .txt</span>
+                    </div>
+                    <div id="file_selected_info" style="display: none; margin-top: 14px; background: rgba(0, 208, 240, 0.08); border: 1px solid rgba(0, 208, 240, 0.3); border-radius: var(--radius-sm); padding: 12px 16px; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.3rem;">📄</span>
+                            <div>
+                                <strong id="file_info_name" style="color: #FFFFFF; font-size: 0.9rem;">bestand.md</strong>
+                                <div id="file_info_size" style="color: var(--text-muted); font-size: 0.78rem;">0 KB</div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="clearSelectedFile()">Verwijderen</button>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Tekst Plakken -->
+                <div id="import_tab_paste" style="display: none;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="paste_markdown_input">Plak hier de volledige Markdown broncode (inclusief YAML frontmatter):</label>
+                        <textarea id="paste_markdown_input" class="form-control code" style="min-height: 220px;" placeholder="---\ntitle: Pagina Titel\ndescription: SEO Omschrijving\n---\n\n<!-- section: intro type=&quot;content&quot; -->\nInhoud van de pagina..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Import Opties -->
+                <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: var(--text-body);">
+                        <input type="checkbox" id="opt_split_h2" checked>
+                        <span>Automatisch H2-koppen (<code>##</code>) groeperen naar aparte secties indien er géén Noppa tags aanwezig zijn</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; color: var(--text-body);">
+                        <input type="checkbox" id="opt_auto_hero" checked>
+                        <span>Hero sectie automatisch in- of uitschakelen op basis van aanwezigheid in het bestand</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Annuleren</button>
+                <button type="button" class="btn btn-primary" onclick="executeImport()">🚀 Document Inladen &amp; Bewerken</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Globale Drag & Drop Overlay -->
+    <div id="window_drop_overlay" class="drop-window-overlay">
+        <span style="font-size: 3rem;">📥</span>
+        <span>Laat het .md bestand los om direct in te laden</span>
+    </div>
+
     <!-- JavaScript Applicatielogica -->
     <script>
         // Data State
@@ -1378,6 +1514,7 @@ hero:
         // Standaard Initialisatie
         window.addEventListener('DOMContentLoaded', () => {
             initTooltips();
+            initDragAndDrop();
             loadPreset('pagina_m365');
         });
 
@@ -1486,6 +1623,8 @@ hero:
                     return 'Hier komt de inhoudelijke toelichting in **Markdown**. U kunt paragrafen, lijsten en tabellen gebruiken.\n\n| Kolom 1 | Kolom 2 | Betekenis |\n| :--- | :--- | :--- |\n| **Onderwerp A** | Waarde | [pill:Gereed] In productie |\n| **Onderwerp B** | Waarde | [pill:In analyse] In review |';
                 case 'cards':
                     return '## 1. Adoptie & Begeleiding\n*Icoon: team*\nTechnologie werkt pas als mensen ermee willen werken. Wij trainen teams op de werkvloer.\n[Ontdek Adoptie](/diensten#adoptie)\n\n## 2. Copilot AI Inrichting\n*Icoon: sparkles*\nVan licentiecheck tot effectieve prompting en veilige enterprise data-afscherming.\n[Ontdek Copilot](/diensten#copilot)\n\n## 3. Veiligheid & Purview\n*Icoon: shield*\nVoorkom datalekkages en stel automatische sensitivity labels in voor Teams en SharePoint.\n[Bekijk Security](/diensten#security)';
+                case 'pricing':
+                    return 'Kies het ondersteuningsniveau dat past bij de schaalgrootte, governance-eisen en adoptiebehoefte van uw organisatie.';
                 case 'stats':
                     return '- **35%** Tijdsbesparing op routinematige administratieve taken\n- **85%+** Actieve adoptiegraad bij Microsoft Copilot implementaties\n- **100%** Voldoen aan WCAG 2.1 AAA en AVG/GDPR richtlijnen\n- **4.9/5** Gemiddelde evaluatiescore van onze workshopdeelnemers';
                 case 'formula':
@@ -1531,10 +1670,10 @@ hero:
                         </div>
                     </div>
 
-                    <div class="form-grid-3">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 16px;">
                         <div class="form-group">
                             <label class="form-label">Sectie ID (Anker)</label>
-                            <input type="text" class="form-control" value="${sec.id}" oninput="updateSectionProp(${idx}, 'id', this.value)">
+                            <input type="text" class="form-control" value="${sec.id || ''}" oninput="updateSectionProp(${idx}, 'id', this.value)">
                         </div>
                         <div class="form-group">
                             <label class="form-label">
@@ -1547,7 +1686,7 @@ hero:
                                         • <strong>alt:</strong> Alternerend zachtgrijs/blauw<br>
                                         • <strong>tint:</strong> Zachte Noppa blauwe waas<br>
                                         • <strong>navy:</strong> Diep Noppa Navy (wit contrast)<br>
-                                        • <strong>ink:</strong> Diepste nachtblauw (wit contrast)<br>
+                                        • <strong>ink:</strong> Diepst nachtblauw (wit contrast)<br>
                                         • <strong>hero:</strong> Hero gradient (wit contrast)<br>
                                         • <strong>royal:</strong> Massief Royal blauw<br>
                                         • <strong>gradient:</strong> Noppa 4-staps signature gradient
@@ -1570,6 +1709,24 @@ hero:
                             <label class="form-label">Kicker (Subkop Tag)</label>
                             <input type="text" class="form-control" value="${sec.kicker || ''}" placeholder="bv. In de praktijk" oninput="updateSectionProp(${idx}, 'kicker', this.value)">
                         </div>
+                        ${sec.type === 'cards' ? `
+                        <div class="form-group">
+                            <label class="form-label">Kolommen (\`cols\`)</label>
+                            <select class="form-control" onchange="updateSectionProp(${idx}, 'cols', this.value)">
+                                <option value="3" ${sec.cols === '3' || !sec.cols ? 'selected' : ''}>3 Kolommen (Standaard)</option>
+                                <option value="2" ${sec.cols === '2' ? 'selected' : ''}>2 Kolommen</option>
+                            </select>
+                        </div>
+                        ` : ''}
+                        ${sec.type === 'split' ? `
+                        <div class="form-group">
+                            <label class="form-label">Media Positie (\`image_pos\`)</label>
+                            <select class="form-control" onchange="updateSectionProp(${idx}, 'image_pos', this.value)">
+                                <option value="right" ${sec.image_pos === 'right' || !sec.image_pos ? 'selected' : ''}>Rechts (Standaard)</option>
+                                <option value="left" ${sec.image_pos === 'left' ? 'selected' : ''}>Links</option>
+                            </select>
+                        </div>
+                        ` : ''}
                     </div>
 
                     <div class="form-grid-2">
@@ -1658,6 +1815,7 @@ hero:
                 if (sec.title) secComment += ` title="${sec.title}"`;
                 if (sec.desc) secComment += ` desc="${sec.desc}"`;
                 if (sec.cols && sec.type === 'cards') secComment += ` cols="${sec.cols}"`;
+                if (sec.image_pos && sec.type === 'split') secComment += ` image_pos="${sec.image_pos}"`;
                 secComment += ` -->\n\n`;
 
                 md += secComment;
@@ -1924,6 +2082,7 @@ hero:
                 if (e.key === 'Escape') {
                     hideGlobalTooltip();
                     closeDocsModal();
+                    closeImportModal();
                 }
             });
 
@@ -2108,6 +2267,560 @@ hero:
             const activeTab = document.getElementById(tabId);
             if (activeTab) activeTab.style.display = 'block';
             if (btn) btn.classList.add('is-active');
+        }
+
+        // =========================================================================
+        // Markdown Import & Parsing Functionaliteit
+        // =========================================================================
+        let selectedImportFile = null;
+        let selectedImportContent = '';
+        let activeImportTab = 'upload';
+
+        function initDragAndDrop() {
+            let dragCounter = 0;
+            const overlay = document.getElementById('window_drop_overlay');
+            const dropzone = document.getElementById('dropzone_box');
+
+            window.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                dragCounter++;
+                if (overlay) overlay.classList.add('is-active');
+            });
+
+            window.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dragCounter--;
+                if (dragCounter <= 0) {
+                    dragCounter = 0;
+                    if (overlay) overlay.classList.remove('is-active');
+                }
+            });
+
+            window.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            window.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dragCounter = 0;
+                if (overlay) overlay.classList.remove('is-active');
+
+                if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.name.match(/\.(md|markdown|txt)$/i)) {
+                        readAndProcessFile(file);
+                    } else {
+                        showToast('⚠️ Selecteer een .md of .txt bestand.');
+                    }
+                }
+            });
+
+            if (dropzone) {
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('is-dragover');
+                });
+                dropzone.addEventListener('dragleave', () => {
+                    dropzone.classList.remove('is-dragover');
+                });
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('is-dragover');
+                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        const file = e.dataTransfer.files[0];
+                        if (file.name.match(/\.(md|markdown|txt)$/i)) {
+                            handleFileObject(file);
+                        } else {
+                            alert('Selecteer een Markdown (.md) bestand.');
+                        }
+                    }
+                });
+            }
+        }
+
+        function triggerFileInput() {
+            const input = document.getElementById('md_file_input');
+            if (input) input.click();
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                handleFileObject(files[0]);
+            }
+        }
+
+        function handleFileObject(file) {
+            selectedImportFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectedImportContent = e.target.result;
+                const infoBox = document.getElementById('file_selected_info');
+                const nameEl = document.getElementById('file_info_name');
+                const sizeEl = document.getElementById('file_info_size');
+                if (infoBox && nameEl && sizeEl) {
+                    nameEl.textContent = file.name;
+                    const kb = Math.round(file.size / 1024 * 10) / 10;
+                    sizeEl.textContent = `${kb} KB • Klaar om in te laden`;
+                    infoBox.style.display = 'flex';
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function readAndProcessFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                loadMarkdownIntoBuilder(text, file.name);
+                closeImportModal();
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function clearSelectedFile() {
+            selectedImportFile = null;
+            selectedImportContent = '';
+            const input = document.getElementById('md_file_input');
+            if (input) input.value = '';
+            const infoBox = document.getElementById('file_selected_info');
+            if (infoBox) infoBox.style.display = 'none';
+        }
+
+        function openImportModal() {
+            const modal = document.getElementById('import_modal');
+            if (modal) {
+                modal.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeImportModal() {
+            const modal = document.getElementById('import_modal');
+            if (modal) {
+                modal.classList.remove('is-open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleImportModalBackdrop(event) {
+            if (event.target.id === 'import_modal') {
+                closeImportModal();
+            }
+        }
+
+        function switchImportTab(tab) {
+            activeImportTab = tab;
+            const tabUpload = document.getElementById('import_tab_upload');
+            const tabPaste = document.getElementById('import_tab_paste');
+            const btnUpload = document.getElementById('tab_btn_upload');
+            const btnPaste = document.getElementById('tab_btn_paste');
+
+            if (tab === 'upload') {
+                if (tabUpload) tabUpload.style.display = 'block';
+                if (tabPaste) tabPaste.style.display = 'none';
+                if (btnUpload) btnUpload.classList.add('is-active');
+                if (btnPaste) btnPaste.classList.remove('is-active');
+            } else {
+                if (tabUpload) tabUpload.style.display = 'none';
+                if (tabPaste) tabPaste.style.display = 'block';
+                if (btnUpload) btnUpload.classList.remove('is-active');
+                if (btnPaste) btnPaste.classList.add('is-active');
+                const textarea = document.getElementById('paste_markdown_input');
+                if (textarea) textarea.focus();
+            }
+        }
+
+        function executeImport() {
+            if (activeImportTab === 'upload') {
+                if (!selectedImportContent) {
+                    alert('Selecteer eerst een Markdown (.md) bestand via de dropzone of bestandskiezer.');
+                    return;
+                }
+                if (sections.length > 0) {
+                    if (!confirm('Let op: het inladen overschrijft de huidige inhoud in de builder. Weet u zeker dat u wilt doorgaan?')) {
+                        return;
+                    }
+                }
+                loadMarkdownIntoBuilder(selectedImportContent, selectedImportFile ? selectedImportFile.name : '');
+                closeImportModal();
+                clearSelectedFile();
+            } else {
+                const pasteInput = document.getElementById('paste_markdown_input');
+                const text = pasteInput ? pasteInput.value.trim() : '';
+                if (!text) {
+                    alert('Plak eerst Markdown broncode in het tekstvak.');
+                    return;
+                }
+                if (sections.length > 0) {
+                    if (!confirm('Let op: het inladen overschrijft de huidige inhoud in de builder. Weet u zeker dat u wilt doorgaan?')) {
+                        return;
+                    }
+                }
+                loadMarkdownIntoBuilder(text, 'geplakte-pagina.md');
+                closeImportModal();
+                if (pasteInput) pasteInput.value = '';
+            }
+        }
+
+        // --- Parser Logica ---
+        function cleanYamlValue(val) {
+            if (!val) return '';
+            let cleaned = val.trim();
+            // Verwijder inline commentaar na de waarde (bijv. "assets/img.jpg" # commentaar)
+            const commentMatch = cleaned.match(/^(.*?)(?:\s+#.*)$/);
+            if (commentMatch) {
+                cleaned = commentMatch[1].trim();
+            }
+            // Verwijder omliggende aanhalingstekens
+            if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+                cleaned = cleaned.substring(1, cleaned.length - 1);
+            }
+            return cleaned;
+        }
+
+        function parseYamlFrontmatter(yamlStr) {
+            const result = {
+                meta: {},
+                hero: null
+            };
+
+            if (!yamlStr) return result;
+
+            const lines = yamlStr.split(/\r?\n/);
+            let currentBlock = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                const rawLine = lines[i];
+                if (!rawLine.trim() || rawLine.trim().startsWith('#')) continue;
+
+                const indentMatch = rawLine.match(/^(\s*)/);
+                const indent = indentMatch ? indentMatch[1].length : 0;
+                const line = rawLine.trim();
+
+                const colonIdx = line.indexOf(':');
+                if (colonIdx === -1) continue;
+
+                const key = line.substring(0, colonIdx).trim();
+                const val = line.substring(colonIdx + 1).trim();
+
+                if (indent === 0) {
+                    if (key === 'hero') {
+                        result.hero = {};
+                        currentBlock = 'hero';
+                    } else {
+                        currentBlock = null;
+                        result.meta[key] = cleanYamlValue(val);
+                    }
+                } else if (currentBlock && currentBlock.startsWith('hero')) {
+                    if (indent === 2) {
+                        if (key === 'cta_primary' || key === 'cta_secondary') {
+                            result.hero[key] = {};
+                            currentBlock = 'hero.' + key;
+                        } else {
+                            currentBlock = 'hero';
+                            result.hero[key] = cleanYamlValue(val);
+                        }
+                    } else if (indent >= 4 && currentBlock.startsWith('hero.cta_')) {
+                        const ctaKey = currentBlock.split('.')[1];
+                        if (!result.hero[ctaKey]) result.hero[ctaKey] = {};
+                        result.hero[ctaKey][key] = cleanYamlValue(val);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        function parseAttributes(rawAttrs) {
+            const attrs = {};
+            if (!rawAttrs) return attrs;
+            const regex = /([a-zA-Z0-9_-]+)=["'](.*?)["']|([a-zA-Z0-9_-]+)=([^\s>]+)/g;
+            let match;
+            while ((match = regex.exec(rawAttrs)) !== null) {
+                if (match[1] !== undefined) {
+                    attrs[match[1]] = match[2];
+                } else if (match[3] !== undefined) {
+                    attrs[match[3]] = match[4];
+                }
+            }
+            return attrs;
+        }
+
+        function parseSectionsFromMarkdown(body, options = {}) {
+            const sectionPattern = /<!--\s*section:\s*([a-zA-Z0-9_-]+)([\s\S]*?)\s*-->/gi;
+            const matches = [];
+            let match;
+            while ((match = sectionPattern.exec(body)) !== null) {
+                matches.push({
+                    id: match[1],
+                    rawAttrs: match[2],
+                    startIndex: match.index,
+                    endIndex: match.index + match[0].length
+                });
+            }
+
+            const parsedSections = [];
+
+            if (matches.length === 0) {
+                // Geen expliciete Noppa sectietags gevonden
+                if (options.splitOnH2) {
+                    const h2Pattern = /^##\s+(.*)$/gm;
+                    const h2Matches = [];
+                    let h2Match;
+                    while ((h2Match = h2Pattern.exec(body)) !== null) {
+                        h2Matches.push({
+                            title: h2Match[1].trim(),
+                            startIndex: h2Match.index,
+                            matchLength: h2Match[0].length
+                        });
+                    }
+
+                    if (h2Matches.length > 0) {
+                        if (h2Matches[0].startIndex > 0) {
+                            const intro = body.substring(0, h2Matches[0].startIndex).trim();
+                            if (intro) {
+                                parsedSections.push({
+                                    id: 'intro',
+                                    type: 'content',
+                                    title: 'Introductie',
+                                    kicker: '',
+                                    desc: '',
+                                    bg: 'surface',
+                                    cols: '3',
+                                    image_pos: 'right',
+                                    content: intro
+                                });
+                            }
+                        }
+
+                        for (let i = 0; i < h2Matches.length; i++) {
+                            const title = h2Matches[i].title;
+                            const start = h2Matches[i].startIndex + h2Matches[i].matchLength;
+                            const end = (i + 1 < h2Matches.length) ? h2Matches[i + 1].startIndex : body.length;
+                            const secContent = body.substring(start, end).trim();
+                            const cleanId = title.toLowerCase().replace(/<[^>]*>/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `sectie-${i + 1}`;
+
+                            parsedSections.push({
+                                id: cleanId,
+                                type: 'content',
+                                title: title,
+                                kicker: '',
+                                desc: '',
+                                bg: (i % 2 === 1) ? 'alt' : 'surface',
+                                cols: '3',
+                                image_pos: 'right',
+                                content: secContent
+                            });
+                        }
+                        return parsedSections;
+                    }
+                }
+
+                if (body.trim()) {
+                    parsedSections.push({
+                        id: 'content',
+                        type: 'content',
+                        title: 'Inhoud',
+                        kicker: '',
+                        desc: '',
+                        bg: 'surface',
+                        cols: '3',
+                        image_pos: 'right',
+                        content: body.trim()
+                    });
+                }
+                return parsedSections;
+            }
+
+            // Wel Noppa sectietags aanwezig
+            if (matches[0].startIndex > 0) {
+                const preamble = body.substring(0, matches[0].startIndex).trim();
+                if (preamble) {
+                    parsedSections.push({
+                        id: 'intro',
+                        type: 'content',
+                        title: 'Inleiding',
+                        kicker: '',
+                        desc: '',
+                        bg: 'surface',
+                        cols: '3',
+                        image_pos: 'right',
+                        content: preamble
+                    });
+                }
+            }
+
+            for (let i = 0; i < matches.length; i++) {
+                const id = matches[i].id;
+                const attrs = parseAttributes(matches[i].rawAttrs);
+                const contentStart = matches[i].endIndex;
+                const contentEnd = (i + 1 < matches.length) ? matches[i + 1].startIndex : body.length;
+                const secContent = body.substring(contentStart, contentEnd).trim();
+
+                const type = attrs.type || id || 'content';
+                const bg = attrs.bg || 'surface';
+                const kicker = attrs.kicker || attrs.subtitle || '';
+                const title = attrs.title || '';
+                const desc = attrs.desc || '';
+                const cols = attrs.cols || '3';
+                const imagePos = attrs.image_pos || 'right';
+
+                parsedSections.push({
+                    id: id,
+                    type: type,
+                    bg: bg,
+                    kicker: kicker,
+                    title: title,
+                    desc: desc,
+                    cols: cols,
+                    image_pos: imagePos,
+                    content: secContent
+                });
+            }
+
+            return parsedSections;
+        }
+
+        function loadMarkdownIntoBuilder(rawMarkdown, filename = '') {
+            if (!rawMarkdown || typeof rawMarkdown !== 'string') return;
+
+            let yamlStr = '';
+            let bodyStr = rawMarkdown;
+
+            // Extraheer YAML frontmatter
+            const fmMatch = rawMarkdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+            if (fmMatch) {
+                yamlStr = fmMatch[1];
+                bodyStr = fmMatch[2];
+            } else if (rawMarkdown.startsWith('---')) {
+                const secondDelim = rawMarkdown.indexOf('\n---', 3);
+                if (secondDelim !== -1) {
+                    yamlStr = rawMarkdown.substring(3, secondDelim);
+                    bodyStr = rawMarkdown.substring(secondDelim + 4);
+                }
+            }
+
+            const parsedYaml = parseYamlFrontmatter(yamlStr);
+
+            // Bepaal Slug
+            let slug = '';
+            if (parsedYaml.meta.slug) {
+                slug = parsedYaml.meta.slug;
+            } else if (filename && !filename.startsWith('geplakt')) {
+                slug = filename.replace(/\.(md|markdown|txt)$/i, '');
+            } else if (parsedYaml.meta.canonical) {
+                const cleanUrl = parsedYaml.meta.canonical.replace(/\/+$/, '');
+                try {
+                    const u = new URL(cleanUrl);
+                    const pathParts = u.pathname.replace(/^\/+|\/+$/g, '').split('/');
+                    const lastPart = pathParts[pathParts.length - 1];
+                    slug = lastPart || 'home';
+                } catch (e) {
+                    const parts = cleanUrl.split('/');
+                    const lastPart = parts[parts.length - 1];
+                    slug = (lastPart && !lastPart.includes('.')) ? lastPart : 'home';
+                }
+            } else if (filename) {
+                slug = filename.replace(/\.(md|markdown|txt)$/i, '');
+            }
+            if (!slug) slug = 'pagina';
+
+            // Automatische Contenttype Detectie
+            let detectedType = 'pagina';
+            if (parsedYaml.meta.categorie || parsedYaml.meta.auteur || parsedYaml.meta.leestijd) {
+                detectedType = 'kennisbank';
+            } else if ((parsedYaml.meta.canonical && parsedYaml.meta.canonical.includes('/diensten/')) || (filename && filename.toLowerCase().includes('dienst'))) {
+                detectedType = 'dienst';
+            } else if ((parsedYaml.meta.canonical && parsedYaml.meta.canonical.includes('/team/')) || (filename && filename.toLowerCase().includes('team'))) {
+                detectedType = 'team';
+            }
+
+            const typeRadio = document.querySelector(`input[name="content_type"][value="${detectedType}"]`);
+            if (typeRadio) {
+                typeRadio.checked = true;
+                onTypeChange();
+            }
+
+            // Frontmatter & SEO Velden invullen
+            if (parsedYaml.meta.title) {
+                document.getElementById('meta_title').value = parsedYaml.meta.title;
+            } else {
+                const h1Match = bodyStr.match(/^#\s+(.*)$/m);
+                document.getElementById('meta_title').value = h1Match ? h1Match[1].trim() : slug.replace(/[-_]/g, ' ');
+            }
+
+            document.getElementById('meta_slug').value = slug;
+            document.getElementById('meta_desc').value = parsedYaml.meta.description || '';
+
+            // Kennisbank Velden
+            if (detectedType === 'kennisbank') {
+                if (parsedYaml.meta.categorie) {
+                    const kbCat = document.getElementById('kb_cat');
+                    const exists = Array.from(kbCat.options || []).some(o => o.value === parsedYaml.meta.categorie);
+                    if (!exists) {
+                        const opt = document.createElement('option');
+                        opt.value = parsedYaml.meta.categorie;
+                        opt.textContent = parsedYaml.meta.categorie;
+                        if (kbCat && kbCat.appendChild) kbCat.appendChild(opt);
+                    }
+                    kbCat.value = parsedYaml.meta.categorie;
+                }
+                if (parsedYaml.meta.auteur) {
+                    document.getElementById('kb_author').value = parsedYaml.meta.auteur;
+                }
+                if (parsedYaml.meta.leestijd) {
+                    document.getElementById('kb_readtime').value = parsedYaml.meta.leestijd;
+                }
+            }
+
+            // Hero Configuratie
+            const optAutoHero = document.getElementById('opt_auto_hero') ? document.getElementById('opt_auto_hero').checked : true;
+            const heroCheckbox = document.getElementById('hero_enabled');
+
+            if (parsedYaml.hero) {
+                heroCheckbox.checked = true;
+                const h = parsedYaml.hero;
+                if (h.badge !== undefined) document.getElementById('hero_badge').value = h.badge;
+                if (h.badge_icon) {
+                    const iconSelect = document.getElementById('hero_badge_icon');
+                    const exists = Array.from(iconSelect.options || []).some(o => o.value === h.badge_icon);
+                    if (!exists) {
+                        const opt = document.createElement('option');
+                        opt.value = h.badge_icon;
+                        opt.textContent = `${h.badge_icon} (Aangepast)`;
+                        if (iconSelect && iconSelect.appendChild) iconSelect.appendChild(opt);
+                    }
+                    iconSelect.value = h.badge_icon;
+                }
+                if (h.title !== undefined) document.getElementById('hero_title').value = h.title;
+                if (h.subtitle !== undefined) document.getElementById('hero_subtitle').value = h.subtitle;
+
+                const bgImgVal = h.bg_image || h.image || h.background_image || '';
+                if (bgImgVal) document.getElementById('hero_bg_image').value = bgImgVal;
+                if (h.bg_overlay) document.getElementById('hero_bg_overlay').value = h.bg_overlay;
+
+                if (h.cta_primary) {
+                    if (h.cta_primary.text !== undefined) document.getElementById('hero_cta1_text').value = h.cta_primary.text;
+                    if (h.cta_primary.url !== undefined) document.getElementById('hero_cta1_url').value = h.cta_primary.url;
+                }
+                if (h.cta_secondary) {
+                    if (h.cta_secondary.text !== undefined) document.getElementById('hero_cta2_text').value = h.cta_secondary.text;
+                    if (h.cta_secondary.url !== undefined) document.getElementById('hero_cta2_url').value = h.cta_secondary.url;
+                }
+            } else {
+                if (optAutoHero) heroCheckbox.checked = false;
+            }
+
+            // Secties Parseren
+            const optSplitH2 = document.getElementById('opt_split_h2') ? document.getElementById('opt_split_h2').checked : true;
+            sections = parseSectionsFromMarkdown(bodyStr, { splitOnH2: optSplitH2 });
+
+            renderSections();
+            updatePreview();
+
+            const secCount = sections.length;
+            showToast(`✓ "${filename || slug + '.md'}" succesvol ingeladen (${secCount} ${secCount === 1 ? 'sectie' : 'secties'})!`);
         }
     </script>
 </body>

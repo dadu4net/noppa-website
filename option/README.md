@@ -365,6 +365,58 @@ De basisfunctionaliteit zit in M365 Business Premium en Enterprise E3. Voor geav
 Een scan is binnen 1 week afgerond. Een volledige inrichting van labels en policies duurt doorgaans 3 tot 5 weken.
 ````
 
+### Stap 3b: Flexibele Pricing & Plans Positionering (Optioneel)
+Standaard rendert de `DienstenEngine.php` het tarievenoverzicht direct na de introductiesectie. Wanneer u de tarieven liever **op een specifieke plek** in de flow van de pagina wilt tonen (bijvoorbeeld na "Onze werkwijze", na een praktijkcase, of direct vóór de FAQ), kunt u dit flexibel sturen via Markdown tags:
+
+#### 1. Directe sectieplaatsing (`<!-- section: pricing -->` of `<!-- pricing -->`)
+Plaats de tag eenvoudig op de gewenste regel tussen de overige secties in de body:
+```markdown
+## Wat wij voor u doen
+...
+
+<!-- section: pricing -->
+
+## Onze aanpak
+...
+```
+*Zodra een expliciete pricing-tag aanwezig is, schakelt de engine automatische weergave na de intro of aan het einde uit.*
+
+#### 2. Met achtergrondkleur (`bg`), custom titels en toelichting
+U kunt direct een Noppa design token voor de achtergrond opgeven en de teksten uit de YAML overschrijven:
+```markdown
+<!-- section: tarieven type="pricing" bg="tint" title="Onze Continuïteitspakketten" subtitle="Transparante Maandtarieven" desc="Kies het ondersteuningsniveau dat past bij uw organisatie." -->
+
+Hier kunt u optioneel een extra toelichting of introductieparagraaf schrijven die netjes boven het tarievenoverzicht wordt getoond.
+```
+*Beschikbare achtergronden (`bg`):* `surface` (wit), `tint` (lichtblauw), `navy` (diepblauw met witte tekst), `ink` (donker), `hero` (hero-gradient), `royal` (koninklijk blauw), `gradient` (signature gradient), of `alt` (standaard zachtgrijs).
+
+#### 3. Plannen splitsen of filteren (`plans="..."` of `plan="..."`)
+Wilt u instapplannen scheiden van maatwerk of enterprise-pakketten? Filter op `tier` of `name` (hoofdletterongevoelig):
+```markdown
+<!-- section: instap type="pricing" plans="Basic,Advanced" title="Standaard Pakketten" bg="surface" -->
+
+... (tussensectie zoals een vergelijkingstabel of praktijkcase) ...
+
+<!-- section: enterprise type="pricing" plans="Premium,Maatwerk" title="Volledige Ontzorging & Nazorg" bg="navy" -->
+```
+
+#### 4. Inline individuele plannen embedden in lopende tekst
+Binnen een lopende alinea kunt u een los plankaartje insluiten via:
+```markdown
+<!-- plan: Basic -->
+```
+of met de shortcode-variant:
+```markdown
+[plan: "Basic"]
+```
+
+#### 5. Kop-gebaseerd (zonder HTML-commentaren)
+Een H2-kop met *Tarieven*, *Prijzen*, *Pakketten*, *Pricing* of *Investering* wordt automatisch herkend als pricing-sectie:
+```markdown
+## Onze Tarieven & Pakketten
+Hieronder vindt u een overzicht van onze vaste maandelijkse pakketten:
+```
+
 ### Stap 4: Koppelen in de Dienstenlijst
 Voeg de nieuwe dienst toe aan `content/pages/diensten.md` zodat deze op het overzichtsscherm verschijnt:
 
@@ -562,6 +614,7 @@ Plan een vrijblijvende inspiratiesessie van 30 minuten met een van onze adviseur
 | `contact` | Conclusie & Contact grid | Tekstconclusie, actiebox en 4-koloms interactieve contactkaarten (`::: contact-grid`) |
 | `sources` | Bronnen & verantwoording | Genummerde voetnoten en documentatieverantwoording |
 | `values` | Noppa kernwaarden | Rendert automatisch de 4 Noppa merkwaarden |
+| `pricing` | Tarieven & Pakketten Grid | Rendert de in YAML frontmatter gedefinieerde plans. Ondersteunt `bg="..."` achtergronden, `plans="..."` filtering, custom titels en toelichting |
 | `cta` | Conversiebanner over de volle breedte | Noppa signature 4-staps gradient met donkerblauwe pill-button |
 | `kennisbank` | Dynamische catalogus | Rendert artikelkaarten, categorie-tabs en zoekfunctie |
 | `charts` | Kwalitatieve grafieken & besliskaders | Staafdiagrammen (1–5 schaal) en donutgrafieken met dynamic center badge en legenda |
